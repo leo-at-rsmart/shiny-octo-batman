@@ -1,0 +1,11 @@
+id,type,unit_id,title,release_date,now_available
+1,A,Pre,Pre-course assessment,,False
+2,U,1,Introduction,available TBD,False
+3,U,2,Getting Started with Liquibase,available TBD,False
+4,U,3,Setting up a Liquibase Project,available TBD,False
+5,U,4,Managing Liquibase with Continuous Integration,available TBD,False
+6,A,Mid,Mid-course assessment,,False
+7,U,5,Change Management,available TBD,False
+8,U,6,Putting it all together,available TBD,False
+9,A,Fin,Post-course assessment,,False
+

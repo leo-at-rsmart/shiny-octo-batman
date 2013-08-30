@@ -1,0 +1,88 @@
+\documentclass[letterpaper,notitlepage,12pt]{book}
+\author{Leo Przybylski}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=ForestGreen,
+    filecolor=ForestGreen,
+    linkcolor=ForestGreen,
+    urlcolor=ForestGreen
+}
+%%\hypersetup{linktocpage}
+\definecolor{ubergray}{RGB}{245,245,245}
+\title{\includegraphics[width=\textwidth]{assets/img/cover.eps}\\Beginning Liquibase}
+\date{}
+\pagestyle{fancy}
+\fancyhead{} % Clear all header fields 
+\fancyhead[OL]{\sectionmark}
+\fancyhead[OR]{\includegraphics[height=26pt]{assets/img/heading.eps}}% 
+\fancyhead[ER]{\sectionmark}
+\fancyhead[EL]{\includegraphics[height=26pt]{assets/img/heading.eps}}% 
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\addcontentsline{toc}{part}{Preface}
+\part*{Preface}
+
+\addcontentsline{toc}{section}{Copyright}
+\section*{Copyright}
+\addcontentsline{toc}{subsection}{Copyright Holder}
+\subsection*{Copyright Holder}
+\copyright Copyright 2011, 2012
+Leo Przybylski
+leo@rsmart.com
+
+\addcontentsline{toc}{subsection}{Disclaimer}
+\subsection*{Disclaimer}
+This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 United States License. To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/3.0/us/ or send a letter to Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
+
+\addcontentsline{toc}{section}{About the Trainer}
+\section*{About the Trainer}
+Leo started working with the Kuali Foundation in 2005 as a developer
+on the Kuali Financial System. Since then, he has worked as a
+\emph{Development Manager} on the Kuali Financial System, \emph{Lead Developer} on
+the Kuali Coeus project, \emph{Software Architect} on the University of
+Arizona KFS implementation, and now is a \emph{Release Engineer} for the
+Kuali Foundation for the Rice Project. 
+
+Leo has given six presentations on KFS, KC, and Rice on to separate
+Kuali Days occassions. 
+
+One significant contribution he has made to the Kuali Community is his
+Rice LDAP Integration module.
+
+\addcontentsline{toc}{section}{Using theses Exercises}
+\section*{Using these Exercises}
+
+
+\subsubsection*{Credentials}
+\begin{description}
+\item [User Account] is \textbf{rice} with the password
+  \textbf{rice}. This is used to unlock the VM after it has suspended,
+  gone to sleep, or locked. The password is also required for
+  executing commands as \textbf{root} which may on occassion be
+  required. The user account home directory is located at
+  \textbf{/home/rice} and will frequently be referred to during the training.
+\item [Database Account] uses the jdbc connection string
+  \textbf{jdbc:mysql://localhost:3306/kuldemo} and the
+  username/password \textbf{kuldemo}/\textbf{kuldemo}. These are the
+  default credentials and database connection information as defined
+  in kul-cfg-dbs.
+\end{description}
+
+\subsubsection*{Structure}
+
+\section*{Training Overview}
+
+\include{Unit1}
+\include{Unit2}
+\include{Unit3}
+
+\end{document}

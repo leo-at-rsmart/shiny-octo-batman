@@ -1,4 +1,4 @@
-# Copyright 2012 Google Inc. All Rights Reserved.
+# Copyright 2013 Google Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ import csv
 import json
 import os
 import re
+from StringIO import StringIO
 import sys
 
 
@@ -45,6 +46,7 @@ FLOAT = object()
 INTEGER = object()
 CORRECT = object()
 REGEX = object()
+INTEGER_OR_INTEGER_LIST = object()
 
 SCHEMA = {
     'assessment': {
@@ -55,6 +57,13 @@ SCHEMA = {
             'questionHTML': STRING,
             'lesson': STRING,
             'choices': [STRING, CORRECT],
+            # The fractional score for each choice in this question, if it is
+            # multiple-choice. Each of these values should be between 0.0 and
+            # 1.0, inclusive.
+            'choiceScores': [FLOAT],
+            # The weight given to the entire question.
+            'weight': INTEGER,
+            'multiLine': BOOLEAN,
             'correctAnswerNumeric': FLOAT,
             'correctAnswerString': STRING,
             'correctAnswerRegex': REGEX}]
@@ -62,17 +71,22 @@ SCHEMA = {
         STRING,
         {
             'questionType': 'multiple choice',
+            'questionHTML': STRING,
             'choices': [[STRING, BOOLEAN, STRING]]
         }, {
             'questionType': 'multiple choice group',
+            'questionGroupHTML': STRING,
             'questionsList': [{
                 'questionHTML': STRING,
                 'choices': [STRING],
-                'correctIndex': INTEGER}],
+                'correctIndex': INTEGER_OR_INTEGER_LIST,
+                'multiSelect': BOOLEAN}],
+            'allCorrectMinCount': INTEGER,
             'allCorrectOutput': STRING,
             'someIncorrectOutput': STRING
         }, {
             'questionType': 'freetext',
+            'questionHTML': STRING,
             'correctAnswerRegex': REGEX,
             'correctAnswerOutput': STRING,
             'incorrectAnswerOutput': STRING,
@@ -81,6 +95,16 @@ SCHEMA = {
             'outputHeight': STRING
         }]}
 
+UNIT_TYPE_UNIT = 'U'
+UNIT_TYPE_LINK = 'O'
+UNIT_TYPE_ASSESSMENT = 'A'
+UNIT_TYPES = [UNIT_TYPE_UNIT, UNIT_TYPE_LINK, UNIT_TYPE_ASSESSMENT]
+
+UNIT_TYPE_NAMES = {
+    UNIT_TYPE_UNIT: 'Unit',
+    UNIT_TYPE_LINK: 'Link',
+    UNIT_TYPE_ASSESSMENT: 'Assessment'}
+
 UNITS_HEADER = (
     'id,type,unit_id,title,release_date,now_available')
 LESSONS_HEADER = (
@@ -88,12 +112,12 @@ LESSONS_HEADER = (
     'lesson_activity_name,lesson_notes,lesson_video_id,lesson_objectives')
 
 UNIT_CSV_TO_DB_CONVERTER = {
-    'id': ('id', int),
-    'type': ('type', str),
-    'unit_id': ('unit_id', str),
-    'title': ('title', str),
-    'release_date': ('release_date', str),
-    'now_available': ('now_available', bool)
+    'id': None,
+    'type': ('type', unicode),
+    'unit_id': ('unit_id', unicode),
+    'title': ('title', unicode),
+    'release_date': ('release_date', unicode),
+    'now_available': ('now_available', lambda value: value == 'True')
 }
 LESSON_CSV_TO_DB_CONVERTER = {
     'unit_id': ('unit_id', int),
@@ -101,13 +125,13 @@ LESSON_CSV_TO_DB_CONVERTER = {
     # Field 'unit_title' is a duplicate of Unit.title. We enforce that both
     # values are the same and ignore this value altogether.
     'unit_title': None,
-    'lesson_id': ('id', int),
-    'lesson_title': ('title', str),
-    'lesson_activity': ('activity', str),
-    'lesson_activity_name': ('activity_title', str),
-    'lesson_video_id': ('video', str),
-    'lesson_objectives': ('objectives', str),
-    'lesson_notes': ('notes', str)
+    'lesson_id': ('lesson_id', int),
+    'lesson_title': ('title', unicode),
+    'lesson_activity': ('activity', lambda value: value == 'yes'),
+    'lesson_activity_name': ('activity_title', unicode),
+    'lesson_video_id': ('video', unicode),
+    'lesson_objectives': ('objectives', unicode),
+    'lesson_notes': ('notes', unicode)
 }
 
 # pylint: disable-msg=anomalous-backslash-in-string
@@ -153,10 +177,12 @@ class SchemaException(Exception):
             return 'REGEX(...)'
         if name == CORRECT:
             return 'CORRECT(...)'
-        if name == STRING or isinstance(name, str):
+        if name == STRING or isinstance(name, basestring):
             return 'STRING'
         if name == FLOAT:
             return 'FLOAT'
+        if name == INTEGER_OR_INTEGER_LIST:
+            return 'INTEGER_OR_INTEGER_LIST'
         if name == INTEGER:
             return 'INTEGER'
         if isinstance(name, dict):
@@ -293,7 +319,7 @@ class SchemaHelper(object):
 
         selector = {}
         for akey, avalue in type_map.items():
-            if isinstance(akey, str) and isinstance(avalue, str):
+            if isinstance(akey, basestring) and isinstance(avalue, basestring):
                 selector.update({akey: avalue})
         return selector
 
@@ -331,14 +357,14 @@ class SchemaHelper(object):
             else:
                 raise SchemaException(
                     'Expected: \'true\' or \'false\'\nfound: %s', value)
-        if isinstance(atype, str):
-            if isinstance(value, str):
+        if isinstance(atype, basestring):
+            if isinstance(value, basestring):
                 self.visit_element('str', value, context)
                 return True
             else:
                 raise SchemaException('Expected: \'string\'\nfound: %s', value)
         if atype == STRING:
-            if isinstance(value, str):
+            if isinstance(value, basestring):
                 self.visit_element('STRING', value, context)
                 return True
             else:
@@ -355,6 +381,17 @@ class SchemaHelper(object):
                 return True
             else:
                 raise SchemaException('Expected: \'number\'\nfound: %s', value)
+        if atype == INTEGER_OR_INTEGER_LIST:
+            if is_integer(value):
+                self.visit_element('INTEGER', value, context)
+                return True
+            if is_integer_list(value):
+                self.visit_element('INTEGER_OR_INTEGER_LIST', value, context)
+                return True
+            raise SchemaException(
+                'Expected: \'integer\' or '
+                '\'array of integer\'\nfound: %s', value,
+                path=context.format_path())
         if atype == INTEGER:
             if is_integer(value):
                 self.visit_element('INTEGER', value, context)
@@ -433,7 +470,8 @@ class SchemaHelper(object):
         if isinstance(value, dict):
             aname, adict = self.find_compatible_dict(value, maps, context)
             if adict:
-                self.visit_element('dict', value, context.new(aname), False)
+                self.visit_element(
+                    'dict', value, context.new(aname), is_terminal=False)
                 for akey, avalue in value.items():
                     if akey not in adict:
                         raise SchemaException(
@@ -469,7 +507,7 @@ class SchemaHelper(object):
         if all_values_are_lists:
             for i in range(0, len(value)):
                 self.check_value_of_valid_type(value[i], types, context.new(
-                    self.format_name_with_index(value, i)), True)
+                    self.format_name_with_index(value, i)), in_order=True)
         else:
             if len(target) != len(value):
                 raise SchemaException(
@@ -601,7 +639,7 @@ class SchemaHelper(object):
 
 
 def escape_quote(value):
-    return str(value).replace('\'', r'\'')
+    return unicode(value).replace('\'', r'\'')
 
 
 class Unit(object):
@@ -698,10 +736,22 @@ def echo(message):
     print message
 
 
+def is_integer_list(s):
+    try:
+        if not isinstance(s, list):
+            return False
+        for item in s:
+            if not isinstance(item, int):
+                return False
+        return True
+    except ValueError:
+        return False
+
+
 def is_integer(s):
     try:
         return int(s) == float(s)
-    except ValueError:
+    except Exception:  # pylint: disable-msg=broad-except
         return False
 
 
@@ -739,13 +789,20 @@ def text_to_line_numbered_text(text):
     return '\n  '.join(results)
 
 
-def set_object_attributes(target_object, names, values):
+def set_object_attributes(target_object, names, values, converter=None):
     """Sets object attributes from provided values."""
 
     if len(names) != len(values):
         raise SchemaException(
             'The number of elements must match: %s and %s' % (names, values))
-    for i in range(0, len(names)):
+    for i in range(len(names)):
+        if converter:
+            target_def = converter.get(names[i])
+            if target_def:
+                target_name = target_def[0]
+                target_type = target_def[1]
+                setattr(target_object, target_name, target_type(values[i]))
+                continue
         if is_integer(values[i]):
             # if we are setting an attribute of an object that support
             # metadata, try to infer the target type and convert 'int' into
@@ -768,11 +825,17 @@ def set_object_attributes(target_object, names, values):
         setattr(target_object, names[i], values[i])
 
 
+def read_objects_from_csv_stream(stream, header, new_object, converter=None):
+    return read_objects_from_csv(
+        csv.reader(StringIO(stream.read())), header, new_object,
+        converter=converter)
+
+
 def read_objects_from_csv_file(fname, header, new_object):
-    return read_objects_from_csv(csv.reader(open(fname)), header, new_object)
+    return read_objects_from_csv_stream(open(fname), header, new_object)
 
 
-def read_objects_from_csv(value_rows, header, new_object):
+def read_objects_from_csv(value_rows, header, new_object, converter=None):
     """Reads objects from the rows of a CSV file."""
 
     values = []
@@ -798,15 +861,25 @@ def read_objects_from_csv(value_rows, header, new_object):
                 'Expected %s element(s): %s' % (
                     i, len(values[i]), values[i], len(names), names))
 
+        # Decode string values in case they were encoded in UTF-8. The CSV
+        # reader should do this automatically, but it does not. The issue is
+        # discussed here: http://docs.python.org/2/library/csv.html
+        decoded_values = []
+        for value in values[i]:
+            if isinstance(value, basestring):
+                value = unicode(value.decode('utf-8'))
+            decoded_values.append(value)
+
         item = new_object()
-        set_object_attributes(item, names, values[i])
+        set_object_attributes(item, names, decoded_values, converter=converter)
         items.append(item)
     return items
 
 
 def escape_javascript_regex(text):
     return re.sub(
-        r'([:][ ]*)([/])(.*)([/][ismx]*)', r': regex("\2\3\4")', text)
+        r'correctAnswerRegex([:][ ]*)([/])(.*)([/][ismx]*)',
+        r'correctAnswerRegex: regex("\2\3\4")', text)
 
 
 def remove_javascript_single_line_comment(text):
@@ -857,9 +930,10 @@ def convert_javascript_file_to_python(fname, root_name):
         ''.join(open(fname, 'r').readlines()), root_name)
 
 
-def evaluate_python_expression_from_text(content, root_name, scope,
-                                         noverify_text):
-    """Compiles and evaluates a Python script in a restricted environment."""
+def legacy_eval_python_expression_for_test(content, scope, unused_root_name):
+    """Legacy content parsing function using compile/exec."""
+
+    print 'WARNING! This code is unsafe and uses compile/exec!'
 
     # First compiles and then evaluates a Python script text in a restricted
     # environment using provided bindings. Returns the resulting bindings if
@@ -876,10 +950,26 @@ def evaluate_python_expression_from_text(content, root_name, scope,
     exec code in restricted_scope
     # pylint: enable-msg=exec-statement
 
+    return restricted_scope
+
+
+def not_implemented_parse_content(
+    unused_content, unused_scope, unused_root_name):
+    raise Exception('Not implemented.')
+
+
+# by default no parser method is configured; set custom parser if you have it
+parse_content = not_implemented_parse_content
+
+
+def evaluate_python_expression_from_text(content, root_name, scope,
+                                         noverify_text):
+    """Compiles and evaluates a Python script in a restricted environment."""
+
+    restricted_scope = parse_content(content, scope, root_name)
     if noverify_text:
         restricted_scope['noverify'] = noverify_text
-
-    if not restricted_scope[root_name]:
+    if restricted_scope.get(root_name) is None:
         raise Exception('Unable to find \'%s\'' % root_name)
     return restricted_scope
 
@@ -916,16 +1006,10 @@ class Verifier(object):
                     'Bad now_available \'%s\' for unit id %s; expected '
                     '\'True\' or \'False\'' % (unit.now_available, unit.id))
 
-            if not is_one_of(unit.type, ['U', 'A', 'O']):
+            if not is_one_of(unit.type, UNIT_TYPES):
                 self.error(
                     'Bad type \'%s\' for unit id %s; '
-                    'expected \'U\', \'A\', or \'O\'' % (unit.type, unit.id))
-
-            if unit.type == 'A':
-                if not is_one_of(unit.unit_id, ('Pre', 'Mid', 'Fin')):
-                    self.error(
-                        'Bad unit_id \'%s\'; expected \'Pre\', \'Mid\' or '
-                        '\'Fin\' for unit id %s' % (unit.unit_id, unit.id))
+                    'expected: %s.' % (unit.type, unit.id, UNIT_TYPES))
 
             if unit.type == 'U':
                 if not is_integer(unit.unit_id):
@@ -968,7 +1052,7 @@ class Verifier(object):
             unit_lessons = []
             for lesson in lessons:
                 if lesson.unit_id == unit.unit_id:
-                    if not lesson.unit_title == unit.title:
+                    if lesson.unit_title != unit.title:
                         raise Exception(''.join([
                             'A unit_title of a lesson (id=%s) must match ',
                             'title of a unit (id=%s) the lesson belongs to.'
@@ -1010,6 +1094,18 @@ class Verifier(object):
                 self.error('Lesson has unknown unit_id %s (%s)' % (
                     lesson.unit_id, lesson.to_id_string()))
 
+    def get_activity_as_python(self, unit_id, lesson_id):
+        fname = os.path.join(
+            os.path.dirname(__file__),
+            '../assets/js/activity-%s.%s.js' % (unit_id, lesson_id))
+        if not os.path.exists(fname):
+            self.error('  Missing activity: %s' % fname)
+        else:
+            activity = evaluate_javascript_expression_from_file(
+                fname, 'activity', Activity().scope, self.error)
+            self.verify_activity_instance(activity, fname)
+            return activity
+
     def verify_activities(self, lessons):
         """Loads and verifies all activities."""
 
@@ -1018,19 +1114,11 @@ class Verifier(object):
         for lesson in lessons:
             if lesson.lesson_activity == 'yes':
                 count += 1
-                fname = os.path.join(
-                    os.path.dirname(__file__),
-                    '../assets/js/activity-' + str(lesson.unit_id) + '.' +
-                    str(lesson.lesson_id) + '.js')
-                if not os.path.exists(fname):
-                    self.error('  Missing activity: %s' % fname)
-                else:
-                    activity = evaluate_javascript_expression_from_file(
-                        fname, 'activity', Activity().scope, self.error)
-                    self.verify_activity_instance(activity, fname)
-                    self.export.append('')
-                    self.encode_activity_json(
-                        activity, lesson.unit_id, lesson.lesson_id)
+                activity = self.get_activity_as_python(
+                    lesson.unit_id, lesson.lesson_id)
+                self.export.append('')
+                self.encode_activity_json(
+                    activity, lesson.unit_id, lesson.lesson_id)
 
         self.info('Read %s activities' % count)
 
@@ -1048,7 +1136,7 @@ class Verifier(object):
                 assessment_name = str(unit.unit_id)
                 fname = os.path.join(
                     os.path.dirname(__file__),
-                    '../assets/js/assessment-' + assessment_name + '.js')
+                    '../assets/js/assessment-%s.js' % assessment_name)
                 if not os.path.exists(fname):
                     self.error('  Missing assessment: %s' % fname)
                 else:
@@ -1073,7 +1161,7 @@ class Verifier(object):
         assert final_slash_index > 0
 
         base = regex_str[1:final_slash_index]
-        modifiers = regex_str[final_slash_index+1:]
+        modifiers = regex_str[final_slash_index + 1:]
         func_str = 'gcb_regex(' + repr(base) + ', ' + repr(modifiers) + ')'
         return func_str
 
@@ -1260,11 +1348,13 @@ class Verifier(object):
         except SchemaException as e:
             self.error(str(e))
 
-        self.info('Schema usage statistics: %s' % self.schema_helper.type_stats)
-        self.info('Completed verification: %s warnings, %s errors.' % (
-            self.warnings, self.errors))
+        info = (
+            'Schema usage statistics: %s'
+            'Completed verification: %s warnings, %s errors.' % (
+                self.schema_helper.type_stats, self.warnings, self.errors))
+        self.info(info)
 
-        return self.warnings, self.errors
+        return self.warnings, self.errors, info
 
 
 def run_all_regex_unit_tests():
@@ -1272,17 +1362,16 @@ def run_all_regex_unit_tests():
 
     # pylint: disable-msg=anomalous-backslash-in-string
     assert escape_javascript_regex(
-        'blah regex: /site:bls.gov?/i, blah') == (
-            'blah regex: regex(\"/site:bls.gov?/i\"), blah')
+        'correctAnswerRegex: /site:bls.gov?/i, blah') == (
+            'correctAnswerRegex: regex(\"/site:bls.gov?/i\"), blah')
     assert escape_javascript_regex(
-        'blah regex: /site:http:\/\/www.google.com?q=abc/i, blah') == (
-            'blah regex: regex(\"/site:http:\/\/www.google.com?q=abc/i\"), '
-            'blah')
+        'correctAnswerRegex: /site:http:\/\/www.google.com?q=abc/i, blah') == (
+            'correctAnswerRegex: '
+            'regex(\"/site:http:\/\/www.google.com?q=abc/i\"), blah')
     assert remove_javascript_multi_line_comment(
         'blah\n/*\ncomment\n*/\nblah') == 'blah\n\nblah'
     assert remove_javascript_multi_line_comment(
-        'blah\nblah /*\ncomment\nblah */\nblah') == (
-            'blah\nblah \nblah')
+        'blah\nblah /*\ncomment\nblah */\nblah') == ('blah\nblah \nblah')
     assert remove_javascript_single_line_comment(
         'blah\n// comment\nblah') == 'blah\n\nblah'
     assert remove_javascript_single_line_comment(
@@ -1350,6 +1439,15 @@ def run_all_schema_helper_unit_tests():
         return ret['x']
 
     # CSV tests
+    units = read_objects_from_csv(
+        [
+            ['id', 'type', 'now_available'],
+            [1, 'U', 'True'],
+            [1, 'U', 'False']],
+        'id,type,now_available', Unit, converter=UNIT_CSV_TO_DB_CONVERTER)
+    assert units[0].now_available
+    assert not units[1].now_available
+
     read_objects_from_csv(
         [['id', 'type'], [1, 'none']], 'id,type', Unit)
 
@@ -1368,7 +1466,7 @@ def run_all_schema_helper_unit_tests():
                 ('//a/b/c'))
 
     # simple map tests
-    assert_pass({'name': 'Bob'}, {'name': STRING}, None)
+    assert_pass({'name': 'Bob'}, {'name': STRING})
     assert_fail('foo', 'bar')
     assert_fail({'name': 'Bob'}, {'name': INTEGER})
     assert_fail({'name': 12345}, {'name': STRING})
@@ -1491,15 +1589,71 @@ def run_all_schema_helper_unit_tests():
     assert_same(create_python_dict_from_js_object(
         '{"a": correct("hello world")}'),
                 {'a': Term(CORRECT, 'hello world')})
-    assert_same(create_python_dict_from_js_object('{"a": /hello/i}'),
-                {'a': Term(REGEX, '/hello/i')})
+    assert_same(create_python_dict_from_js_object(
+        '{correctAnswerRegex: /hello/i}'),
+                {'correctAnswerRegex': Term(REGEX, '/hello/i')})
+
+
+def run_example_activity_tests():
+    """Parses and validates example activity file."""
+    fname = os.path.join(
+        os.path.dirname(__file__), '../assets/js/activity-examples.js')
+    if not os.path.exists(fname):
+        raise Exception('Missing file: %s', fname)
+
+    verifier = Verifier()
+    verifier.echo_func = echo
+    activity = evaluate_javascript_expression_from_file(
+        fname, 'activity', Activity().scope, verifier.echo_func)
+    verifier.verify_activity_instance(activity, fname)
+
+
+def test_exec():
+    """This test shows that exec/compile are explitable, thus not safe."""
+    content = """
+foo = [
+    c for c in ().__class__.__base__.__subclasses__()
+    if c.__name__ == 'catch_warnings'
+][0]()._module.__builtins__
+"""
+    restricted_scope = {}
+    restricted_scope.update({'__builtins__': {}})
+    code = compile(content, '<string>', 'exec')
+
+    # pylint: disable-msg=exec-statement
+    exec code in restricted_scope
+    # pylint: enable-msg=exec-statement
+
+    assert 'isinstance' in restricted_scope.get('foo')
+
+
+def test_sample_assets():
+    """Test assets shipped with the sample course."""
+    _, _, output = Verifier().load_and_verify_model(echo)
+    if (
+            'Schema usage statistics: {'
+            '\'REGEX\': 19, \'STRING\': 415, \'NUMBER\': 1, '
+            '\'BOOLEAN\': 81, \'dict\': 73, \'str\': 41, \'INTEGER\': 9, '
+            '\'CORRECT\': 9}' not in output
+            or 'Completed verification: 0 warnings, 0 errors.' not in output):
+        raise Exception('Sample course verification failed.\n%s' % output)
 
 
 def run_all_unit_tests():
-    run_all_regex_unit_tests()
-    run_all_schema_helper_unit_tests()
+    """Runs all unit tests in this module."""
+    global parse_content
+    original = parse_content
+    try:
+        parse_content = legacy_eval_python_expression_for_test
+
+        run_all_regex_unit_tests()
+        run_all_schema_helper_unit_tests()
+        run_example_activity_tests()
+        test_exec()
+        test_sample_assets()
+    finally:
+        parse_content = original
 
 
-run_all_unit_tests()
 if __name__ == '__main__':
-    Verifier().load_and_verify_model(echo)
+    run_all_unit_tests()

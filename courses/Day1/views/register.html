@@ -1,16 +1,18 @@
-{% extends 'base_registration.html' %}
+{% extends 'base_course.html' %}
 
 {% block top_content %}
+{% endblock %}
 
+{% block navbar %}
 {% endblock %}
 
 {% block main_content %}
-<div class="gcb-main">
+<div id="gcb-main">
   <div class="gcb-article tab-content">
     <div class="gcb-aside">
 
       <p>
-        {{course_info.reg_form.header_text}}
+        {{course_info.reg_form.header_text | safe}}
       </p>
 
       <form action="register" method='post'>
@@ -18,17 +20,25 @@
         <fieldset>
           <ol>
             <li>
-              <label class="form-label" for="form01">
-               {% trans %} What is your name? {% endtrans %}
+              <label class="gcb-reg-form-label" for="form01">
+                {# I18N: A question in the registration form. #}
+                {{ gettext('What is your name?') }}
               </label>
-              <input name="form01" type="text">
+              <input
+                name="form01" id="form01" type="text"
+                value="{{ current_name|escape }}">
             </li>
-            {{course_info.reg_form.additional_registration_fields}}
+            {% if course_info.reg_form.additional_registration_fields %}
+              {{course_info.reg_form.additional_registration_fields | safe}}
+            {% else %}
+              <!-- reg_form.additional_registration_fields -->
+            {% endif %}
           </ol>
         </fieldset>
 
         <button class="gcb-button" type="submit">
-          {% trans %} Enroll {% endtrans %}
+          {# I18N: Button at the end of the registration form for a course. #}
+          {{ gettext('Enroll') }}
         </button>
       </form>
 

@@ -1,6 +1,6 @@
-{% extends 'base.html' %}
+{% extends 'base_course.html' %}
 {% block top_content %}
 {% endblock %}
 {% block main_content %}
-{{ content }}
+{{ content | safe }}
 {% endblock %}

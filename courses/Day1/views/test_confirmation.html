@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_course.html' %}
 
 {% block top_content %}
 {% endblock %}
@@ -10,19 +10,25 @@
   </div>
   <div class="gcb-col-7 gcb-aside gcb-button-box">
 
-    <p class="top_content">
-      <!-- Displays the student's score. -->
-      {% if assessment == 'postcourse_pass' or assessment == 'postcourse_fail' %}
-        {{course_info.assessment_confirmations.postcourse_header % student_score}}
-      {% endif %}
-
-      <!-- Displays further confirmation text relevant to the specific assessment. -->
-      {{course_info.assessment_confirmations[assessment]}}
+    <p class="gcb-top-content">
+      {# I18N: Shown after the student has submitted an assessment. #}
+      {{ gettext('Thank you for taking the %(assessment_name)s. Your score for this assessment
+      is %(score)s%%. If you wish, you may return to the assessment and take it again.' % {'assessment_name': assessment_name|lower, 'score': score}) }}
     </p>
+
+    <br>
+
+    {% if 'assessment_confirmations' in course_info and is_last_assessment and overall_score != None and result %}
+      <!-- Displays result-specific text for the final assessment. -->
+      <p class="gcb-top-content">
+        {{course_info.assessment_confirmations['result_text'][result] % overall_score}}
+      </p>
+    {% endif %}
 
     <p>
       <a class="gcb-button" href="course">
-        {% trans %} Back to Course page {% endtrans %}
+        {# I18N: Shown after the student has submitted an assessment. This button allows the student to navigate back to the main course page. #}
+        {{ gettext('Back to Course page') }}
       </a>
     </p>
 

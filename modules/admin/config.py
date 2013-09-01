@@ -17,11 +17,12 @@
 __author__ = 'Pavel Simakov (psimakov@google.com)'
 
 import cgi
-import json
 import urllib
+from controllers import sites
 from controllers.utils import BaseRESTHandler
 from controllers.utils import XsrfTokenManager
 from models import config
+from models import courses
 from models import models
 from models import roles
 from models import transforms
@@ -110,6 +111,24 @@ class ConfigPropertyEditor(object):
         """Gets JSON schema for configuration property."""
         return SCHEMA_JSON_TEMPLATE % cls.get_value_type(config_property)
 
+    def get_add_course(self):
+        """Handles 'add_course' action and renders new course entry editor."""
+
+        exit_url = '/admin?action=courses'
+        rest_url = CoursesItemRESTHandler.URI
+
+        template_values = {}
+        template_values[
+            'page_title'] = 'Course Builder - Add Course'
+        template_values['main_content'] = oeditor.ObjectEditor.get_html_for(
+            self, CoursesItemRESTHandler.SCHEMA_JSON,
+            CoursesItemRESTHandler.SCHEMA_ANNOTATIONS_DICT,
+            None, rest_url, exit_url,
+            auto_return=True,
+            save_button_caption='Add New Course')
+
+        self.render_page(template_values)
+
     def get_config_edit(self):
         """Handles 'edit' property action."""
 
@@ -135,7 +154,7 @@ class ConfigPropertyEditor(object):
         template_values['main_content'] = oeditor.ObjectEditor.get_html_for(
             self, ConfigPropertyEditor.get_schema_json(item),
             ConfigPropertyEditor.get_schema_annotations(item),
-            key, rest_url, exit_url, delete_url)
+            key, rest_url, exit_url, delete_url=delete_url)
 
         self.render_page(template_values)
 
@@ -162,7 +181,7 @@ class ConfigPropertyEditor(object):
             entity.put()
 
         models.EventEntity.record(
-            'override-property', users.get_current_user(), json.dumps({
+            'override-property', users.get_current_user(), transforms.dumps({
                 'name': name, 'value': str(entity.value)}))
 
         self.redirect('/admin?%s' % urllib.urlencode(
@@ -187,13 +206,103 @@ class ConfigPropertyEditor(object):
                 entity.delete()
 
                 models.EventEntity.record(
-                    'delete-property', users.get_current_user(), json.dumps({
+                    'delete-property', users.get_current_user(),
+                    transforms.dumps({
                         'name': name, 'value': str(old_value)}))
 
         except db.BadKeyError:
             pass
 
         self.redirect('/admin?action=settings')
+
+
+class CoursesItemRESTHandler(BaseRESTHandler):
+    """Provides REST API for course entries."""
+
+    URI = '/rest/courses/item'
+
+    SCHEMA_JSON = """
+        {
+            "id": "Course Entry",
+            "type": "object",
+            "description": "Course Entry",
+            "properties": {
+                "name": {"type": "string"},
+                "title": {"type": "string"},
+                "admin_email": {"type": "string"}
+                }
+        }
+        """
+
+    SCHEMA_DICT = transforms.loads(SCHEMA_JSON)
+
+    SCHEMA_ANNOTATIONS_DICT = [
+        (['title'], 'New Course Entry'),
+        (['properties', 'name', '_inputex'], {'label': 'Unique Name'}),
+        (['properties', 'title', '_inputex'], {'label': 'Course Title'}),
+        (['properties', 'admin_email', '_inputex'], {
+            'label': 'Course Admin Email'})]
+
+    def get(self):
+        """Handles HTTP GET verb."""
+        if not ConfigPropertyRights.can_view():
+            transforms.send_json_response(
+                self, 401, 'Access denied.')
+            return
+
+        transforms.send_json_response(
+            self, 200, 'Success.',
+            payload_dict={
+                'name': 'new_course',
+                'title': 'My New Course',
+                'admin_email': self.get_user().email()},
+            xsrf_token=XsrfTokenManager.create_xsrf_token(
+                'add-course-put'))
+
+    def put(self):
+        """Handles HTTP PUT verb."""
+        request = transforms.loads(self.request.get('request'))
+        if not self.assert_xsrf_token_or_fail(
+                request, 'add-course-put', {}):
+            return
+
+        if not ConfigPropertyRights.can_edit():
+            transforms.send_json_response(
+                self, 401, 'Access denied.')
+            return
+
+        payload = request.get('payload')
+        json_object = transforms.loads(payload)
+        name = json_object.get('name')
+        title = json_object.get('title')
+        admin_email = json_object.get('admin_email')
+
+        # Add the new course entry.
+        errors = []
+        entry = sites.add_new_course_entry(name, title, admin_email, errors)
+        if not entry:
+            errors.append('Error adding a new course entry.')
+        if errors:
+            transforms.send_json_response(self, 412, '\n'.join(errors))
+            return
+
+        # We can't expect our new configuration being immediately available due
+        # to datastore queries consistency limitations. So we will instantiate
+        # our new course here and not use the normal sites.get_all_courses().
+        app_context = sites.get_all_courses(entry)[0]
+
+        # Update course with a new title and admin email.
+        new_course = courses.Course(None, app_context=app_context)
+        if not new_course.init_new_course_settings(title, admin_email):
+            transforms.send_json_response(
+                self, 412,
+                'Added new course entry, but failed to update title and/or '
+                'admin email. The course.yaml file already exists and must be '
+                'updated manually.')
+            return
+
+        transforms.send_json_response(
+            self, 200, 'Added.', {'entry': entry})
 
 
 class ConfigPropertyItemRESTHandler(BaseRESTHandler):
@@ -227,7 +336,8 @@ class ConfigPropertyItemRESTHandler(BaseRESTHandler):
                 entity.value, item.value_type)
             json_payload = transforms.dict_to_json(
                 entity_dict,
-                json.loads(ConfigPropertyEditor.get_schema_json(item)))
+                transforms.loads(
+                    ConfigPropertyEditor.get_schema_json(item)))
             transforms.send_json_response(
                 self, 200, 'Success.',
                 payload_dict=json_payload,
@@ -236,7 +346,7 @@ class ConfigPropertyItemRESTHandler(BaseRESTHandler):
 
     def put(self):
         """Handles REST PUT verb with JSON payload."""
-        request = json.loads(self.request.get('request'))
+        request = transforms.loads(self.request.get('request'))
         key = request.get('key')
 
         if not self.assert_xsrf_token_or_fail(
@@ -262,14 +372,25 @@ class ConfigPropertyItemRESTHandler(BaseRESTHandler):
             return
 
         payload = request.get('payload')
-        json_object = json.loads(payload)
+        json_object = transforms.loads(payload)
+        new_value = item.value_type(json_object['value'])
+
+        # Validate the value.
+        errors = []
+        if item.validator:
+            item.validator(new_value, errors)
+        if errors:
+            transforms.send_json_response(self, 412, '\n'.join(errors))
+            return
+
+        # Update entity.
         old_value = entity.value
-        entity.value = str(item.value_type(json_object['value']))
+        entity.value = str(new_value)
         entity.is_draft = json_object['is_draft']
         entity.put()
 
         models.EventEntity.record(
-            'put-property', users.get_current_user(), json.dumps({
+            'put-property', users.get_current_user(), transforms.dumps({
                 'name': key,
                 'before': str(old_value), 'after': str(entity.value)}))
 

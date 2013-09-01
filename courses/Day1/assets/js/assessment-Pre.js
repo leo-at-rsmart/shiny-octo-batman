@@ -16,76 +16,42 @@
 // When the assessment page loads, activity-generic.js will render the contents
 // of the 'assessment' variable into the enclosing HTML webpage.
 
-// For information on modifying this page, see 
+// For information on modifying this page, see
 // https://code.google.com/p/course-builder/wiki/CreateAssessments.
 
 
 var assessment = {
   // HTML to display at the start of the page
-  preamble: 'Liquibase is not vor everyone. In order to make sure this course is right for you, we want you to take this short assessment that evaluates the appropriateness of this course. This assessment is not intended to judge or grade you professionally. Its purpose is for us to determine what kind of people are taking this course and what you are taking away from the course. Please be honest with your answers. That means answer to the best of your knowledge. Any kind of research from this point forward is going to produce unrealistic results and will influence our understanding of the results.',
+  preamble: 'Before we begin, we\'d like to learn a bit about what you know about search techniques. The goal of this pre-course assessment is not to judge or grade your skill, but to get a sense of what you know coming in, so that we can better understand what you gain from the course. To that end, please do not use Google to look for the answers--simply answer each question based on what you currently know.<br><br>Please note: During this assessment and the units that follow, you will often see words written inside square brackets [like this]. The brackets represent a search box like you see in Google, and the words inside the brackets are what you would type into the search box. So, if you see [golfcross rules], you can imagine seeing:<br/><img src="assets/img/Image11.1.png" height="50%" width="50%"><p>You would not type the brackets into Google, just the words inside them. <p>Thank you, and have fun!<br><br>',
 
- 
+
   // An ordered list of questions, with each question's type implicitly determined by the fields it possesses:
   //   choices              - multiple choice question (with exactly one correct answer)
   //   correctAnswerString  - case-insensitive string match
   //   correctAnswerRegex   - freetext regular expression match
   //   correctAnswerNumeric - freetext numeric match
   questionsList: [
-    {questionHTML: 'Which comes before the others in the Maven Build Lifecycle?',
-     choices: ["integration-test", "process-resources", correct("initialize"), "compile", "I don't know"]
+    {questionHTML: 'Which of the sections in the image below are advertisements?<p><img src="assets/img/Image0.1.png" alt="search results for test question" height=440 width=800 title="search results for test question">',
+     choices: ["A and B", "D and B", correct("A and C"), "C and D", "I don't know"]
     },
 
-    {questionHTML: 'The <plugins /> section in a Maven POM is inherited by child projects and modules.',
-     choices: [correct("False"), "True", "I don't know"]
+    {questionHTML: 'When searching Google Images, you can drag an image into the search bar and find webpages where it appears online.',
+     choices: [correct("True"), "False", "I don't know"]
     },
 
-    {questionHTML: 'The only way to inherit dependencies from another project is to make that project a dependency of your own not make it a parent.',
-     choices: [ "False", correct("True"), "I don't know"]
+    {questionHTML: 'What would you type into the search box to get a top result that looks like this? If you do not know, enter "I don\'t know".<p><img src="assets/img/Image0.8.png" alt="search results for test question" height=100 width=600 title="search results for test question">',
+     correctAnswerString: 'sunrise'
     },
 
-    {questionHTML: 'MAVEN_OPTS is ... ',
-     choices: [ "A section in the Maven POM", "A Maven plugin", correct("An environment variable for setting java options or maven options like -Xmx1g and -XX:MaxPermSize"), "An easter egg used to unlock gamma radiation and a black hole.", "The maven users mailing list.", "A Maven users convention held in Las Vegas.", "I don't know"]
-    },
-
-    {questionHTML: 'The SYS_GUID() function is native to what platform?',
-     correctAnswerRegex: '/[oO]racle/'
-    },
-
-    {questionHTML: 'All database platforms support sequences',
-     choices: [ correct("False"), "True", "I don't know"]
-    },
-
-    {questionHTML: "The following is valid Oracle SQL: <pre>CREATE TABLE IF NOT EXISTS TEM_AIRFARE_SRC_T\n"
-     + "  (\n"
-     + "     CODE     VARCHAR(10) NOT NULL,\n"
-     + "     NAME     VARCHAR(40) NOT NULL,\n"
-     + "     ACTV_IND VARCHAR(1) NOT NULL,\n"
-     + "     VER_NBR  DECIMAL(8, 0) DEFAULT 1 NOT NULL,\n"
-     + "     OBJ_ID   VARCHAR(36) NOT NULL,\n"
-     + "     CONSTRAINT TEM_AIRFARE_SRC_T_TC0 UNIQUE (OBJ_ID),\n"
-     + "     CONSTRAINT TEM_AIRFARE_SRC_T_TP1 PRIMARY KEY(CODE)\n"
-     + "  );</pre>",
-     choices: [ correct("False"), "True", "I don't know"]
-    },
-
-    {questionHTML: "The following is how to the Kuali Foundation patterns a sequence workaround in MySQL: <pre>CREATE TABLE IF NOT EXISTS TEM_AGENCY_SRVC_FEE_ID_SEQ \n"
-     + "	(\n"
-     + "		ID bigint(19) NOT NULL AUTO_INCREMENT, \n"
-     + "		PRIMARY KEY(ID) \n"
-     + "	);</pre>",
-     choices: [ "False", correct("True"), "I don't know"]
-    },
-
-    {questionHTML: "Eclipse is ... \n",
-     choices: [ "Gum", "Either solar or lunar", correct("A commonly used IDE."), "Another episode of the Twilight Saga", "I don't know"]
-    },
-
-    {questionHTML: "RENAME TABLE is better than dropping and creating because ... \n",
-     choices: [ correct("It retains existing data."), "It's not better.", "I said so.", "Fewer lines of code.", "Fewer actions", "Fewer changes.", "I don't know"]
+    {questionHTML: 'What would you type into the search box to get a top result that looks like this? If you do not know, enter "I don\'t know".<p><p><img src="assets/img/Image0.9.png" alt="search results for test question" height=100 width=300 title="search results for test question">',
+     correctAnswerRegex: /354\s*[+]\s*651/
     }
   ],
 
-  assessmentName: 'precourse', // unique name submitted along with all of the answers
-  checkAnswers: false          // render a "Check your Answers" button to allow students to check answers prior to submitting?
-}
+  // The assessmentName key is deprecated in v1.3 of Course Builder, and no
+  // longer used. The assessment name should be set in the unit.csv file or via
+  // the course editor interface.
+  assessmentName: 'Pre', // unique name submitted along with all of the answers
 
+  checkAnswers: false    // render a "Check your Answers" button to allow students to check answers prior to submitting?
+}

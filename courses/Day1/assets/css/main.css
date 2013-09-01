@@ -17,26 +17,23 @@
 */
 
 /*
-
   Core CSS stylesheet. This file is self-contained and has no external dependencies.
 
   @author: psimakov@google.com (Pavel Simakov)
-
 */
 
+/* Wide-ranging styles. */
+
 html {
-  line-height: 1.54;
   background: #fff;
   color: #444;
+  font-size: 13px;
+  line-height: 1.54;
   padding: 0 15px;
 }
 
 html, input, textarea {
   font-family: arial,sans-serif;
-}
-
-html, h4, h5, h6 {
-  font-size: 13px;
 }
 
 body, table, fieldset {
@@ -65,24 +62,8 @@ a:focus, a:hover, a:active {
   text-decoration: underline;
 }
 
-form ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
 form label, form p, form input, form textarea, form select {
   margin: 0 0 5px;
-}
-
-form label.form-label {
-  display: block;
-  font-weight: bold;
-  padding: 0;
-}
-
-form li li label {
-  font-weight: normal;
 }
 
 th, td {
@@ -90,6 +71,8 @@ th, td {
   padding: 4px 12px;
   vertical-align: top;
 }
+
+/* GCB-specific styles. */
 
 #gcb-nav-y {
   float: left;
@@ -113,10 +96,6 @@ th, td {
   color: #15C;
 }
 
-#gcb-nav-y li a {
-  display: block;
-}
-
 #gcb-nav-y li {
   border-bottom: 1px solid #e0e0e0;
   font-size: 13px;
@@ -128,7 +107,7 @@ th, td {
 }
 
 #gcb-nav-y li li {
-  margin: 0 0 0 18px;
+  margin: 0 0 0 0;
 }
 
 #gcb-nav-y + .gcb-article {
@@ -140,31 +119,13 @@ th, td {
   margin-top: 0;
 }
 
-#gcb-main, .gcb-aux {
+#gcb-main {
+  /* This rule intentionally left blank. */
+}
+
+.gcb-aux {
   margin: auto;
   max-width: 978px;
-}
-
-#gcb-main {
-  clear: both;
-  margin-top: 30px;
-}
-
-#gcb-main:after {
-  clear: both;
-  content: " ";
-  display: block;
-  height: 0;
-  visibility: hidden;
-}
-
-#gcb-nav-x.gcb-aux {
-  position: relative;
-}
-
-#gcb-nav-root.gcb-aux {
-  height: 25px;
-  position: relative;
 }
 
 #gcb-header, #gcb-footer {
@@ -184,26 +145,6 @@ th, td {
   padding: 17px 15px 5px;
 }
 
-#gcb-header h1, #gcb-header h2 {
-  float: left;
-  font-size: 27px;
-  font-weight: 300;
-  line-height: 1.52;
-  margin: 0;
-  text-shadow: 0 1px 1px #fff;
-  white-space: nowrap;
-}
-
-#gcb-header h1 {
-  padding: 0 12px 0 0;
-}
-
-#gcb-header h2 {
-  border: solid #babcc0;
-  border-width: 0 0 0 1px;
-  padding: 0 12px;
-}
-
 #gcb-header img {
   padding: 0 3px 0 0;
   position: relative;
@@ -217,6 +158,9 @@ th, td {
 }
 
 #gcb-footer {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
   margin: 0 -15px;
   background: #f5f5f5;
   clear: both;
@@ -293,12 +237,6 @@ th, td {
   overflow: hidden;
 }
 
-.gcb-breadcrumb ol {
-  margin: 0 auto;
-  max-width: 978px;
-  padding: 0;
-}
-
 .gcb-breadcrumb li {
   float: left;
   height: 28px;
@@ -318,6 +256,7 @@ th, td {
 
 .gcb-button-box {
   text-align: center;
+  overflow: hidden;
 }
 
 .gcb-nav ul {
@@ -344,7 +283,7 @@ th, td {
   font-size: 13px;
   font-weight: 600;
   line-height: 1.54;
-  padding: 8px 12px;
+  padding: 4px 7px;
   text-align: center;
   text-shadow: 0 1px rgba(0,0,0,.1);
   -moz-transition: all .218s ease-in;
@@ -352,8 +291,13 @@ th, td {
   transition: all .218s ease-in;
 }
 
-.gcb-button-primary {
-
+.gcb-button[disabled], .gcb-button[disabled]:hover {
+  background: none;
+  background-image: -moz-linear-gradient(top,rgba(226,226,226,.14),rgba(34,34,34,.14));
+  background-image: -webkit-linear-gradient(top,rgba(226,226,226,.14),rgba(34,34,34,.14));
+  background-image: linear-gradient(top,rgba(226,226,226,.14),rgba(34,34,34,.14));
+  border-color: #f3f3f3;
+  color: #b8b8b8;
 }
 
 .gcb-button-large {
@@ -382,9 +326,9 @@ button.gcb-button::-moz-focus-inner {
 
 .gcb-button:hover, .gcb-button:focus {
   border-color: #404040;
-  background-image: -moz-linear-gradient(top,#666,#444);
-  background-image: -webkit-linear-gradient(top,#666,#444);
-  background-image: linear-gradient(top,#666,#444);
+  background-image: -moz-linear-gradient(top,#444,#111);
+  background-image: -webkit-linear-gradient(top,#444,#111);
+  background-image: linear-gradient(top,#444,#111);
 }
 
 .gcb-button:focus {
@@ -397,25 +341,7 @@ button.gcb-button::-moz-focus-inner {
   box-shadow: inset 0 1px 2px rgba(0,0,0,.3);
 }
 
-.gcb-button[disabled] {
-  background: none;
-  background-image: -moz-linear-gradient(top,rgba(226,226,226,.14),rgba(34,34,34,.14));
-  background-image: -webkit-linear-gradient(top,rgba(226,226,226,.14),rgba(34,34,34,.14));
-  background-image: linear-gradient(top,rgba(226,226,226,.14),rgba(34,34,34,.14));
-  border-color: #f3f3f3;
-  color: #b8b8b8;
-}
-
-form.gcb-button {
-  padding: 4px 12px;
-}
-
-button.gcb-button-action {
-  float: right;
-  margin-left: 8px;
-}
-
-a.gcb-button-action {
+a.gcb-button-action, button.gcb-button-action {
   float: right;
   margin-left: 8px;
 }
@@ -426,21 +352,21 @@ a.gcb-button-action {
   background-image: -moz-linear-gradient(top,#6c7a95 0,#4d5b76 45px,#e5e5e5 46px,#f7f7f7 47px,#fff 48px);
   background-image: -ms-linear-gradient(top,#6c7a95 0,#4d5b76 45px,#e5e5e5 46px,#f7f7f7 47px,#fff 48px);
   background-image: -webkit-linear-gradient(top,#6c7a95 0,#4d5b76 45px,#e5e5e5 46px,#f7f7f7 47px,#fff 48px);
+  margin: 0 -15px;
   padding: 0 15px;
-}
-
-#gcb-nav-x ul, #gcb-nav-x.gcb-aux {
-  position: relative;
+  height: 60px;
+  overflow-y: hidden;
 }
 
 #gcb-nav-x ul {
   height: 50px;
   list-style: none;
   margin: 0;
+  position: relative;
 }
 
 #gcb-nav-x.gcb-complex ul {
-  height: 82px;
+  height: 50px;
 }
 
 #gcb-nav-x li, #gcb-nav-x li a {
@@ -456,26 +382,13 @@ a.gcb-button-action {
   text-shadow: 0 -1px 1px #555d72;
 }
 
-#gcb-nav-x li, #gcb-nav-x li.active a {
+#gcb-nav-x li.active a {
   font-weight: bold;
-}
-
-#gcb-nav-x li.active {
 }
 
 #gcb-nav-x li {
   margin: 0 15px 0 0;
   text-shadow: none;
-}
-
-#gcb-nav-x.gcb-button {
-  float: right;
-  margin: 8px 0 0;
-  padding: 4px 12px;
-  position: absolute;
-  right: 0;
-  top: 0;
-  z-index: 1;
 }
 
 .gcb-cols {
@@ -551,207 +464,167 @@ a.gcb-button-action {
   margin: 0 1.4880952381% 20px;
 }
 
-#gcb-header, #gcb-nav-x, #gcb-footer {
-  margin: 0 -15px;
-}
-
 /*
-
   Core style modifications.
-
 */
 
-.gcb-button {
-  padding: 4px 7px;
-}
-
-.next-button a {
+/* Styles for next and previous navigation buttons at the bottom of lesson pages. */
+.gcb-next-button a, .gcb-prev-button a {
   float: left;
   height: 24px;
   line-height: 24px;
   position: relative;
   color: #444;
-  margin: 0px;
-  padding: 10px 10px 10px 20px;
   text-decoration: none;
 }
+.gcb-next-button a {
+  padding: 10px 10px 10px 20px;
+}
+.gcb-prev-button a {
+  padding: 10px 20px 10px 10px;
+}
 
-.next-button a:after {
+.gcb-next-button a:after, .gcb-prev-button a:after {
   content: "";
   top: 0;
-  right: -44px;
   border-width: 22px 22px 22px 22px;
-  border-color: transparent transparent transparent #f0f0f0;
   border-style: solid;
   position: absolute;
   width: 0px;
   height: 0px;
 }
+.gcb-next-button a:after {
+  border-color: transparent transparent transparent #f0f0f0;
+  right: -44px;
+}
+.gcb-prev-button a:after {
+  border-color: transparent #f0f0f0 transparent transparent;
+  left: -44px;
+}
 
-.next-button {
-  padding: 8px 12px;
-  font-size: 20px;
-  margin: 5px 0px;
-  padding: 0;
-  position: relative;
+.gcb-next-button, .gcb-prev-button {
   background-color: #f0f0f0;
-  font-family: "open sans", arial, sans-serif;
   background-position: left bottom;
   background-repeat: repeat-x;
-  -moz-border-radius: 10px 0px 0px 10px;
-  -webkit-border-radius: 10px 0px 0px 10px;
-  border-radius: 10px 0px 0px 10px;
   -moz-box-shadow: 0 1px 1px rgba(0,0,0,.2);
   -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.2);
   box-shadow: 0 1px 1px rgba(0,0,0,.2);
   display: inline-block;
+  font-family: "open sans", arial, sans-serif;
+  font-size: 20px;
+  position: relative;
   -moz-transition: all .218s ease-in;
   -webkit-transition: all .218s ease-in;
   transition: all .218s ease-in;
 }
-
-.prev-button a {
-  float: left;
-  height: 24px;
-  line-height: 24px;
-  position: relative;
-  color: #444;
-  margin: 0px;
-  padding: 10px 20px 10px 10px;
-  text-decoration: none;
+.gcb-next-button {
+  -moz-border-radius: 10px 0px 0px 10px;
+  -webkit-border-radius: 10px 0px 0px 10px;
+  border-radius: 10px 0px 0px 10px;
+  float: right;
+  margin: 5px 40px 5px 0;
 }
-
-.prev-button a:after {
-  content: "";
-  top: 0;
-  left: -44px;
-  border-width: 22px 22px 22px 22px;
-  border-color: transparent #f0f0f0 transparent transparent;
-  border-style: solid;
-  position: absolute;
-  width: 0px;
-  height: 0px;
-}
-
-.prev-button {
-  font-size: 20px;
-  padding: 0;
-  position: relative;
-  background-color: #f0f0f0;
-  font-family: "open sans", arial, sans-serif;
-  background-position: left bottom;
-  background-repeat: repeat-x;
+.gcb-prev-button {
   -moz-border-radius: 0px 10px 10px 0px;
   -webkit-border-radius: 0px 10px 10px 0px;
   border-radius: 0px 10px 10px 0px;
-  -moz-box-shadow: 0 1px 1px rgba(0,0,0,.2);
-  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.2);
-  box-shadow: 0 1px 1px rgba(0,0,0,.2);
-  display:inline-block;
-  -moz-transition: all .218s ease-in;
-  -webkit-transition: all .218s ease-in;
-  transition: all .218s ease-in;
-}
-
-.gcb-col-55 {
-  width: 40%;
   float: left;
-  margin: 0 1.4880952381% 20px;
+  margin: 5px 0 5px 40px;
 }
 
-h1.product-headers {
-  font-size: 25px;
+/* Styles for the course title shown at the top of all student-facing pages. */
+.gcb-title-header {
+  border: solid #babcc0;
+  border-width: 0 0 0 1px;
+  float: left;
+  font-family: "open sans", arial, sans-serif;
+  font-size: 27px;
+  font-weight: 300;
+  line-height: 1.52;
+  margin: 0;
+  padding: 0 12px;
+  text-shadow: 0 1px 1px #fff;
+  white-space: nowrap;
+}
+
+/* Styles for the course logo at the top-left of all student-facing pages. */
+.gcb-course-image {
+  float: left;
+  font-size: 27px;
+  font-weight: 300;
+  line-height: 1.52;
+  margin: 0;
+  padding: 0 12px 0 0;
+  text-shadow: 0 1px 1px #fff;
+  white-space: nowrap;
+}
+
+/* Styles for course summary headers. */
+.gcb-product-headers-large {
   color: #dd4b39;
+  font-family: "open sans",arial,sans-serif;
+  font-size: 25px;
   font-weight: normal;
   margin: 10px 7px;
 }
-
-h2.product-headers {
+.gcb-product-headers, .gcb-bio-headers {
+  font-family: "open sans",arial,sans-serif;
   font-size: 16px;
-  margin: .4em 0 0;
   font-weight: normal;
+  margin: .4em 0 0;
   margin: 10px 7px;
 }
-
-h2.bio-headers {
-  font-size: 16px;
-  margin: .4em 0 0;
-  font-weight: normal;
-  margin: 10px 7px;
+.gcb-bio-headers {
   float: right;
 }
 
-h1.schedule-headers {
+/* Style for the course schedule header. */
+.gcb-schedule-headers {
   font-size: 20px;
   font-weight: normal;
   margin: 10px 7px;
 }
 
-h1.top_content {
-  margin: 20px 20px;
-  font-size: 40px;
-  line-height: 1;
-  letter-spacing: -1px;
-}
-
-p.top_content {
+/*
+  Styles for textual content (mostly in the course schedule and various
+  confirmation pages).
+*/
+.gcb-top-content {
   margin: 0px 20px;
   font-size: 16px;
   font-weight: 200;
   line-height: 20px;
 }
 
-.tab-content > .tab-pane {
-  display: none;
-}
-
-.tab-content > .active {
-  display: block;
-}
-
-.pull-right {
-  float: right;
-}
-
-#gcb-nav-x .pull-right {
-  float: right;
-}
-
-#gcb-nav-x.gcb-complex ul {
-  height: 50px;
-}
-
-h1.class_header {
+/* Styles for elements on a unit/lesson page. */
+.gcb-unit-header {
+  border-bottom:2px dotted #e0e0e0;
+  font-size: 30px;
+  letter-spacing: -1px;
+  line-height: 1;
   margin: 0;
   padding-bottom: 10px;
-  font-size: 30px;
-  line-height: 1;
-  letter-spacing: -1px;
-  border-bottom:2px dotted #e0e0e0;
 }
 
-h1.lesson_title {
+.gcb-lesson-title {
   font-size: 23px;
-  text-align: left;
   margin: 0px;
+  text-align: left;
 }
 
-div.lesson_objective {
+.gcb-lesson-content {
   margin-left: 10px;
   text-align: left;
 }
 
-.video-container {
+.gcb-video-container {
   position: relative;
   padding-bottom: 56.25%;
   padding-top: 30px;
   height: 0;
   overflow: hidden;
 }
-
-.video-container iframe,
-.video-container object,
-.video-container embed {
+.gcb-video-container iframe, .gcb-video-container object, .gcb-video-container embed {
   position: absolute;
   top: 0;
   left: 0;
@@ -759,65 +632,113 @@ div.lesson_objective {
   height: 100%;
 }
 
-script+img,script+iframe,noscript img {
-  display: block;
-  height: 1px;
-  width: 1px;
-}
-
-table {
-  margin-bottom: 20px;
-}
-
-tbody tr td {
+/* Styles for the student data table on the student profile page. */
+.gcb-student-data-table tbody tr td {
+  border-collapse: collapse;
   vertical-align: middle;
   width: 18%;
 }
 
-tbody tr td:first-child {
-  width: 10%;
+table.gcb-student-data-table {
+  width: 100%;
 }
 
-tbody ul {
-  margin: 0;
+/* Styles for the circular progress indicators. */
+.gcb-progress-icon {
+  margin: 2px 7px 0 0;
+  opacity: 0.7;
 }
-
-tbody li {
-  margin: 0 0 10px 10px;
+.gcb-progress-empty {
+  display: inline-block;
+  height: 14px;
+  margin: 2px 7px 0 0;
+  width: 15px;
 }
-
-.new {
-  color: #c00;
-}
-
-.date {
-  font: 300 14px "Open Sans";
-  margin-top: 0;
-}
-
-.gcb-cols h2:first-of-type,.gcb-cols h3:first-of-type {
-  margin-top: 0;
-}
-
-.hide {
-  display: none;
-}
-
-#carousel p {
-  padding: 120px 20px 25px 535px;
-}
-
-#carousel iframe {
-  display: block;
-  height: 360px;
+.gcb-progress-icon-holder {
   float: left;
-  margin: 30px 0 0 0;
-  width: 480px;
+  width: 20px;
+}
+.gcb-lesson-title-with-progress {
+  margin-left: 20px;
+}
+.gcb-activity-title-with-progress {
+  margin-left: 35px;
 }
 
-h1.product-headers {
-  font-size: 25px;
-  color: #dd4b39;
+/* Styles for grayed-out text (e.g. to indicate private lessons/units). */
+.gcb-grayed {
+  color: gray;
   font-weight: normal;
-  margin: 10px 7px;
+}
+.gcb-grayed-active {
+  font-weight: bold;
+}
+
+/* A box that surrounds read-only assessments. */
+.gcb-border-box {
+  border: 1px solid black;
+  margin: 20px;
+  padding: 10px;
+}
+
+/* Styles for floating elements to the left. */
+.gcb-pull-left {
+  float: left;
+}
+
+/* Styles for floating elements to the right. */
+.gcb-pull-right {
+  float: right;
+}
+
+/* Styles for aligning elements to the left. */
+.gcb-align-left {
+  text-align: left;
+}
+
+#gcb-nav-x .gcb-pull-right {
+  float: right;
+}
+
+/* Registration page form. */
+.gcb-reg-form-label {
+  display: block;
+  font-weight: bold;
+  padding: 0;
+}
+
+/* Explorer page list. */
+.gcb-explorer-list {
+  margin-left: 10px;
+}
+
+/* Explorer page list item. */
+.gcb-explorer-list-item {
+  border-bottom: 1px solid #e0e0e0;
+  list-style: none;
+}
+
+/* Course title link in explorer page. */
+a.gcb-explorer-course-title {
+  color: #dd4b39;
+}
+
+/* Button on the explorer page. */
+.gcb-explorer-button {
+  float: right;
+  margin-top: 5px;
+}
+
+/* Padding of anchor link in student table on profile page. */
+.gcb-profile-padding {
+  padding-right: 20px;
+}
+
+/* Error tag, e.g. for invalid HTML. */
+.gcb-error-tag {
+  background-color: #ccc;
+  border-radius: 3px;
+  color: red;
+  font-weight: bold;
+  padding: 0 5px;
 }

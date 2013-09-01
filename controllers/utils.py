@@ -18,20 +18,25 @@ __author__ = 'Saifu Angto (saifu@google.com)'
 
 import base64
 import hmac
+import os
 import time
 import urlparse
-import jinja2
+
+import appengine_config
+from common import jinja_utils
+from models import models
 from models import transforms
 from models.config import ConfigProperty
+from models.config import ConfigPropertyEntity
 from models.courses import Course
-from models.models import MemcacheManager
 from models.models import Student
+from models.models import StudentProfileDAO
+from models.models import TransientStudent
 from models.roles import Roles
-from models.utils import get_all_scores
 import webapp2
-from webapp2_extras import i18n
-from google.appengine.api import users
 
+from google.appengine.api import namespace_manager
+from google.appengine.api import users
 
 # The name of the template dict key that stores a course's base location.
 COURSE_BASE_KEY = 'gcb_course_base'
@@ -39,6 +44,9 @@ COURSE_BASE_KEY = 'gcb_course_base'
 # The name of the template dict key that stores data from course.yaml.
 COURSE_INFO_KEY = 'course_info'
 
+TRANSIENT_STUDENT = TransientStudent()
+
+XSRF_SECRET_LENGTH = 20
 
 XSRF_SECRET = ConfigProperty(
     'gcb_xsrf_secret', str, (
@@ -48,6 +56,82 @@ XSRF_SECRET = ConfigProperty(
         'server rejects all subsequent requests issued using an old value for '
         'this variable.'),
     'course builder XSRF secret')
+
+
+# Whether to record page load/unload events in a database.
+CAN_PERSIST_PAGE_EVENTS = ConfigProperty(
+    'gcb_can_persist_page_events', bool, (
+        'Whether or not to record student page interactions in a '
+        'datastore. Without event recording, you cannot analyze student '
+        'page interactions. On the other hand, no event recording reduces '
+        'the number of datastore operations and minimizes the use of Google '
+        'App Engine quota. Turn event recording on if you want to analyze '
+        'this data.'),
+    False)
+
+
+# Whether to record tag events in a database.
+CAN_PERSIST_TAG_EVENTS = ConfigProperty(
+    'gcb_can_persist_tag_events', bool, (
+        'Whether or not to record student tag interactions in a '
+        'datastore. Without event recording, you cannot analyze student '
+        'tag interactions. On the other hand, no event recording reduces '
+        'the number of datastore operations and minimizes the use of Google '
+        'App Engine quota. Turn event recording on if you want to analyze '
+        'this data.'),
+    False)
+
+
+# Whether to record events in a database.
+CAN_PERSIST_ACTIVITY_EVENTS = ConfigProperty(
+    'gcb_can_persist_activity_events', bool, (
+        'Whether or not to record student activity interactions in a '
+        'datastore. Without event recording, you cannot analyze student '
+        'activity interactions. On the other hand, no event recording reduces '
+        'the number of datastore operations and minimizes the use of Google '
+        'App Engine quota. Turn event recording on if you want to analyze '
+        'this data.'),
+    False)
+
+
+# Date format string for displaying datetimes in UTC.
+# Example: 2013-03-21 13:00 UTC
+HUMAN_READABLE_DATETIME_FORMAT = '%Y-%m-%d, %H:%M UTC'
+
+# Date format string for displaying dates. Example: 2013-03-21
+HUMAN_READABLE_DATE_FORMAT = '%Y-%m-%d'
+
+# Time format string for displaying times. Example: 01:16:40 UTC.
+HUMAN_READABLE_TIME_FORMAT = '%H:%M:%S UTC'
+
+
+class PageInitializer(object):
+    """Abstract class that defines an interface to initialize page headers."""
+
+    @classmethod
+    def initialize(cls, template_value):
+        raise NotImplementedError
+
+
+class DefaultPageInitializer(PageInitializer):
+    """Implements default page initializer."""
+
+    @classmethod
+    def initialize(cls, template_value):
+        pass
+
+
+class PageInitializerService(object):
+    """Installs the appropriate PageInitializer."""
+    _page_initializer = DefaultPageInitializer
+
+    @classmethod
+    def get(cls):
+        return cls._page_initializer
+
+    @classmethod
+    def set(cls, page_initializer):
+        cls._page_initializer = page_initializer
 
 
 class ReflectiveRequestHandler(object):
@@ -76,9 +160,9 @@ class ReflectiveRequestHandler(object):
         """Handles GET."""
         action = self.request.get('action')
         if not action:
-            action = self.__class__.default_action
+            action = self.default_action
 
-        if not action in self.__class__.get_actions:
+        if action not in self.get_actions:
             self.error(404)
             return
 
@@ -92,7 +176,7 @@ class ReflectiveRequestHandler(object):
     def post(self):
         """Handles POST."""
         action = self.request.get('action')
-        if not action or not action in self.__class__.post_actions:
+        if not action or action not in self.post_actions:
             self.error(404)
             return
 
@@ -135,40 +219,38 @@ class ApplicationHandler(webapp2.RequestHandler):
         super(ApplicationHandler, self).__init__(*args, **kwargs)
         self.template_value = {}
 
-    def get_template(self, template_file, additional_dir=None):
+    def get_template(self, template_file, additional_dirs=None):
         """Computes location of template files for the current namespace."""
         self.template_value[COURSE_INFO_KEY] = self.app_context.get_environ()
         self.template_value['is_course_admin'] = Roles.is_course_admin(
             self.app_context)
+        self.template_value[
+            'is_read_write_course'] = self.app_context.fs.is_read_write()
         self.template_value['is_super_admin'] = Roles.is_super_admin()
         self.template_value[COURSE_BASE_KEY] = self.get_base_href(self)
-
-        template_dir = self.app_context.get_template_home()
-        dirs = [template_dir]
-        if additional_dir:
-            dirs += additional_dir
-
-        jinja_environment = jinja2.Environment(
-            extensions=['jinja2.ext.i18n'],
-            loader=jinja2.FileSystemLoader(dirs))
-        jinja_environment.install_gettext_translations(i18n)
-
-        locale = self.template_value[COURSE_INFO_KEY]['course']['locale']
-        i18n.get_i18n().set_locale(locale)
-
-        return jinja_environment.get_template(template_file)
+        template_environ = self.app_context.get_template_environ(
+            self.template_value[COURSE_INFO_KEY]['course']['locale'],
+            additional_dirs
+        )
+        template_environ.filters[
+            'gcb_tags'] = jinja_utils.get_gcb_tags_filter(self)
+        return template_environ.get_template(template_file)
 
     def canonicalize_url(self, location):
         """Adds the current namespace URL prefix to the relative 'location'."""
-        if not self.is_absolute(location):
-            if (self.app_context.get_slug() and
-                self.app_context.get_slug() != '/'):
-                location = '%s%s' % (self.app_context.get_slug(), location)
+        is_relative = (
+            not self.is_absolute(location) and
+            not location.startswith(self.app_context.get_slug()))
+        has_slug = (
+            self.app_context.get_slug() and self.app_context.get_slug() != '/')
+        if is_relative and has_slug:
+            location = '%s%s' % (self.app_context.get_slug(), location)
         return location
 
-    def redirect(self, location):
-        super(ApplicationHandler, self).redirect(
-            self.canonicalize_url(location))
+    def redirect(self, location, normalize=True):
+        if normalize:
+            location = self.canonicalize_url(location)
+        super(ApplicationHandler, self).redirect(location)
 
 
 class BaseHandler(ApplicationHandler):
@@ -183,6 +265,10 @@ class BaseHandler(ApplicationHandler):
             self.course = Course(self)
         return self.course
 
+    def find_unit_by_id(self, unit_id):
+        """Gets a unit with a specific id or fails with an exception."""
+        return self.get_course().find_unit_by_id(unit_id)
+
     def get_units(self):
         """Gets all units in the course."""
         return self.get_course().get_units()
@@ -191,33 +277,76 @@ class BaseHandler(ApplicationHandler):
         """Gets all lessons (in order) in the specific course unit."""
         return self.get_course().get_lessons(unit_id)
 
+    def get_progress_tracker(self):
+        """Gets the progress tracker for the course."""
+        return self.get_course().get_progress_tracker()
+
     def get_user(self):
-        """Validate user exists."""
-        user = users.get_current_user()
-        if not user:
-            self.redirect(users.create_login_url(self.request.uri))
-        else:
-            return user
+        """Get the current user."""
+        return users.get_current_user()
 
     def personalize_page_and_get_user(self):
         """If the user exists, add personalized fields to the navbar."""
         user = self.get_user()
+        PageInitializerService.get().initialize(self.template_value)
+
+        if hasattr(self, 'app_context'):
+            self.template_value['can_register'] = self.app_context.get_environ(
+                )['reg_form']['can_register']
+
         if user:
             self.template_value['email'] = user.email()
-            self.template_value['logoutUrl'] = users.create_logout_url('/')
+            self.template_value['logoutUrl'] = (
+                users.create_logout_url(self.request.uri))
+            self.template_value['transient_student'] = False
+
+            # configure page events
+            self.template_value['record_tag_events'] = (
+                CAN_PERSIST_TAG_EVENTS.value)
+            self.template_value['record_page_events'] = (
+                CAN_PERSIST_PAGE_EVENTS.value)
+            self.template_value['record_events'] = (
+                CAN_PERSIST_ACTIVITY_EVENTS.value)
+            self.template_value['event_xsrf_token'] = (
+                XsrfTokenManager.create_xsrf_token('event-post'))
+        else:
+            self.template_value['loginUrl'] = users.create_login_url(
+                self.request.uri)
+            self.template_value['transient_student'] = True
+            return None
+
         return user
 
-    def personalize_page_and_get_enrolled(self):
+    def personalize_page_and_get_enrolled(
+        self, supports_transient_student=False):
         """If the user is enrolled, add personalized fields to the navbar."""
         user = self.personalize_page_and_get_user()
-        if not user:
-            self.redirect(users.create_login_url(self.request.uri))
-            return None
+        if user is None:
+            student = TRANSIENT_STUDENT
+        else:
+            student = Student.get_enrolled_student_by_email(user.email())
+            if not student:
+                self.template_value['transient_student'] = True
+                student = TRANSIENT_STUDENT
 
-        student = Student.get_enrolled_student_by_email(user.email())
-        if not student:
-            self.redirect('/preview')
-            return None
+        if student.is_transient:
+            if supports_transient_student and (
+                    self.app_context.get_environ()['course']['browsable']):
+                return TRANSIENT_STUDENT
+            elif user is None:
+                self.redirect(
+                    users.create_login_url(self.request.uri), normalize=False
+                )
+                return None
+            else:
+                self.redirect('/preview')
+                return None
+
+        # Patch Student models which (for legacy reasons) do not have a user_id
+        # attribute set.
+        if not student.user_id:
+            student.user_id = user.user_id()
+            student.put()
 
         return student
 
@@ -230,6 +359,7 @@ class BaseHandler(ApplicationHandler):
         return True
 
     def render(self, template_file):
+        """Renders a template."""
         template = self.get_template(template_file)
         self.response.out.write(template.render(self.template_value))
 
@@ -248,25 +378,61 @@ class BaseRESTHandler(BaseHandler):
             return False
         return True
 
+    def validation_error(self, message, key=None):
+        """Deliver a validation message."""
+        if key:
+            transforms.send_json_response(
+                self, 412, message, payload_dict={'key': key})
+        else:
+            transforms.send_json_response(self, 412, message)
+
 
 class PreviewHandler(BaseHandler):
     """Handler for viewing course preview."""
 
     def get(self):
         """Handles GET requests."""
-        user = users.get_current_user()
-        if not user:
-            self.template_value['loginUrl'] = users.create_login_url('/')
+        user = self.personalize_page_and_get_user()
+        if user is None:
+            student = TRANSIENT_STUDENT
         else:
-            self.template_value['email'] = user.email()
-            self.template_value['logoutUrl'] = users.create_logout_url('/')
+            student = Student.get_enrolled_student_by_email(user.email())
+            if not student:
+                student = TRANSIENT_STUDENT
 
+        # If the course is browsable, or the student is logged in and
+        # registered, redirect to the main course page.
+        if ((student and not student.is_transient) or
+            self.app_context.get_environ()['course']['browsable']):
+            self.redirect('/course')
+            return
+
+        self.template_value['transient_student'] = True
+        self.template_value['can_register'] = self.app_context.get_environ(
+            )['reg_form']['can_register']
         self.template_value['navbar'] = {'course': True}
         self.template_value['units'] = self.get_units()
-        if user and Student.get_enrolled_student_by_email(user.email()):
-            self.redirect('/course')
-        else:
-            self.render('preview.html')
+        self.template_value['show_registration_page'] = True
+
+        course = self.app_context.get_environ()['course']
+        self.template_value['video_exists'] = bool(
+            'main_video' in course and
+            'url' in course['main_video'] and
+            course['main_video']['url'])
+        self.template_value['image_exists'] = bool(
+            'main_image' in course and
+            'url' in course['main_image'] and
+            course['main_image']['url'])
+
+        if user:
+            profile = StudentProfileDAO.get_profile_by_user_id(user.user_id())
+            additional_registration_fields = self.app_context.get_environ(
+                )['reg_form']['additional_registration_fields']
+            if profile is not None and not additional_registration_fields:
+                self.template_value['show_registration_page'] = False
+                self.template_value['register_xsrf_token'] = (
+                    XsrfTokenManager.create_xsrf_token('register-post'))
+        self.render('preview.html')
 
 
 class RegisterHandler(BaseHandler):
@@ -276,7 +442,8 @@ class RegisterHandler(BaseHandler):
         """Handles GET request."""
         user = self.personalize_page_and_get_user()
         if not user:
-            self.redirect(users.create_login_url(self.request.uri))
+            self.redirect(
+                users.create_login_url(self.request.uri), normalize=False)
             return
 
         student = Student.get_enrolled_student_by_email(user.email())
@@ -284,16 +451,31 @@ class RegisterHandler(BaseHandler):
             self.redirect('/course')
             return
 
-        self.template_value['navbar'] = {'registration': True}
+        can_register = self.app_context.get_environ(
+            )['reg_form']['can_register']
+        if not can_register:
+            self.redirect('/course#registration_closed')
+            return
+
+        # pre-fill nick name from the profile if available
+        self.template_value['current_name'] = ''
+        profile = StudentProfileDAO.get_profile_by_user_id(user.user_id())
+        if profile and profile.nick_name:
+            self.template_value['current_name'] = profile.nick_name
+
+        self.template_value['navbar'] = {}
+        self.template_value['transient_student'] = True
         self.template_value['register_xsrf_token'] = (
             XsrfTokenManager.create_xsrf_token('register-post'))
+
         self.render('register.html')
 
     def post(self):
         """Handles POST requests."""
         user = self.personalize_page_and_get_user()
         if not user:
-            self.redirect(users.create_login_url(self.request.uri))
+            self.redirect(
+                users.create_login_url(self.request.uri), normalize=False)
             return
 
         if not self.assert_xsrf_token_or_fail(self.request, 'register-post'):
@@ -302,23 +484,19 @@ class RegisterHandler(BaseHandler):
         can_register = self.app_context.get_environ(
             )['reg_form']['can_register']
         if not can_register:
-            self.template_value['course_status'] = 'full'
+            self.redirect('/course#registration_closed')
+            return
+
+        if 'name_from_profile' in self.request.POST.keys():
+            profile = StudentProfileDAO.get_profile_by_user_id(user.user_id())
+            name = profile.nick_name
         else:
             name = self.request.get('form01')
 
-            # create new or re-enroll old student
-            student = Student.get_by_email(user.email())
-            if not student:
-                student = Student(key_name=user.email())
-                student.user_id = user.user_id()
-
-            student.is_enrolled = True
-            student.name = name
-            student.put()
-
+        Student.add_new_student_for_current_user(
+            name, transforms.dumps(self.request.POST.items()))
         # Render registration confirmation page
-        self.template_value['navbar'] = {'registration': True}
-        self.render('confirmation.html')
+        self.redirect('/course#registration_confirmation')
 
 
 class ForumHandler(BaseHandler):
@@ -326,7 +504,9 @@ class ForumHandler(BaseHandler):
 
     def get(self):
         """Handles GET requests."""
-        if not self.personalize_page_and_get_enrolled():
+        student = self.personalize_page_and_get_enrolled(
+            supports_transient_student=True)
+        if not student:
             return
 
         self.template_value['navbar'] = {'forum': True}
@@ -334,7 +514,7 @@ class ForumHandler(BaseHandler):
 
 
 class StudentProfileHandler(BaseHandler):
-    """Handles the click to 'My Profile' link in the nav bar."""
+    """Handles the click to 'Progress' link in the nav bar."""
 
     def get(self):
         """Handles GET requests."""
@@ -342,11 +522,23 @@ class StudentProfileHandler(BaseHandler):
         if not student:
             return
 
-        self.template_value['navbar'] = {}
+        course = self.get_course()
+        name = student.name
+        profile = student.profile
+        if profile:
+            name = profile.nick_name
+
+        self.template_value['navbar'] = {'progress': True}
         self.template_value['student'] = student
-        self.template_value['scores'] = get_all_scores(student)
+        self.template_value['student_name'] = name
+        self.template_value['date_enrolled'] = student.enrolled_on.strftime(
+            HUMAN_READABLE_DATE_FORMAT)
+        self.template_value['score_list'] = course.get_all_scores(student)
+        self.template_value['overall_score'] = course.get_overall_score(student)
         self.template_value['student_edit_xsrf_token'] = (
             XsrfTokenManager.create_xsrf_token('student-edit'))
+        self.template_value['can_edit_name'] = (
+            not models.CAN_SHARE_STUDENT_PROFILE.value)
         self.render('student_profile.html')
 
 
@@ -377,7 +569,7 @@ class StudentUnenrollHandler(BaseHandler):
             return
 
         self.template_value['student'] = student
-        self.template_value['navbar'] = {'registration': True}
+        self.template_value['navbar'] = {}
         self.template_value['student_unenroll_xsrf_token'] = (
             XsrfTokenManager.create_xsrf_token('student-unenroll'))
         self.render('unenroll_confirmation_check.html')
@@ -393,7 +585,8 @@ class StudentUnenrollHandler(BaseHandler):
 
         Student.set_enrollment_status_for_current(False)
 
-        self.template_value['navbar'] = {'registration': True}
+        self.template_value['navbar'] = {}
+        self.template_value['transient_student'] = True
         self.render('unenroll_confirmation.html')
 
 
@@ -411,12 +604,46 @@ class XsrfTokenManager(object):
     USER_ID_DEFAULT = 'default'
 
     @classmethod
+    def init_xsrf_secret_if_none(cls):
+        """Verifies that non-default XSRF secret exists; creates one if not."""
+
+        # Any non-default value is fine.
+        if XSRF_SECRET.value and XSRF_SECRET.value != XSRF_SECRET.default_value:
+            return
+
+        # All property manipulations must run in the default namespace.
+        old_namespace = namespace_manager.get_namespace()
+        try:
+            namespace_manager.set_namespace(
+                appengine_config.DEFAULT_NAMESPACE_NAME)
+
+            # Look in the datastore directly.
+            entity = ConfigPropertyEntity.get_by_key_name(XSRF_SECRET.name)
+            if not entity:
+                entity = ConfigPropertyEntity(key_name=XSRF_SECRET.name)
+
+            # Any non-default non-None value is fine.
+            if (entity.value and not entity.is_draft and
+                (str(entity.value) != str(XSRF_SECRET.default_value))):
+                return
+
+            # Initialize to random value.
+            entity.value = base64.urlsafe_b64encode(
+                os.urandom(XSRF_SECRET_LENGTH))
+            entity.is_draft = False
+            entity.put()
+        finally:
+            namespace_manager.set_namespace(old_namespace)
+
+    @classmethod
     def _create_token(cls, action_id, issued_on):
         """Creates a string representation (digest) of a token."""
+        cls.init_xsrf_secret_if_none()
 
-        # We have decided to use transient tokens to reduce datastore costs.
-        # The token has 4 parts: hash of the actor user id, hash of the action,
-        # hash if the time issued and the plain text of time issued.
+        # We have decided to use transient tokens stored in memcache to reduce
+        # datastore costs. The token has 4 parts: hash of the actor user id,
+        # hash of the action, hash of the time issued and the plain text of time
+        # issued.
 
         # Lookup user id.
         user = users.get_current_user()
@@ -448,11 +675,10 @@ class XsrfTokenManager(object):
     @classmethod
     def is_xsrf_token_valid(cls, token, action):
         """Validate a given XSRF token by retrieving it from memcache."""
-
         try:
             parts = token.split(cls.DELIMITER_PUBLIC)
-            if not len(parts) == 2:
-                raise Exception('Bad token format, expected: a/b.')
+            if len(parts) != 2:
+                return False
 
             issued_on = long(parts[0])
             age = time.time() - issued_on
@@ -466,12 +692,3 @@ class XsrfTokenManager(object):
             return False
         except Exception:  # pylint: disable-msg=broad-except
             return False
-
-        user_str = cls._make_user_str()
-        token_obj = MemcacheManager.get(token)
-        if not token_obj:
-            return False
-        token_str, token_action = token_obj
-        if user_str != token_str or action != token_action:
-            return False
-        return True

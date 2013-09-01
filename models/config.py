@@ -25,6 +25,7 @@ __author__ = 'Pavel Simakov (psimakov@google.com)'
 
 import logging
 import os
+import threading
 import time
 import appengine_config
 import entities
@@ -34,10 +35,10 @@ from google.appengine.ext import db
 
 
 # The default update interval supported.
-DEFAULT_UPDATE_INTERVAL = 60
+DEFAULT_UPDATE_INTERVAL_SEC = 60
 
 # The longest update interval supported.
-MAX_UPDATE_INTERVAL = 60 * 5
+MAX_UPDATE_INTERVAL_SEC = 60 * 5
 
 
 # Allowed property types.
@@ -52,19 +53,29 @@ class ConfigProperty(object):
 
     def __init__(
         self, name, value_type, doc_string,
-        default_value=None, multiline=False):
+        default_value=None, multiline=False, validator=None):
 
-        if not value_type in ALLOWED_TYPES:
+        if value_type not in ALLOWED_TYPES:
             raise Exception('Bad value type: %s' % value_type)
 
+        self._validator = validator
         self._multiline = multiline
         self._name = name
         self._type = value_type
         self._doc_string = doc_string
         self._default_value = value_type(default_value)
-        self._value = None
+
+        errors = []
+        if self._validator and self._default_value:
+            self._validator(self._default_value, errors)
+        if errors:
+            raise Exception('Default value is invalid: %s.' % errors)
 
         Registry.registered[name] = self
+
+    @property
+    def validator(self):
+        return self._validator
 
     @property
     def multiline(self):
@@ -108,59 +119,76 @@ class ConfigProperty(object):
                 del os.environ[name]
         return False, None
 
-    @property
-    def value(self):
-        """Get the latest value from datastore, environment or use default."""
+    def get_value(self, db_overrides=None):
+        """Gets value from overrides (datastore, environment) or default."""
 
-        # Try datastore overrides first.
-        overrides = Registry.get_overrides()
+        # Try testing overrides.
+        overrides = Registry.test_overrides
         if overrides and self.name in overrides:
             return overrides[self.name]
 
-        # Try environment variable overrides second.
+        # Try datastore overrides.
+        if db_overrides and self.name in db_overrides:
+            return db_overrides[self.name]
+
+        # Try environment variable overrides.
         has_value, environ_value = self.get_environ_value()
         if has_value:
             return environ_value
 
-        # Use default value last.
+        # Use default value as last resort.
         return self._default_value
+
+    @property
+    def value(self):
+        return self.get_value(db_overrides=Registry.get_overrides())
 
 
 class Registry(object):
-    """Holds all registered properties."""
+    """Holds all registered properties and their various overrides."""
     registered = {}
+    test_overrides = {}
     db_overrides = {}
-    update_interval = DEFAULT_UPDATE_INTERVAL
+    names_with_draft = {}
     last_update_time = 0
     update_index = 0
+    threadlocal = threading.local()
+    REENTRY_ATTR_NAME = 'busy'
 
     @classmethod
     def get_overrides(cls, force_update=False):
         """Returns current property overrides, maybe cached."""
 
-        # Check if datastore property overrides are enabled at all.
-        has_value, environ_value = UPDATE_INTERVAL_SEC.get_environ_value()
-        if (has_value and environ_value == 0) or (
-                UPDATE_INTERVAL_SEC.default_value == 0):
-            return
-
-        # Check if cached values are still fresh.
         now = long(time.time())
         age = now - cls.last_update_time
-        if force_update or age < 0 or age >= cls.update_interval:
+        max_age = UPDATE_INTERVAL_SEC.get_value(db_overrides=cls.db_overrides)
+
+        # do not update if call is reentrant or outer db transaction exists
+        busy = hasattr(cls.threadlocal, cls.REENTRY_ATTR_NAME) or (
+            db.is_in_transaction())
+
+        if (not busy) and (force_update or age < 0 or age >= max_age):
+            # Value of '0' disables all datastore overrides.
+            if UPDATE_INTERVAL_SEC.get_value() == 0:
+                cls.db_overrides = {}
+                return cls.db_overrides
+
+            # Load overrides from a datastore.
+            setattr(cls.threadlocal, cls.REENTRY_ATTR_NAME, True)
             try:
                 old_namespace = namespace_manager.get_namespace()
                 try:
                     namespace_manager.set_namespace(
                         appengine_config.DEFAULT_NAMESPACE_NAME)
-
-                    cls.load_from_db()
+                    cls._load_from_db()
                 finally:
                     namespace_manager.set_namespace(old_namespace)
             except Exception as e:  # pylint: disable-msg=broad-except
                 logging.error(
                     'Failed to load properties from a database: %s.', str(e))
             finally:
+                delattr(cls.threadlocal, cls.REENTRY_ATTR_NAME)
+
                 # Avoid overload and update timestamp even if we failed.
                 cls.last_update_time = now
                 cls.update_index += 1
@@ -168,19 +196,22 @@ class Registry(object):
         return cls.db_overrides
 
     @classmethod
-    def load_from_db(cls):
+    def _load_from_db(cls):
         """Loads dynamic properties from db."""
         logging.info('Reloading properties.')
         overrides = {}
+        drafts = set()
         for item in ConfigPropertyEntity.all().fetch(1000):
             name = item.key().name()
 
-            if not name in cls.registered:
+            if name not in cls.registered:
                 logging.error(
                     'Property is not registered (skipped): %s', name)
                 continue
 
             target = cls.registered[name]
+            if target and item.is_draft:
+                drafts.add(name)
             if target and not item.is_draft:
                 # Enforce value type.
                 try:
@@ -192,18 +223,25 @@ class Registry(object):
                         target.name, target.value_type)
                     continue
 
-                # Don't allow disabling of update interval from a database.
-                if name == UPDATE_INTERVAL_SEC.name:
-                    if value == 0 or value < 0 or value > MAX_UPDATE_INTERVAL:
+                # Enforce value validator.
+                if target.validator:
+                    errors = []
+                    try:
+                        target.validator(value, errors)
+                    except Exception as e:  # pylint: disable-msg=broad-except
+                        errors.append(
+                            'Error validating property %s.\n%s',
+                            (target.name, e))
+                    if errors:
                         logging.error(
-                            'Bad value %s for %s; discarded.', name, value)
+                            'Property %s has invalid value:\n%s',
+                            target.name, '\n'.join(errors))
                         continue
-                    else:
-                        cls.update_interval = value
 
                 overrides[name] = value
 
         cls.db_overrides = overrides
+        cls.names_with_draft = drafts
 
 
 class ConfigPropertyEntity(entities.BaseEntity):
@@ -244,15 +282,24 @@ def run_all_unit_tests():
     assert int_prop.value == int_prop.default_value
 
 
+def validate_update_interval(value, errors):
+    value = int(value)
+    if value <= 0 or value >= MAX_UPDATE_INTERVAL_SEC:
+        errors.append(
+            'Expected a value between 0 and %s, exclusive.' % (
+                MAX_UPDATE_INTERVAL_SEC))
+
+
 UPDATE_INTERVAL_SEC = ConfigProperty(
     'gcb_config_update_interval_sec', int, (
         'An update interval (in seconds) for reloading runtime properties '
         'from a datastore. Using this editor, you can set this value to an '
-        'integer between 1 and 300. To completely disable  reloading '
+        'integer between 1 and %s, inclusive. To completely disable reloading '
         'properties from a datastore, you must set the value to 0. However, '
         'you can only set the value to 0 by directly modifying the app.yaml '
-        'file. Maximum value is "%s".' % MAX_UPDATE_INTERVAL),
-    DEFAULT_UPDATE_INTERVAL)
+        'file.' % MAX_UPDATE_INTERVAL_SEC),
+    default_value=DEFAULT_UPDATE_INTERVAL_SEC,
+    validator=validate_update_interval)
 
 if __name__ == '__main__':
     run_all_unit_tests()

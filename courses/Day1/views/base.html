@@ -1,28 +1,11 @@
 <!DOCTYPE html>
-<html class="google" lang="{{course_info.course.locale}}">
+<html lang="{{course_info.course.locale}}">
   <head>
     <base href="{{ gcb_course_base }}" />
-    <script>
-      (function(H) {
-        H.className = H.className.replace(/\bgoogle\b/,'google-js');
-      })(document.documentElement)
-    </script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title>
-      {{course_info.course.title}} -
-      {% block subtitle %}
-        {% trans %} Course {% endtrans %}
-      {% endblock subtitle %}
-    </title>
-
-    <link rel="icon" href="assets/img/favicon.ico" />
-
-    <link href="assets/css/main.css" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;subset=latin" rel="stylesheet">
-
-    <!-- jQuery should be imported first -->
-    <script src="assets/lib/jquery-1.7.2.min.js"></script>
+    {% block title %}
+    {% endblock %}
 
     <!-- The following translated strings are used in activity-generic.js and should be
     declared before that file is imported. -->
@@ -35,44 +18,144 @@
 
       // inline translations
       var trans = {};
-      trans.CHECK_ANSWER_TEXT = '{% trans %} Check Answer {% endtrans %}';
-      trans.CHECK_ANSWERS_TEXT = '{% trans %} Check Answers {% endtrans %}';
-      trans.SHOW_ANSWER_TEXT = '{% trans %} Skip and Show Answer {% endtrans %}';
-      trans.SAVE_ANSWERS_TEXT = '{% trans %} Save Answers {% endtrans %}';
-      trans.SELECT_ANSWER_PROMPT = '{% trans %} Please click one of the buttons for your answer. {% endtrans %}';
-      trans.ALL_CORRECT_TEXT = '{% trans %} All your answers are correct! {% endtrans %}';
-      trans.NUM_CORRECT_TEXT = '{% trans %} Number of questions you answered correctly {% endtrans %}';
-      trans.YOUR_SCORE_TEXT = '{% trans %} You received a score on this assessment of {% endtrans %}';
-      trans.LESSONS_TO_REVIEW_TEXT = '{% trans %} Here are lessons you could review to improve your score {% endtrans %}';
+
+      {# I18N: Text on the button for checking an answer. #}
+      trans.CHECK_ANSWER_TEXT =
+          "{{ gettext(' Check Answer ')|replace('\"', '\\\"') }}";
+
+      {# I18N: Text on the button for checking a set of answers. #}
+      trans.CHECK_ANSWERS_TEXT =
+          "{{ gettext( ' Check Answers ')|replace('\"', '\\\"') }}";
+
+      {# I18N: Text on the button for showing the answer to a question. #}
+      trans.SHOW_ANSWER_TEXT =
+          "{{ gettext(' Skip and Show Answer ')|replace('\"', '\\\"') }}";
+
+      {# I18N: Text on the button for saving answers to a question. #}
+      trans.SAVE_ANSWERS_TEXT =
+          "{{ gettext(' Save Answers ')|replace('\"', '\\\"') }}";
+
+      {# I18N: Text on the button for saving a draft answer. #}
+      trans.SAVE_DRAFT_TEXT =
+          "{{ gettext(' Save Draft ')|replace('\"', '\\\"') }}";
+
+      {# I18N: Text on the button for submitting answers. #}
+      trans.SUBMIT_ANSWERS_TEXT =
+          "{{ gettext(' Submit Answers ')|replace('\"', '\\\"') }}";
+
+      {# I18N: Text on the button for submitting a peer-reviewed assignment. #}
+      trans.SUBMIT_ASSIGNMENT_TEXT =
+          "{{ gettext(' Submit Assignment ')|replace('\"', '\\\"') }}";
+
+      {# I18N: Text on the button for submitting a peer review. #}
+      trans.SUBMIT_REVIEW_TEXT =
+          "{{ gettext(' Submit Review ')|replace('\"', '\\\"') }}";
+
+      {# I18N: Text to prompt the student to select a multiple-choice answer. #}
+      trans.SELECT_ANSWER_PROMPT =
+          "{{ gettext(' Please click one of the buttons for your answer. ')|replace('\"', '\\\"') }}";
+
+      {# I18N: Text appearing after the student has answered all questions correctly. #}
+      trans.ALL_CORRECT_TEXT =
+          "{{ gettext(' All your answers are correct! ')|replace('\"', '\\\"') }}";
+
+      {# I18N: Text appearing after the student has answered all questions correctly. #}
+      trans.NUM_CORRECT_TEXT =
+          "{{ gettext(' Number of questions you answered correctly ')|replace('\"', '\\\"') }}";
+
+      {# I18N: Text appearing after the student has submitted an assessment. #}
+      trans.YOUR_SCORE_TEXT =
+          "{{ gettext(' You received a score on this assessment of ')|replace('\"', '\\\"') }}";
+
+      {# I18N: Text appearing after the student has checked his/her answers to an assessment. #}
+      trans.LESSONS_TO_REVIEW_TEXT =
+          "{{ gettext(' Here are lessons you could review to improve your score ')|replace('\"', '\\\"') }}";
+
+      {# I18N: Text appearing after the student has checked his/her answers to an assessment. #}
       trans.PERFECT_SCORE_SAVE_TEXT =
-          '{% trans %} Congratulations! Press the \'Save Answers\' button to submit your grade. {% endtrans %}';
+          "{{ gettext(' Congratulations! Press the \\\'Submit Answers\\\' button to submit your grade. ')|replace('\"', '\\\"') }}";
+
+      {# I18N: Text appearing after the student has checked his/her answers to an assessment. #}
       trans.GENERIC_SAVE_TEXT =
-          '{% trans %} Press the \'Save Answers\' button below to save your scores. You can also edit your answers above before clicking \'Save Answers\'. {% endtrans %}';
+          "{{ gettext(' Press the \\\'Submit Answers\\\' button below to save your scores. You can also edit your answers above before clicking \\\'Submit Answers\\\'. ')|replace('\"', '\\\"') }}";
+
+      {# I18N: Text appearing in a confirmation dialog after the student has tried to submit an assignment. #}
+      trans.SUBMIT_ASSIGNMENT_CONFIRMATION =
+          "{{ gettext(' Are you sure you want to submit this assignment? ') }}";
+
+      {# I18N: Text appearing in a confirmation dialog after the student has tried to submit a review. #}
+      trans.SUBMIT_REVIEW_CONFIRMATION =
+          "{{ gettext(' Are you sure you want to submit this review? ') }}";
+
+      {# I18N: Text appearing in a confirmation dialog after 'Are you sure you want to submit this assignment/review?' #}
+      trans.CONFIRMATION_EXPLANATION =
+          "{{ gettext(' You cannot edit or delete it after you have done so. ') }}";
+
+      var assessmentTagMessages = {};
+
+      {# I18N: Confirmation text for the answer given to a question by a student. #}
+      assessmentTagMessages.correctAnswer = "{{ gettext(' Yes, the answer is correct. ') }}";
+      {# I18N: Confirmation text for the answer given to a question by a student. #}
+      assessmentTagMessages.incorrectAnswer = "{{ gettext(' No, the answer is incorrect. ') }}";
+      {# I18N: Confirmation text for the answer given to a question by a student. #}
+      assessmentTagMessages.partiallyCorrectAnswer = "{{ gettext(' The answer is partially correct. ') }}";
+
+      {# I18N: Text appearing at the bottom of a lesson page after the student asks for it to be graded. #}
+      assessmentTagMessages.yourScoreIs = "{{ gettext(' Your score is: ') }}";
     </script>
-    <script src="assets/lib/activity-generic-1.2.js"></script>
+
+    {% block assets %}
+    {% endblock %}
+
+    <script>
+      var eventXsrfToken = '{{ event_xsrf_token }}';
+      {% if record_tag_events %}
+        var gcbCanPostTagEvents = true;
+      {% endif %}
+      {% if record_page_events %}
+        var gcbCanPostPageEvents = true;
+      {% endif %}
+      {% if record_events %}
+        var gcbCanPostEvents = true;
+      {% endif %}
+
+      {% if transient_student %}
+        var transientStudent = true;
+      {% else %}
+        var transientStudent = false;
+      {% endif %}
+    </script>
 
     {% if course_info.base.show_gplus_button %}
       <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
     {% endif %}
 
-    {{course_info.base.before_head_tag_ends}}
+    {{course_info.base.before_head_tag_ends | safe}}
   </head>
 
   <body>
-    {{course_info.base.after_body_tag_begins}}
+    {{course_info.base.after_body_tag_begins | safe}}
+
+    <!-- ButterBar -->
+    <div class="gcb-butterbar-container">
+      <div id="gcb-butterbar-top" class="gcb-butterbar" style='margin-top:50px'>
+        <p id="gcb-butterbar-message"></p>
+        <a id="gcb-butterbar-close">X</a>
+      </div>
+    </div>
 
     <!-- logo bar -->
-    <div class="gcb-header" id="gcb-header">
+    <div id="gcb-header" role="banner">
       <div class="gcb-aux">
-        <h1>
-          <a href="{{course_info.institution.url}}">
+        <p class="gcb-course-image">
+          <a href="./">
             <img src="{{course_info.institution.logo.url}}"
                  alt="{{course_info.institution.logo.alt_text}}">
           </a>
-        </h1>
-        <h2>
-          <a href="/">{{course_info.base.nav_header}}</a>
-        </h2>
+        </p>
+        <p class="gcb-title-header">
+          <a href="./">{{course_info.base.nav_header}}</a>
+        </p>
         {% if course_info.base.show_gplus_button %}
           <span class="plusone-button" id="plusone-3" style="height: 15px; width: 70px; display: inline-block; text-indent: 0px; margin: 0px; padding: 0px; background-color: transparent; border-style: none; float: none; line-height: normal; font-size: 1px; vertical-align: baseline; background-position: initial initial; background-repeat: initial initial; ">
             <g:plusone size="medium"></g:plusone>
@@ -80,74 +163,39 @@
         {% endif %}
 
         {% if logoutUrl %}
-        <div class="pull-right" style="font-size: larger;">
+        <div class="gcb-pull-right" style="font-size: larger;">
           {{ email }}
+          {% if transient_student and can_register %}
+            {# I18N: Text shown in parentheses next to the student's email address at the top-right of all course pages, if the student is logged in but not registered for the course he/she is currently browsing. #}
+            ({{ gettext('Not registered') }})
+          {% endif %}
           &nbsp;|&nbsp;
           <a href="{{ logoutUrl }}" style="text-decoration: underline;">
-            {% trans %} Logout {% endtrans %}
+            {# I18N: Navbar text. #}
+            {{ gettext('Logout') }}
           </a>
         </div>
         {% elif loginUrl %}
-        <div class="pull-right" style="font-size: larger;">
-          <a href="{{ loginUrl }}">{% trans %} Login {% endtrans %}</a>
+        <div class="gcb-pull-right" style="font-size: larger;">
+          {# I18N: Navbar text. #}
+          <a href="{{ loginUrl }}">{{ gettext('Login') }}</a>
         </div>
         {% endif %}
       </div>
     </div>
 
     {% block navbar %}
-    <!-- nav bar -->
-    <div class="gcb-nav gcb-complex" id="gcb-nav-x">
-      <div class="gcb-aux">
-        <ul>
-          {{course_info.base.after_navbar_begins}}
-          <li {% if navbar.announcements %}class='active'{% endif %}>
-            <a href="announcements">
-              {% trans %} Announcements {% endtrans %}
-            </a>
-          </li>
-          <li {% if navbar.course %}class='active'{% endif %}>
-            <a href="course">
-              {% trans %} Course {% endtrans %}
-            </a>
-          </li>
-          {% if course_info.course.forum_embed_url %}
-          <li {% if navbar.forum %}class='active'{% endif %}>
-            <a href="forum">
-              {% trans %} Forum {% endtrans %}
-            </a>
-          </li>
-          {% endif %}
-          <li {% if navbar.myprofile %}class='active'{% endif %}>
-            <a href="student/home">
-              {% trans %} My Profile {% endtrans %}
-            </a>
-          </li>
-          {{course_info.base.before_navbar_ends}}
-          {% if is_super_admin %}
-          <li class="pull-right">
-            <a href="/admin">Admin</a>
-          </li>
-          {% endif %}
-          {% if is_course_admin %}
-          <li class="pull-right">
-            <a href="dashboard">Dashboard</a>
-          </li>
-          {% endif %}
-        </ul>
-      </div>
-    </div>
     {% endblock %}
 
     <!-- top section -->
     <div class="is-wrapper">
       <div class="gcb-aux">
         {% block top_content %}{% endblock %}
-        {{course_info.base.after_top_content_ends}}
+        {{course_info.base.after_top_content_ends | safe}}
 
         <!-- main section -->
         {% block main_content %}{% endblock %}
-        {{course_info.base.after_main_content_ends}}
+        {{course_info.base.after_main_content_ends | safe}}
       </div>
     </div>
 
@@ -158,7 +206,7 @@
         <div class="gcb-aux">
         </div>
       </div>
-      <div id="gcb-footer-global">
+      <div id="gcb-footer-global" role="contentinfo">
         <div class="gcb-aux">
           <ul>
             <li>
@@ -166,13 +214,14 @@
             </li>
             <li>
               <a href="{{course_info.base.privacy_terms_url}}">
-                {% trans %} Privacy &amp; Terms {% endtrans %}
+                {# I18N: Link at the bottom of each page to the privacy and 'Terms and Conditions' pages. #}
+                {{ gettext('Privacy & Terms') }}
               </a>
             </li>
           </ul>
         </div>
       </div>
     </div>
-    {{course_info.base.before_body_tag_ends}}
+    {{course_info.base.before_body_tag_ends | safe}}
  </body>
 </html>

@@ -6,7 +6,7 @@ threadsafe: false
 
 env_variables:
   GCB_PRODUCT_VERSION: '1.2.0'
-  GCB_COURSES_CONFIG: 'course:/kfs-training:/courses/kfs-training'        
+  GCB_COURSES_CONFIG: 'course:/Day1:/courses/Day1'        
 builtins:
 - remote_api: on
 - deferred: on

@@ -48,9 +48,9 @@ if not PRODUCTION_MODE:
     # runs either under MasterSlave policy, which does not allow XG
     # transactions, or under TimeBasedHR policy, which serves counter-intuitive
     # dirty query results; this also matches policy for the functional tests
-    stub = apiproxy_stub_map.apiproxy.GetStub(
-        'datastore_v3')
-    if stub:
-        policy = datastore_stub_util.PseudoRandomHRConsistencyPolicy(
-            probability=1)
-        stub.SetConsistencyPolicy(policy)
+    #stub = apiproxy_stub_map.apiproxy.GetStub(
+    #    'datastore_v3')
+    #if stub:
+    #    policy = datastore_stub_util.PseudoRandomHRConsistencyPolicy(
+    #        probability=1)
+    #    stub.SetConsistencyPolicy(policy)

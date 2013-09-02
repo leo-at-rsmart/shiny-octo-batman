@@ -6,7 +6,7 @@ threadsafe: false
 
 env_variables:
   GCB_PRODUCT_VERSION: '1.5.1'
-  GCB_COURSES_CONFIG: 'course:/Day1:/courses/Day1, course:/Day1:/courses/Day2, course:/Day1:/courses/Day3, course:/Day1:/courses/Day4, course:/Day1:/courses/Day5'
+  GCB_COURSES_CONFIG: 'course:/Day1:/courses/Day1'
 
 inbound_services:
 - warmup

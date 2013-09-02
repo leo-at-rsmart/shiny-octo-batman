@@ -1,5 +1,5 @@
 unit_id,unit_title,lesson_id,lesson_title,lesson_activity,lesson_activity_name,lesson_notes,lesson_video_id,lesson_objectives
-1,"Introduction, Environment Setup and Configuration",1,Introduction,,,http://leo-at-rsmart.github.io/kfs-training/lessons/Lesson1.1.html,6Hfl--jZBeY,<ul><li>Quick Overview</li></ul>
+1,"Introduction, Environment Setup and Configuration",1,Introduction,,,http://kfs-training.appspot.com/courses/Day1/assets/slides/Introduction.html,6Hfl--jZBeY,<ul><li>Quick Overview</li></ul>
 1,"Introduction, Environment Setup and Configuration",2,Envronment Setup and Configuration,,,http://r351574nc3.github.com/liquibase-course/lessons/Lesson1.2.html,,<ul><li>High level overview of Liquibase</li><li>Understand how Liquibase works on a fundamental level</li></ul>
 1,"Introduction, Environment Setup and Configuration",3,kfs-build.properties,,,http://r351574nc3.github.com/liquibase-course/lessons/Lesson1.2.html,,<ul><li>High level overview of Liquibase</li><li>Understand how Liquibase works on a fundamental level</li></ul>
 2,Maintenance Documents,1,Business Objects,yes,Lesson 2.1 Activity,http://r351574nc3.github.com/liquibase-course/lessons/Lesson2.1.html,lu0rrpYD_F8,<ul><li>Find the liquibase website</li><li>Download the liquibase CLI tool</li><li>Setup Liquibase to apply changelogs</li></ul>

@@ -57,19 +57,19 @@ course:
   #
   #     http://code.google.com/p/course-builder/wiki/WebForums.
   forum_email: kfs-training-qa@googlegroups.com
-  forum_url: //groups.google.com/forum/#!forum/kfs-training-qa
+  forum_url: //groups.google.com/d/forum/kfs-training-qa
 
   # Forum embedding URL. This link is used to embed the forum in an iframe on
   # the forum.html page. Set this value to False if you don't use forum and/or
   # to remove the Forum link from the student navigation bar.
-  forum_embed_url: //groups.google.com/forum/embed?place=forum/kfs-training-qa 
+  forum_embed_url: //groups.google.com/forum/embed/?place=forum/kfs-training-qa 
 
   # URL for the mailing list where students can register to receive course
   # announcements. For details, see
   #
   #     http://code.google.com/p/course-builder/wiki/CreateEmailList
   announcement_list_email: kfs-training-announce@googlegroups.com
-  announcement_list_url: //groups.google.com/group/kfs-training-announce
+  announcement_list_url: //groups.google.com/d/forum/kfs-training-announce
 
   # Locale for internationalization. See modules/i18n/resources/locale for
   # available locales.

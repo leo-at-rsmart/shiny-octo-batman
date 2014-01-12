@@ -1,0 +1,5 @@
+id,type,unit_id,title,release_date,now_available
+1,A,Pre,Pre-course assessment,,False
+2,U,1,"Introduction, Environment Setup and Configuration",available TBD,False
+3,U,2,Maintenance Documents,available TBD,False
+

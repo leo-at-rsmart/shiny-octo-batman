@@ -1,0 +1,10 @@
+id,type,unit_id,title,release_date,now_available
+1,A,Pre,Pre-course assessment,09/09/2013,True
+2,U,1,"Day 1: Introduction, Environment Setup and Configuration, and Maintenance Documents",09/09/2013,False
+3,U,2,"Day 2: Transactional Documents",09/10/2013,False
+4,U,3,"Day 3: Extended Attributes",09/11/2013,False
+5,A,Mid,Mid-course assessment,09/12/2013,False
+6,U,4,"Day 4: Business Rules and KIM",09/12/2013,False
+7,U,5,"Day 5: KEW and LDAP",09/13/2013,False
+8,A,Fin,Final-course assessment,09/13/2013,False
+

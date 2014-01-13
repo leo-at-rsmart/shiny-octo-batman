@@ -1,4 +1,4 @@
-application: rice-krad-training  # FIXME: Replace this with your application id
+application: rice-krad-training 
 version: 1
 runtime: python27
 api_version: 1
@@ -6,7 +6,6 @@ threadsafe: false
 
 env_variables:
   GCB_PRODUCT_VERSION: '1.5.1'
-  GCB_COURSES_CONFIG: 'course:/Day1:/courses/Day1'
 
 inbound_services:
 - warmup

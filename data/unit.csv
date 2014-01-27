@@ -1,10 +1,10 @@
 id,type,unit_id,title,release_date,now_available
-1,A,Pre,Pre-course assessment,09/01/2013,True
-2,U,1,"Day 1: Introduction, Environment Setup and Configuration, and Maintenance Documents",09/09/2013,True
-3,U,2,"Day 2: Transactional Documents",09/10/2013,True
-4,U,3,"Day 3: Extended Attributes",09/11/2013,True
-5,A,Mid,Mid-course assessment,09/12/2013,True
-6,U,4,"Day 4: Business Rules and KIM",09/12/2013,True
-7,U,5,"Day 5: KEW and LDAP",09/13/2013,True
-8,A,Fin,Final-course assessment,09/13/2013,True
+1,A,Pre,Pre-course assessment,01/13/2014,True
+2,U,1,"Day 1: Introduction, Environment Setup and Configuration, and Introduction to KRAD",01/14/2014,True
+3,U,2,"Day 2: Business Objects and Maintenance Documents",01/15/2014,True
+4,U,3,"Day 3: Transactional Documents, Business Rules, and KIM",09/16/2014,True
+5,A,Mid,Mid-course assessment,09/16/2014,True
+6,U,4,"Day 4: Workflow",09/17/2014,True
+7,U,5,"Day 5: KEW and LDAP",09/18/2014,True
+8,A,Fin,Final-course assessment,09/18/2014,True
 

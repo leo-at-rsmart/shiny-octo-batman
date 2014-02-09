@@ -26,19 +26,18 @@ course:
   # administrative users. Each email address must be placed between '[' and ']',
   # for example: '[test@example.com]'. Regular expressions are not supported,
   # exact match only.
-  admin_user_emails: ''
+  admin_user_emails: 'leo@rsmart.com'
 
   # Course title
-  title: 'Power Searching with Google'
+  title: 'Rice Training'
 
   # Main page blurb. (The '|' at the beginning enables multi-line input.)
   blurb: |
-    Google Search makes it amazingly easy to find information. Come learn about
-    the powerful advanced tools we provide to help you find just the right
-    information when the stakes are high.
+    Kuali Rice is a middleware solution for higher education enterprise software. This course instructs on how to develop
+    software solutions using Rice.
 
   # Information about the instructor to display on the main page.
-  instructor_details: 'Daniel Russell <br> Senior Research Scientist <br> Google, Inc.'
+  instructor_details: 'Leo Przybylski <br> Kuali Engineer III <br> rSmart Group'
 
   # You can choose whether you want a video or an image on the main page.
   # If you specify both a video and an image link, then the video will take

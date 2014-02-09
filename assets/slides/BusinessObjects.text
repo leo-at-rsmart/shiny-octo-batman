@@ -1,0 +1,134 @@
+title: Day 1 | Business Objects and Maintenance Documents
+author: Leo Przybylski
+
+
+%%%%%
+%% Add some inline style rules...
+
+%css
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+body {
+  background-image: -webkit-linear-gradient(top left, silver, white);
+  background-image:    -moz-linear-gradient(top left, silver, white);
+  background-image:     -ms-linear-gradient(top left, silver, white);
+  background-image:      -o-linear-gradient(top left, silver, white);
+  background-image:         linear-gradient(top left, silver, white);
+}
+
+.step {
+  width: 700px;
+  height: 400px;
+  padding: 40px 60px;
+
+  font-size: 48px;
+  text-align: center;
+
+  opacity: 0.3;
+}
+
+.step.active {
+  opacity: 1;
+}
+
+.slide {
+  background: white;
+}
+
+code {
+  background-color: yellow;
+  font-size: 14px;
+}
+
+%end
+
+
+%%%%%%%%%%%%%%%%%%%
+%% Here we go...
+
+
+!SLIDE x=500 y=2000 scale=12
+
+Business Objects and Maintenance Documents
+
+!SLIDE x=4000 y=700 rotate-y=90
+
+First, Business Objects
+
+* The most general entity in Kuali Software.
+* Everything is a business object. Well, almost everything...
+* Business Objects can be persistant. Most are persistant.
+
+!SLIDE x=4000 y=700 z=-1500 scale=2
+
+Business Objects are persistant?
+
+!SLIDE x=4000 y=2500 z=-1500 rotate-y=180 scale=2
+
+Each business object has a corresponding database table.
+
+!SLIDE x=4000 y=1700 z=3000 rotate-y=180 scale=0.5
+
+How do we modify/maintain Business Objects? Enter Maintenance Documents
+
+!SLIDE x=4000 y=1700 z=3000 rotate-y=90 rotate=180 
+
+Maintenance Documents *are* Business Bbjects. Remember almost everything
+is a Business Object? Think of them as carriages, escorts, or entourages
+of Business Objects.
+
+!SLIDE x=2825 y=2325 z=1000 rotate=300 
+
+* Maintenance Documents contain a reference to a Business Object called,
+DocumentHeader.
+* DocumentHeader contains the workflow metadata necessary to process a
+Document.
+* Business Objects are referred to via the Maintenance Document and
+are handled during post processing.
+* One Business Object per Maintenance Document.
+
+!SLIDE x=2825 y=2325 z=-3000 rotate=270 
+
+How to Make a Maintenance Document
+
+!SLIDE x=4800 y=2325 z=3000 rotate=180
+
+Things you need:
+
+* Business Object POJO
+* DataDictionary Metadata for the Business Object
+* Maintenance Document Metadata
+* Database Table
+* OJB Mapping
+* Workflow document type
+* Link on the portal page
+
+!SLIDE x=6300 y=2000 z=-3000 scale=0.5
+
+AuctionLot POJO
+
+!SLIDE x=6300 y=2500 z=-3000 scale=0.5
+
+Database Table
+
+!SLIDE x=6300 y=3000 z=-3000 scale=0.5
+
+OJB Mapping
+ 
+!SLIDE x=6300 y=3000 scale=2
+ 
+DataDictionary Entry
+
+!SLIDE x=4300 y=3000 rotate-y=-90
+
+Maintenance Document Entry
+
+!SLIDE x=3000 y=1500 scale=10
+
+
+%% The End
+%%%%%%%%%%%%%%%

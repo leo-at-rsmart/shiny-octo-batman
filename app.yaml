@@ -6,7 +6,7 @@ threadsafe: false
 
 env_variables:
   GCB_PRODUCT_VERSION: '1.5.1'
-  GCB_COURSES_CONFIG: 'course:/Day1:/courses/Day1'
+#  GCB_COURSES_CONFIG: 'course:/Day1:/courses/Day1'
 
 inbound_services:
 - warmup
@@ -22,6 +22,8 @@ libraries:
   version: "2.5.2"
 - name: webob
   version: "1.2.3"
+- name: PIL
+  version: latest
 
 handlers:
 - url: /remote_api

@@ -1,0 +1,136 @@
+title: Day 2 | Struts 1 and MVC
+author: Leo Przybylski
+
+
+%%%%%
+%% Add some inline style rules...
+
+%css
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+body {
+  background-image: -webkit-linear-gradient(top left, silver, white);
+  background-image:    -moz-linear-gradient(top left, silver, white);
+  background-image:     -ms-linear-gradient(top left, silver, white);
+  background-image:      -o-linear-gradient(top left, silver, white);
+  background-image:         linear-gradient(top left, silver, white);
+}
+
+.step {
+  width: 700px;
+  height: 400px;
+  padding: 40px 60px;
+
+  font-size: 48px;
+  text-align: center;
+
+  opacity: 0.3;
+}
+
+.step.active {
+  opacity: 1;
+}
+
+.slide {
+  background: white;
+}
+
+code {
+  background-color: yellow;
+  font-size: 14px;
+}
+
+%end
+
+
+%%%%%%%%%%%%%%%%%%%
+%% Here we go...
+
+
+!SLIDE x=500 y=2000 scale=12
+
+Struts 1 and Model View Controller
+
+!SLIDE x=4000 y=700 rotate-y=90
+
+Struts 1 based-on Model View Controller Enterprise Design Pattern
+
+!SLIDE x=4000 y=700 z=-1500 scale=2
+
+Creates a separation of concerns by splitting software into roles of:
+
+* Model
+* View
+* Controller
+
+!SLIDE x=4000 y=2500 z=-1500 rotate-y=180 scale=2
+
+JSP/JSTL is considered the View
+
+* Provides templating for the view and access to the model through
+  struts tags
+* Rice and KFS manage templating and modularity through custom tag
+  files.
+
+!SLIDE x=4000 y=1700 z=3000 rotate-y=180 scale=0.5
+
+The Model is represented in several different ways. 
+
+* Struts provides a layer between the view and the Model which has two
+  parts (Action and Action Form)
+* The Model is actually separate from Struts 1. These are the
+  Documents and Business Objects.
+
+!SLIDE x=4000 y=1700 z=3000 rotate-y=90 rotate=180 
+
+Action and ActionForm
+
+* Provide a midway point for the Controller to pass the Model to the
+  View without needing to know details about either.
+* ActionForm is basically a POJO wrapper around the Model. Represents
+  the HTML Form.
+* Action handles mapping a view to an ActionForm.
+
+!SLIDE x=2825 y=2325 z=1000 rotate=300 
+
+work/web-root/WEB-INF/struts-config.xml
+
+!SLIDE x=2825 y=2325 z=-3000 rotate=270 
+
+Handles ActionForm definitions and makes Actions aware of them by
+mapping them. 
+ 
+!SLIDE x=4800 y=2325 z=3000 rotate=180
+
+Controller is called KualiRequestProcessor.
+
+* Rarely needs customization
+
+!SLIDE x=6300 y=2000 z=-3000 scale=0.5
+
+Struts 1 is KNS only. KRAD Uses Spring MVC and Tiles.
+
+!SLIDE x=6300 y=2500 z=-3000 scale=0.5
+
+Important mostly for Transactional Documents built with KNS.
+
+!SLIDE x=6300 y=3000 z=-3000 scale=0.5
+
+Accessing Spring Services from Struts
+ 
+!SLIDE x=6300 y=3000 scale=2
+
+Can be done using the Struts Action. 
+
+* Invoked per/request
+* Best practice is to add as much functionality to Spring services instead of the Struts Action 
+
+!SLIDE x=4300 y=3000 rotate-y=-90
+
+
+%% The End
+%%%%%%%%%%%%%%%

@@ -26,50 +26,49 @@ course:
   # administrative users. Each email address must be placed between '[' and ']',
   # for example: '[test@example.com]'. Regular expressions are not supported,
   # exact match only.
-  admin_user_emails: ''
+  admin_user_emails: 'leo@rsmart.com'
 
   # Course title
-  title: 'Power Searching with Google'
+  title: 'Rice Training'
 
   # Main page blurb. (The '|' at the beginning enables multi-line input.)
   blurb: |
-    Google Search makes it amazingly easy to find information. Come learn about
-    the powerful advanced tools we provide to help you find just the right
-    information when the stakes are high.
+    Kuali Rice is a middleware solution for higher education enterprise software. This course instructs on how to develop
+    software solutions using Rice.
 
   # Information about the instructor to display on the main page.
-  instructor_details: 'Daniel Russell <br> Senior Research Scientist <br> Google, Inc.'
+  instructor_details: 'Leo Przybylski <br> Kuali Engineer III <br> rSmart Group'
 
   # You can choose whether you want a video or an image on the main page.
   # If you specify both a video and an image link, then the video will take
   # priority. The image alt text allows the image to be understood by text-only
   # screen readers.
   main_video:
-    url: https://www.youtube.com/embed/Kdg2drcUjYI?rel=0
+    url: 
   main_image:
-    url: /assets/img/banner1.png
-    alt_text: Photo of Dan Russell
+    url: '/assets/img/3462364518_65be33b0e3-profile.jpg'
+    alt_text: Photo of Leo Przybylski
 
   # Course start date.
-  start_date: 'July 10, 2012'
+  start_date: 'February 10, 2014'
 
   # Forum URL. For details, see
   #
   #     http://code.google.com/p/course-builder/wiki/WebForums.
-  forum_email: My-Course@googlegroups.com
-  forum_url: https://groups.google.com/group/My-Course
+  forum_email: rice-training-qa@googlegroups.com
+  forum_url: https://groups.google.com/group/rice-training-q-and-a
 
   # Forum embedding URL. This link is used to embed the forum in an iframe on
   # the forum.html page. Set this value to False if you don't use forum and/or
   # to remove the Forum link from the student navigation bar.
-  forum_embed_url: https://groups.google.com/forum/embed/?place=forum/My-Course
+  forum_embed_url: https://groups.google.com/forum/embed/?place=forum/rice-training-q-and-a
 
   # URL for the mailing list where students can register to receive course
   # announcements. For details, see
   #
   #     http://code.google.com/p/course-builder/wiki/CreateEmailList
-  announcement_list_email: My-Course-Announce@googlegroups.com
-  announcement_list_url: https://groups.google.com/group/My-Course-Announce
+  announcement_list_email: rice-training-announce@googlegroups.com
+  announcement_list_url: https://groups.google.com/group/rice-training-announce
 
   # Locale for internationalization. See modules/i18n/resources/locale for
   # available locales.
@@ -81,6 +80,18 @@ course:
   # Whether the course material can be accessed without requiring users to log
   # in or register.
   browsable: true
+
+institution:
+  # Name of your institution
+  name: 'rSmart'
+
+  # URL of your institution's webpage
+  url: 'http://www.rsmart.com'
+
+  # Link and alt text for the logo of the course or your institution
+  logo:
+    url: 'assets/img/kuali_thumb.png'
+    alt_text: Kuali Foundation Logo
 
 ########################
 # Course preview page

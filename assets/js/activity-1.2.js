@@ -31,27 +31,15 @@
 
 var activity = [
 
-  '<h2>Download Java</h2>Visit the <a href="http://download.oracle.com">Oracle download site</a>',
+    '<h2>Java</h2><h3>Downloading</h3>Visit the <a href="http://download.oracle.com">Oracle download site</a>.',
+    
+    '<h3>Installing</h3>Select not to install the JRE or sources.',
 
-  '<img src="assets/img/Image1.1a.png" height=450 width=785><p/>',
-  '<b>1.</b> You want to re-read an introductory accounting textbook from school, but you cannot remember the exact title. You recall that the cover is yellow and has puzzle pieces on it. In the image above, where would you click to filter the results in order to locate the book?',
+    '<h3>Setup Environment Variables</h3>Create a new JAVA_HOME environment variable that refers to the location where the JDK was installed.',
 
-  { questionType: 'multiple choice',
-    choices: [['A', false, 'Please try again.'],
-              ['B', false, 'Please try again.'],
-              ['C', false, 'Please try again.'],
-              ['D', true, 'Correct! Filtering by color would help you view all the books with yellow covers.']]},
+    'Mac users will find this located in /Library/Java/JavaVirtualMachines/jdk1.7.0_40.jdk/Contents/Home/. Windows users will find it in C:\Program Files\Java\jdk1.7.0_40',
 
-  '<br><br><br><img src="assets/img/Image1.3.png" height=450 width=785><p/>',
-  '<br><b>2.</b> You want statistics on college loans. If you search using [college loans statistics], you get the image results above. What color would you click to see just the charts and graphs? ',
-
-  { questionType: 'freetext',
-    correctAnswerRegex: /white?/i,
-    correctAnswerOutput: 'Correct! Many charts, tables, and graphs have white backgrounds, so filtering for white images helps you find them faster.',
-    incorrectAnswerOutput: 'Try again. Consider what color would be dominant in images of charts, tables, and graphs. Look at the results above. Each of those sources is traditionally printed on paper.',
-    showAnswerOutput: 'Our search expert says: I would click on white in the color grid, since many charts, tables, and graphs have white backgrounds.' },
-
-  '<br><br><br><b>3.</b> What is something you have wanted to find that color filtering might have helped you locate faster? Try it out and share your story in the <a href="LINK_TO_COURSE_FORUM" target="_blank">forum</a>.',
+    'You will also need to add the bin directory to your PATH environment variable.',
 
 ];
 

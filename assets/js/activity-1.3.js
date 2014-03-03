@@ -30,37 +30,20 @@
 //    see http://code.google.com/p/course-builder/wiki/CreateActivities.
 
 var activity = [
+    '<h2>Maven</h2><h3>Downloading</h3>Visit the <a href="http://maven.apache.org">Maven project site</a>.',
 
-  '<table border="2"><tr><td><b>Search Tips:</b><p><ul><li>In the previous video, you learned how Google searches the web to find the results of your query. <li>Google looks for the word you typed in, but sometimes also looks for synonyms or related terms. Any words appearing in boldface type in your search results are terms Google associates with your search terms. For example, if you search for [kittens] you might see the word cats in boldface in your results.<li>Ads appear in response to some queries and are always labeled ads. <li>Aside from ads, website owners cannot pay to influence the placement of their website in the search results.</ul><p></tr></td></table><br>',
+    'Locate the download link to get Maven. Choose to download the apache-maven-3.2.1.zip file.',
 
-  'The next several questions explore what elements impact the order in which Google returns your results. Mark whether each statement is true or false, according to Matt Cutts:<p>',
+    '<h3>Installing</h3>It is just a zip file, so you install by uncompressing it in your desired location. For Windows users, I recommend installing in C:\Program Files\Java.',
 
-  { questionType: 'multiple choice group',
-    questionsList: [{questionHTML: 'Pages that have the words you type in, or synonyms for those words, are listed higher.',
-                     choices: ['True', 'False'], correctIndex: 0},
-                    {questionHTML: 'Pages with font size the same as you type into Google get listed first.',
-                     choices: ['True', 'False'], correctIndex: 1},
-                    {questionHTML: 'Pages where the words you typed in appear in the title or web address get listed higher.',
-                     choices: ['True', 'False'], correctIndex: 0},
-                    {questionHTML: 'Webmasters can get higher ranking in the results by paying Google money.',
-                     choices: ['True', 'False'], correctIndex: 1},
-                    {questionHTML: 'If the words you type in appear near each other on a page, it may get listed higher in your results.',
-                     choices: ['True', 'False'], correctIndex: 1},
-                    {questionHTML: 'Pages which are linked to by lots of other pages--especially other high quality pages--are listed higher.',
-                     choices: ['True', 'False'], correctIndex: 0}],
-    allCorrectOutput: 'Please scroll down for another activity.',
-    someIncorrectOutput: 'Please try again.'},
+    '<h3>Setup Environment Variables</h3>You will need to add the location you installed Maven into a new M2_HOME environment variable.',
 
-  '<br><br><br>In the image below, identify the area(s) that are ads.<br><br><img src="assets/img/Image1.5.png" width="785" height="500" usemap="#Image1" border="0"><p>Where are the ads?<p>',
+    'You will also need to add the bin directory to your PATH environment variable.',
 
-  { questionType: 'multiple choice',
-    choices: [['A', false, 'Your answer is incorrect. Can you identify the two places where there are ads? Please try again.'],
-              ['B', false, 'Your answer is incorrect. Can you identify the two places where there are ads? Please try again.'],
-              ['C', false, 'Your answer is incorrect. Can you identify the two places where there are ads? Please try again.'],
-              ['D', false, 'Your answer is incorrect. Can you identify the two places where there are ads? Please try again.'],
-              ['A and B', false, 'Your answer is incorrect. Can you identify the two places where there are ads? Please try again.'],
-              ['B and C', true, 'Your answer is correct! You have completed this activity.'],
-              ['C and D', false, 'Your answer is incorrect. Can you identify the two places where there are ads? Please try again.']]}
+    '<h2>MySQL</h2><h3>Downloading</h3>Visit the <a href="http://www.mysql.com">MySQL project site</a>.',
 
+    'Near the top of the page, there is a <b>GA</b> tab. Click it and you will be directed to the download area. Select MySQL Server Community Edition.',
+
+    'Now select the .',
 ];
 

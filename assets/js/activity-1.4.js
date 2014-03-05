@@ -31,10 +31,14 @@
 
 var activity = [
 
-    '<h2>MySQL</h2><h3>Downloading</h3>Visit the <a href="http://www.mysql.com">MySQL project site</a>.',
+    '<h2>Eclipse</h2><h3>Downloading</h3>Visit the <a href="http://www.eclipse.org">Eclipse project site</a>. There will be a link to get Eclipse. Choose the Java Edition. Do not choose Java Enterprise.',
 
-    'Near the top of the page, there is a <b>GA</b> tab. Click it and you will be directed to the download area. Select MySQL Server Community Edition.',
+    '<h3>Installing</h3>Eclipse is just a zip file. To install it, uncompress it to your desired location. After uncompressing, you will want to create a shortcut on your desktop.',
 
-    'Now select the .',
+    '<h3>Setup Subclipse</h3>',
+
+    '<h3>Setup Maven</h3>',
+
+    '<h3>Setup JRE</h3>',
 
 ];

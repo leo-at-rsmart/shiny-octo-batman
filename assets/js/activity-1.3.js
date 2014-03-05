@@ -40,10 +40,5 @@ var activity = [
 
     'You will also need to add the bin directory to your PATH environment variable.',
 
-    '<h2>MySQL</h2><h3>Downloading</h3>Visit the <a href="http://www.mysql.com">MySQL project site</a>.',
-
-    'Near the top of the page, there is a <b>GA</b> tab. Click it and you will be directed to the download area. Select MySQL Server Community Edition.',
-
-    'Now select the .',
 ];
 

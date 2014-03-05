@@ -1,4 +1,4 @@
-application: kfs-training  # FIXME: Replace this with your application id
+application: krad-training 
 version: 1
 runtime: python27
 api_version: 1

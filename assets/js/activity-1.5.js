@@ -31,15 +31,45 @@
 
 var activity = [
 
-    '<h2>Eclipse</h2><h3>Downloading</h3>Visit the <a href="http://www.eclipse.org">Eclipse project site</a>. There will be a link to get Eclipse. Choose the Java Edition. Do not choose Java Enterprise.',
+    '<h2>MySQL</h2><h3>Downloading</h3>Visit the <a href="http://www.mysql.com">MySQL project site</a>.',
 
-    '<h3>Installing</h3>Eclipse is just a zip file. To install it, uncompress it to your desired location. After uncompressing, you will want to create a shortcut on your desktop.'
+    'Near the top of the page, there is a <b>GA</b> tab. Click it and you will be directed to the download area. Select MySQL Server Community Edition.',
 
-    '<h3>Setup Subclipse</h3>',
+    'Now select the .',
+    
+    '<h3>Update <code>my.cnf</code></h3>',
+    'Locate the <code>my.cnf</code> file for your mysql installation and open it in a text editor to add the following.',
+    
+    "<pre class=\"pre-scrollable\">[mysqld]\n"
+    + "max_allowed_packet=20M\n"
+    + "transaction-isolation=READ-COMMITTED\n"
+    + "lower_case_table_names=1\n"
+    + "max_connections=1000\n"
+    + "innodb_locks_unsafe_for_binlog=1</pre>",
+    
+    '<h3>Installation</h3>',
 
-    '<h3>Setup Maven</h3>',
+    'Windows has the option of choosing an MSI installer or a zip file. I recommend the zip file because it makes the installation much simpler.',
 
-    '<h3>Setup JRE</h3>',
+    'Uncompress the zip file into <code>C:\Program Files</code>. This will make it easier to locate later.',
+    
+    'Mac users will use the MySQL pkg installer which will install mysql into <code>/usr/local/mysql</code>',
+    
+    '<h3>Add to the PATH Environment Variable</h3>',
+    
+    'On Windows, you probably uncompressed a zip file into <code>C:\\Program Files</code>, so you can simply add that to your PATH variable. ',
 
+    'On Mac, edit your <code>$HOME/.bash_profile</code>, and add mysql to the PATH. Here is an example:',
+    
+    "<pre class=\"pre-scrollable\"># Get the aliases and functions\n"
+    + "if [ -f ~/.bashrc ]; then\n"
+    + "   . ~/.bashrc\n"
+    + "fi\n\n"
+    + "# User specific environment and startup programs\n"
+    + "MYSQL_HOME=/usr/local/mysql\n"
+    + "PATH=$PATH:$MYSQL_HOME/bin\n"
+    + "export BASH_ENV PATH \n"
+        + "unset USERNAME\n</pre>",
 
+    'Also, the dmg file will have included a <code>MySQL.prefPane</code>. Double-clicking the prefPane icon will open a MySQL Preferences pane in the System Preferences application. You can use this to start/stop MySQL',
 ];

@@ -31,21 +31,70 @@
 
 var activity = [
 
-  '<table border="2"><tr><td><b>Search Tips:</b><p><ul><li>Find facts quickly with shortcuts (search features).<li>Google search features include weather, time, flight numbers, earthquakes, world capitals, sunrise/sunset times, movies, stock quotes, sports scores, package tracking numbers, medical conditions, and medications. Check out the <a href="http://www.google.com/help/features.html" target="blank">full list of search features</a>.</ul></tr></td></table>',
+    'In the last exercise we looked at KIM largely from a functional and administrative perspective.  In this exercise we will get hands-on with the various APIs that KIM offers, writing some unit tests to exercise them.',
+    'There are a few primary API classes that KIM provides.  These are:',
+    '<ul><li>IdentityService</li>'
+    + '<li>GroupService</li>'
+    + '<li>PermissionService</li>'
+    + '<li>RoleService</li>'
+    + '<Li>ResponsibilityService</li></ul>'
+    'The tests that you will be writing will work primarily with the first three services on this list.',
+    
+    '<h3>Checkout “exercise-kim-api” project</h3>',
+    'To ensure a clean and consistent environment for everyone, we will check out a project from Subversion as a starting point.  This project will contain completed copies of all work from the previous exercises, as well as some starting points for this exercise.',
+    
+    'In order to get the copy of the project that you will need, please check out the exercise-kim-api project from the training Subversion repository.',
+    
+    'This exercise will require that you have all permissions and roles set up properly from the last exercise.  If you do not, please let the instructor know so that you can get your data in a consistent state required for the unit tests in this exercise to execute successfully.',
+    
+    '<h3>Test API Operations Related to Principals</h3>',
 
-  'Your boss is on her way to Bangalore, flying via London on American Flight 98. She broke her shoe as she was boarding and called you to arrange for new replacement shoes as soon as she lands at Heathrow airport. She heard it is monsoon season in India, so she also wants you to check the weather there.<p>',
- 
-  // custom question types must be written all in one string (can be multi-line, though) ...
+    'We have created a IdentityTest that you can use as a starting point.',
+    
+    '<ol><li>Open the train.kim.IdentityTest class found in the src/test/java directory.</li>'
+        + '<li>Run this test class.  Recall that the way to run this test is to right-click on it in the “Package Explorer” view, and select “Run As -> JUnit Test”.</li>'
+        + '<li>Since you haven’t made any changes yet, all tests should pass!</li>'
+        + '<li>Look at the testPrincipals() method.  This is currently using the KIM API to get a reference to the Principal object for the admin principal.</li>'
+        + '<lI>Follow the instructions in this file to add to the test.</li>'
+        + '<li>When you are done, run the test again and verify that it passes.</li></ol>',
 
-  // in this custom question type, the user writes a reply and then clicks on the output textarea to see feedback:
-  '<form name="quiz"><p><b>1.</b> What is the weather in Bangalore right now: clear, raining, cloudy? <input type="text" class="alphanumericOnly" style="border:1px solid black;" id="txtbox1" onBlur="check42(1, \'A search like [weather bangalore] or [bangalore weather] finds the weather forecast for today and the coming several days.\')"></p><p><font color="gray">Click here to see feedback</font><br><textarea style="width: 600px; height: 30px;" readonly="true"  name="output1"></textarea><p><b>2.</b> What time is American Flight 98 scheduled to arrive in London today? <input type="text" class="alphanumericOnly" style="border:1px solid black;" id="txtbox2" onBlur="check42(2, \'A search like [American 98] gives you up-to-date information about arrival and departure times for that flight.\')"></p><p><font color="gray">Click here to see feedback</font><br><textarea style="width: 600px; height: 30px;" readonly="true"  name="output2"></textarea></p><p><b>3.</b> What time is it now in London? <input type="text" style="border:1px solid black;" class="alphanumericOnly" id="txtbox3" onBlur="check42(3, \'A search like [time london] or [london time] tells you what time it is right now in London.\')"></p><p><font color="gray">Click here to see feedback</font><br><textarea style="width: 600px; height: 30px;" readonly="true"  name="output3"></textarea></p></form>',
- 
-  '<p><b>4.</b> Also, your boss forgot her bottle of dimenhydrinate pills but she found a bottle of Dramamine for sale in the airport. She wants to know if she can take the Dramamine instead. Are the two medicines equivalent?</p>',
+    '<h3>Test API Operations Related to Entities</h3>',
+    '<ol><li>Open the train.kim.IdentityTest class<li>'
+        + '<lI>Run this test class, all tests should pass.</li>'
+        + '<li>Find the testEntities() method.</li>'
+        + '<li>Note it’s current behavior and implement the test that it is asking for in comments.</li></ol>'
+    'The KIM Entity data model allows for lots of different pieces of data to be associated with the entity.  In the set of Rice entities out of the box though, it doesn’t populate much of this data.  It generally has the names and email address available but not extra identity data such as phone numbers, addresses, etc.',
+    'This has an effect on what kind of data you can work with in your tests.',
+    
+    '<h3>Test API Operations Related to Groups</h3>',
+    'We haven’t done much with Groups so far in any of our exercises.  If you want to see which groups are available in the system, do the following:',
+    '<ol><lI>Launch the web application.</li>'
+        + '<li>Navigate to the “Administration” tab.</li>'
+        + '<li>Click on the “Group” link.</li>'
+        + '<li>This will bring up the Group Lookup screen, hit the “search” button and it will return all Groups in the database.</li>'
+        + '<li>Click on any of the group names to see the full details of the group (including membership).</li></ol>',
+    
+    'Next, we’ll write some code that exercises the KIM Group APIs.',
+    '<ol><li>Open the train.kim.GroupTest class.</li>'
+        + '<li>There are four test methods in this class with empty method bodies:'
+        + '<ol><li>testGetGroup</li>'
+        + '<li>testGetGroupMemberPrincipalIds</li>'
+        + '<li>testGetGroupIdsForPrincipal</li>'
+        + '<li>testIsMemberOfGroup</li></ol></li>'
+        + '<li>Follow the instructions located in comments inside of each of these in order to implement these tests.</li>',
+        + '<lI>Once you are done, run the unit test and verify that all tests pass.</li></ol>',
+    
+    '<h3>Test Authorization Checks against KIM Permissions</h3>',
+    'The isAuthorized(…) method is offered by KIM for making permission checks.  In this part of the exercise, we will write some tests that test the various permissions we set up in the last exercise.',
+    
+    '<ol><li>Open the train.kim.PermissionTest class.</li>'
+        + '<li>The first two tests are testing the “Assign Role” and “Grant Permission” permissions that we granted to the “KR-SYS : Technical Administrator” role during the last exercise.</li>'
+        + '<li>Run this test class.  All tests should pass.  If they do not, that means that the permission and role data from the last exercise did not get set up correctly in your database.  Please go back and review that you did not miss anything.</li>'
+        + '<li>Now, you should implement testIsAuthorized_InitiateDocument_BookOrder() yourself.  Please follow the instructions in the comments.  This test should test that “user1” is authorized to Initiate Book Order documents, which is the permission we configured at the end of our last exercise.</li></ol>',
 
-  { questionType: 'multiple choice',
-    choices: [['Yes', true, 'Correct! By searching for [dimenhydrinate] and/or [dramamine] you can confirm that the two medicines are equivalent.'],
-              ['No', false, 'Incorrect. By searching for [dimenhydrinate] and/or [dramamine] you can confirm that the two medicines are equivalent.']] }
-
+    '<h3>On Your Own</h3>',
+    'KIM provides many other operations on its services that you will want to familiarize yourself with.  If you have additional time, you can write additional tests that touch pieces of the KIM API that we haven’t worked with yet.',
+    'The javadocs for the five services listed above are a good place to start to learn about the other operations that are available.',
 ];
 
 

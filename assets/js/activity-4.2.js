@@ -34,10 +34,11 @@ var activity = [
     'In the last exercise we looked at KIM largely from a functional and administrative perspective.  In this exercise we will get hands-on with the various APIs that KIM offers, writing some unit tests to exercise them.',
     'There are a few primary API classes that KIM provides.  These are:',
     '<ul><li>IdentityService</li>'
-    + '<li>GroupService</li>'
-    + '<li>PermissionService</li>'
-    + '<li>RoleService</li>'
-    + '<Li>ResponsibilityService</li></ul>'
+        + '<li>GroupService</li>'
+        + '<li>PermissionService</li>'
+        + '<li>RoleService</li>'
+        + '<Li>ResponsibilityService</li></ul>',
+
     'The tests that you will be writing will work primarily with the first three services on this list.',
     
     '<h3>Checkout “exercise-kim-api” project</h3>',
@@ -62,7 +63,7 @@ var activity = [
     '<ol><li>Open the train.kim.IdentityTest class<li>'
         + '<lI>Run this test class, all tests should pass.</li>'
         + '<li>Find the testEntities() method.</li>'
-        + '<li>Note it’s current behavior and implement the test that it is asking for in comments.</li></ol>'
+        + '<li>Note it’s current behavior and implement the test that it is asking for in comments.</li></ol>',
     'The KIM Entity data model allows for lots of different pieces of data to be associated with the entity.  In the set of Rice entities out of the box though, it doesn’t populate much of this data.  It generally has the names and email address available but not extra identity data such as phone numbers, addresses, etc.',
     'This has an effect on what kind of data you can work with in your tests.',
     
@@ -82,7 +83,7 @@ var activity = [
         + '<li>testGetGroupIdsForPrincipal</li>'
         + '<li>testIsMemberOfGroup</li></ol></li>'
         + '<li>Follow the instructions located in comments inside of each of these in order to implement these tests.</li>',
-        + '<lI>Once you are done, run the unit test and verify that all tests pass.</li></ol>',
+        + '<li>Once you are done, run the unit test and verify that all tests pass.</li></ol>',
     
     '<h3>Test Authorization Checks against KIM Permissions</h3>',
     'The isAuthorized(…) method is offered by KIM for making permission checks.  In this part of the exercise, we will write some tests that test the various permissions we set up in the last exercise.',
@@ -95,6 +96,7 @@ var activity = [
     '<h3>On Your Own</h3>',
     'KIM provides many other operations on its services that you will want to familiarize yourself with.  If you have additional time, you can write additional tests that touch pieces of the KIM API that we haven’t worked with yet.',
     'The javadocs for the five services listed above are a good place to start to learn about the other operations that are available.',
+
 ];
 
 

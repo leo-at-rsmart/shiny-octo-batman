@@ -136,19 +136,19 @@ var activity = [
     '<h3>Test Fiscal Approval Routing</h3>',
     'To test that your setup is working, follow test steps.',
     '<ol><li>Execute a backdoor login as user1</li>'
-        + '<li>Click on the “Book Order” link.</li>'
+        + '<li>Click on the <b>Book Order</b> link.</li>'
         + '<li>Fill out a the form and click submit (for now, it shouldn’t matter which books you add to the order, as long as they exist!)</li>'
-        + '<li>Once the document has been submitted, it should route for approval to user3 as a member of the “TRNAPP : Accounts Payable” group.</li>'
-        + '<li>To verify this, execute a back door login as user3</li>'
-        + '<li>Click on the “Action List” button at the top of the portal.</li>'
+        + '<li>Once the document has been submitted, it should route for approval to user3 as a member of the <b>TRNAPP : Accounts Payable</b> group.</li>'
+        + '<li>To verify this, execute a back door login as <b>user3</b></li>'
+        + '<li>Click on the <b>Action List</b> button at the top of the portal.</li>'
         + '<li>You should see the document in user3’s action list.  This should look something like the following:</li>'
     
-        + '<li>Click on the Route Log icon in the “Log” column.  On the resulting screen it should show that the document is awaiting approval from the Accounts Payable group.</li>'
-        + '<li>Now, click on the linked document id in the “Id” column of the Action List.</li>'
-        + '<li>It should open the Book Order that was submitted.  There should be an “approve” button at the bottom of this page.</li>'
-        + '<li>Click the “approve” button to submit the approval for user3.</li>'
-        + '<li>After approving, this should send you back to the Action List of user3.  The document should no longer be there.</li>'
-        + '<li>Navigate to “Document Search” and perform a search.  The document should be returned in the result set and should have a status of “FINAL”</li></ol>',
+        + '<li>Click on the Route Log icon in the <b>Log</b> column.  On the resulting screen it should show that the document is awaiting approval from the <b>Accounts Payable</b> group.</li>'
+        + '<li>Now, click on the linked document id in the <b>Id</b> column of the Action List.</li>'
+        + '<li>It should open the Book Order that was submitted.  There should be an <b>approve</b> button at the bottom of this page.</li>'
+        + '<li>Click the “approve” button to submit the approval for <b>user3</b>.</li>'
+        + '<li>After approving, this should send you back to the Action List of <b>user3</b>.  The document should no longer be there.</li>'
+        + '<li>Navigate to <b>Document Search</b> and perform a search.  The document should be returned in the result set and should have a status of <b>FINAL</b></li></ol>',
     
     '<h3>Create the Warehouse Processing Node</h3>',
     '<li>For this part of the exercise we are going to create some more complex routing rules that are driven by document data.  Recall that for Warehouse Processing we will be routing based on the category of the books in our order.  For the sake of simplicity, we will create rules based on the following categories:',

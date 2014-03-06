@@ -32,34 +32,34 @@
 var activity = [
 
     'In this exercise we are going to define a routing process for the Book Order document that consists of 2 route nodes in the following order:',
-    '<ol><li>Fiscal Approval – this node will route the document to an “Accounts Payable” group that will be responsible for ensuring enough funds are available for the order.  If they deem that is the case then they will approve the order.</li>'
-        + '<li>Warehouse Processing – this node will route the document to an appropriate warehouse floor manager for approval depending on the category of Books on the Book Order.  If the books include more than one category, then more than one warehouse floor manager could receive the request.  The warehouse floor manager will approve the order once it has been filled.</li></ol>',
+    '<ol><li><b>Fiscal Approval</b> – this node will route the document to an <b>Accounts Payable</b> group that will be responsible for ensuring enough funds are available for the order.  If they deem that is the case then they will approve the order.</li>'
+        + '<li><b>Warehouse Processing</b> – this node will route the document to an appropriate warehouse floor manager for approval depending on the category of Books on the Book Order.  If the books include more than one category, then more than one warehouse floor manager could receive the request.  The warehouse floor manager will approve the order once it has been filled.</li></ol>',
     'In order to complete this exercise, we will need to ensure that the Book Order is attaching enough XML to the workflow document to facilitate routing.  By default, the KNS will serialize the entire document to XML using a library called XStream.  Oftentimes, this generates far too much XML.  Thankfully, the data dictionary offers us a way to streamline the XML content that we generate.  We will see how that is done as part of this exercise.',
 
-    '<h3>Checkout “exercise-kew-bookstore” project</h3>',
+    '<h3>Checkout <code>exercise-kew-bookstore</code> project</h3>',
 
     'To ensure a clean and consistent environment for everyone, we will check out a project from Subversion as a starting point.  This project will contain completed copies of all work from the previous exercises, as well as some starting points for this exercise.',
-    'In order to get the copy of the project that you will need, please check out the exercise-kew-bookstore project from the training Subversion repository.',
+    'In order to get the copy of the project that you will need, please check out the <code>exercise-kew-bookstore</code> project from the training Subversion repository.',
     
     '<h3>Update the Book Order Data Dictionary File</h3>',
-    'First, we need to update the BookOrderDocument.xml data dictionary file to add a section that defines the attributes we want to make available to the workflow engine.  This will essentially control what kind of XML gets generated for our document so that we can easily construct an XPath expression later to locate it.',
+    'First, we need to update the <code>BookOrderDocument.xml</code> data dictionary file to add a section that defines the attributes we want to make available to the workflow engine.  This will essentially control what kind of XML gets generated for our document so that we can easily construct an XPath expression later to locate it.',
     'To do this, follow these steps:',
-    '<ol><li>Open the BookOrderDocument.xml data dictionary file.</li>'
-        + '<li>There is a commented out section in this file with a bean id of BookOrderDocument-WorkflowProperties.  Uncomment this section.</li>'
-        + '<li>Also uncomment the commented out workflowProperties property on BookOrderDocument-parentBean</li></ol>',
+    '<ol><li>Open the <code>BookOrderDocument.xml</code> data dictionary file.</li>'
+        + '<li>There is a commented out section in this file with a bean id of <code>BookOrderDocument-WorkflowProperties</code>.  Uncomment this section.</li>'
+        + '<li>Also uncomment the commented out <code>workflowProperties</code> property on <code>BookOrderDocument-parentBean</code></li></ol>',
     'The workflow properties definition is used to instruct the KNS which attributes to serialize into XML, starting from a base path.',
-    'In our case, we use “document.bookOrderEntries” which will essentially call getDocument().getBookOrderEntries() on the form and then serialize the various org.kuali.rice.krad.datadictionary.WorkflowProperty beans defined within.',
+    'In our case, we use <code>document.bookOrderEntries</code> which will essentially call <code>getDocument().getBookOrderEntries()</code> on the form and then serialize the various <code>org.kuali.rice.krad.datadictionary.WorkflowProperty</code> beans defined within.',
     'After making this change, test that your XML is getting generated properly by performing the following steps:',
-    '<ol><li>Launch the web application and login (or execute a backdoor login) as user1.</li>'
-        + '<li>Click on the “Book Order” link to initiate a new Book Order.</li>'
+    '<ol><li>Launch the web application and login (or execute a backdoor login) as <b>user1</b>.</li>'
+        + '<li>Click on the <b>Book Order</b> link to initiate a new Book Order.</li>'
         + '<li>Fill out the book order, being sure to add a book or two to the list.</li>'
         + '<li>Hit the submit button.</li>'
         + '<li>Write down or copy the document id somewhere.  We will need it a few steps later.</li>'
-        + '<li>To check the XML that has been generated, execute a backdoor login as the admin user.</li>'
-        + '<li>Click on the “Administration” tab.</li>'
-        + '<li>Click on the “Document Operation” link.</lI>'
+        + '<li>To check the XML that has been generated, execute a backdoor login as the <b>admin</b> user.</li>'
+        + '<li>Click on the <b>Administration</b> tab.</li>'
+        + '<li>Click on the <b>Document Operation</b> link.</lI>'
         + '<li>Enter the document id of the Book Order that you submitted.</li>'
-        + '<li>Once the document operation screen loads, scroll down and find the field labeled “Doc Content”.  This will contain the XML that was generated for your document.  It should look similar to the following:'
+        + '<li>Once the document operation screen loads, scroll down and find the field labeled <b>Doc Content</b>.  This will contain the XML that was generated for your document.  It should look similar to the following:'
         + '<pre class="pre-scrollable">'
         + '&lt;documentContent&gt;&lt;applicationContent&gt;&lt;org.kuali.rice.krad.workflow.KualiDocumentXmlMaterializer&gt;\n'
         + '    &lt;document class="train.bookstore.document.BookOrderDocument"&gt;\n'
@@ -87,7 +87,7 @@ var activity = [
         + ' &lt;/org.kuali.rice.krad.workflow.KualiDocumentXmlMaterializer&gt;&lt;/applicationContent&gt;&lt;/documentContent&gt;\n'
         + '</pre></li></ol>',
     
-    'If you see a large amount of additional XML (i.e. thousands of lines) than this or hardly any XML at all, it means that your WorkflowAttributes were not configured correctly.  If this is the case, please go back and verify the previous steps or ask the instructor for assistance.',
+    'If you see a large amount of additional XML (i.e. thousands of lines) than this or hardly any XML at all, it means that your <code>WorkflowAttributes</code> were not configured correctly.  If this is the case, please go back and verify the previous steps or ask the instructor for assistance.',
 
     '<h3>Create the Fiscal Approval Node</h3>',
 
@@ -95,7 +95,7 @@ var activity = [
 
     '<Perform the following steps to complete this part of the exercise:',
 
-    '<ol><li>Copy the file named workflow/BookOrderDocumentType.xml to workflow/BookOrderAccountsPayable.xml and add a routeNodes and routePath section to the BookOrderDocumentType definition.  You can see examples of these in some of the workflow configuration that you ingested in previous exercises.</li>'
+    '<ol><li>Copy the file named <code>workflow/BookOrderDocumentType.xml</code> to <code>workflow/BookOrderAccountsPayable.xml</code> and add a <code>routeNodes</code> and <code>routePath</code> section to the <code>BookOrderDocumentType</code> definition.  You can see examples of these in some of the workflow configuration that you ingested in previous exercises.</li>'
         + '<li>Include a <code>&lt;start&gt;</code> node named “AdHoc”.</li>'
         + '<li>Add a <code>&lt;requests&gt;</code> node after the AdHoc node named “Fiscal Approval”.</li>'
         + '<li>While we are in here, we should define the “doc handler” for the Book Order document type.  This will allow us to load a Book Order by clicking on its document id in either Document Search or the Action List.</li>'
@@ -104,11 +104,11 @@ var activity = [
         + '&lt;docHandler&gt;${application.url}/bookOrder.do?methodToCall=docHandler&lt;/docHandler&gt;'
         + '</pre></li>'
 
-        + '<li>Next, Set the ruleTemplate for this node to “FiscalApprovalTemplate”.</li>'
-        + '<li>Add a &lt;ruleTemplates&gt; section to this XML file which contains a single rule template named “FiscalApprovalTemplate”.  This should be a simple rule template which contains no attributes (similar to the ones we created last exercise),</li>'
-        + '<li>Add a &lt;rules&gt; section with a single rule configured for the BookOrderDocumentType document type and the FiscalApprovalTemplate rule template.</li>'
-        + '<li>On this rule, please be sure to define &lt;forceAction&gt;true&lt;/forceAction&gt;</li>'
-        + '<li>Define a responsibility on this rule which routes an approval request to the “TRNAPP : Accounts Payable” group.  This should look like the following:</li>'
+        + '<li>Next, Set the ruleTemplate for this node to <code>FiscalApprovalTemplate</code>.</li>'
+        + '<li>Add a <code>&lt;ruleTemplates&gt;</code> section to this XML file which contains a single rule template named <code>FiscalApprovalTemplate</code>.  This should be a simple rule template which contains no attributes (similar to the ones we created last exercise),</li>'
+        + '<li>Add a <code>&lt;rules&gt;</code> section with a single rule configured for the <code>BookOrderDocumentType</code> document type and the <code>FiscalApprovalTemplate</code> rule template.</li>'
+        + '<li>On this rule, please be sure to define <code>&lt;forceAction&gt;true&lt;/forceAction&gt;</code></li>'
+        + '<li>Define a responsibility on this rule which routes an approval request to the <code>TRNAPP : Accounts Payable</code> group.  This should look like the following:</li>'
         + '<pre>'
         + '&lt;responsibility&gt;\n'
         + '  &lt;groupName namespace="TRNAPP"&gt;Accounts Payable&lt;/groupName&gt;\n'
@@ -116,7 +116,7 @@ var activity = [
         + '&lt;/responsibility&gt;\n'
         + '</pre></li>'
         + '<li>Next you need to create the group.  This can be done via the user interface, but to save some time, we will create the group via XML ingestion.</li>'
-        + '<li>Add the following to the top of your BookOrderAccountsPayable.xml file (but within the main &lt;data&gt; element:'
+        + '<li>Add the following to the top of your <code>BookOrderAccountsPayable.xml</code> file (but within the main &lt;data&gt; element:'
         + '<pre>'
         + '&lt;groups xmlns="ns:workflow/Group" \n'
         + '        xsi:schemaLocation="ns:workflow/Group resource:Group"&gt;\n'
@@ -131,8 +131,8 @@ var activity = [
         + '</li></pre>'
 
         + '<lI>After you have all of this defined, launch the web application.</li>'
-        + '<li>Navigate to the “XML Ingester” and ingest the BookOrderAccountsPayable.xml file.  Note that this will effectively update your BookOrderDocumentType to the latest document type definition as defined in the XML file.</li>'
-        + '<li>Your Book Order document type should now be set up to do “Fiscal Approval” routing, but let’s test to make sure!</li></ol>',
+        + '<li>Navigate to the <b>XML Ingester</b> and ingest the <code>BookOrderAccountsPayable.xml</code> file.  Note that this will effectively update your <code>BookOrderDocumentType</code> to the latest document type definition as defined in the XML file.</li>'
+        + '<li>Your Book Order document type should now be set up to do <b>Fiscal Approval</b> routing, but let’s test to make sure!</li></ol>',
     '<h3>Test Fiscal Approval Routing</h3>',
     'To test that your setup is working, follow test steps.',
     '<ol><li>Execute a backdoor login as user1</li>'

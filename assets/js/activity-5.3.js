@@ -90,18 +90,18 @@ var activity = [
     '<h3>Execute the SQL</h3>',
     'Now that we understand what this SQL is doing, let’s go ahead and execute it against the database.  To do that, follow these steps:',
     '<ol><li>Launch the mysql command line or the sql tool of your choice.</li>'
-        + '<li>Copy the contents from create-kim-type-category.sql into your sql client and execute it.</li>'
+        + '<li>Copy the contents from <code>create-kim-type-category.sql</code> into your sql client and execute it.</li>'
         + '<li>This should create the new book category KIM type and its related attributes in the database.</li></ol>',
     '<h3>Publish the bookCategoryRoleTypeService to the KSB</</h3>',
-    'In order for the KIM functionality to be able to properly identify your role type, you must wire your role type service up in Spring and then publish it to the Kuali Service Bus.',
-    'Recall that the service name you associated with the Book Category KIM type was bookCategoryRoleTypeService.  In order to wire this in Spring and make it available to the KSB, follow these steps:'
-        + '<ol><li>Open the trnapp-BookstoreModuleBeans.xml file.</li>'
+    'In order for the KIM functionality to be able to properly identify your role type, you must wire your role type service up in Spring and then publish it to the Kuali Service Bus. ',
+    'Recall that the service name you associated with the Book Category KIM type was <code>bookCategoryRoleTypeService</code>.  In order to wire this in Spring and make it available to the KSB, follow these steps:'
+        + '<ol><li>Open the <code>trnapp-BookstoreModuleBeans.xml</code> file.</li>'
         + '<li>Add the following to the bottom of the file:'
         + '<pre class="pre-scrollable">'
-        + '&lt;bean id="bookCategoryRoleTypeService"\n',
-        + '      class="org.kuali.rice.kns.kim.role.RoleTypeServiceBase" />\n</pre></li>'
+        + '&lt;bean id="bookCategoryRoleTypeService"\n'
+        + '      class="org.kuali.rice.kns.kim.role.RoleTypeServiceBase" /&gt;\n</pre></li>'
         + '<li>This creates an instance of the default RoleTypeService implementation in KIM and assigns it a bean id of “bookCategoryRoleTypeService".  Notice how this matches the srvc_nm column that you configured in the KRIM_TYP_T table in an earlier step.  Since we aren’t implementing any custom processing here, using the default type works fine.  If you wanted to customize the role type, you could create a class that extends  RoleTypeServiceBase and overrides the portions that you want to customize.  You would then wire up that class in the spring file instead.</li>'
-        + '<li>Next, we need to publish it to the service bus.  This is actually not immediately necessary for our specific setup because your client application and the Rice standalone server are being loaded as part of the same application.  However, once you integrate with a central Rice Standalone Server (in a later exercise), the KIM user interfaces (which are hosted from the server) will need to be able to locate and invoke your role type service in order to determine how to render certain portions of the UI.  This communication will need to done over the service bus between the server and the client application.  To publish the service, add the following at the end of trnapp-BookstoreModuleBeans.xml:'
+        + '<li>Next, we need to publish it to the service bus.  This is actually not immediately necessary for our specific setup because your client application and the Rice standalone server are being loaded as part of the same application.  However, once you integrate with a central Rice Standalone Server (in a later exercise), the KIM user interfaces (which are hosted from the server) will need to be able to locate and invoke your role type service in order to determine how to render certain portions of the UI.  This communication will need to done over the service bus between the server and the client application.  To publish the service, add the following at the end of <code>trnapp-BookstoreModuleBeans.xml</code>:'
         + '<pre class="pre-scrollable">'
         + '&lt;bean class="org.kuali.rice.ksb.api.bus.support.CallbackServiceExporter"&gt;\n'
         + '  &lt;property name="callbackService" ref="bookCategoryRoleTypeService" /&gt;\n'

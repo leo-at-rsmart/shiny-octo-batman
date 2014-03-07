@@ -45,10 +45,10 @@ var activity = [
         + '<li>A list of attribute definitions that define which attributes that particular type supports (i.e. the book category in our case).</li>'
         + '<li>A service name which points to the service that implements the given type.  KIM defines multiple java interfaces and base classes which can be used to customize the behavior of a given type.  For our purposes we will be using the org.kuali.rice.kim.framework.role.RoleTypeService interface and it’s corresponding base class.  These services can define how fields are rendered in the user interface, customize processing of things like qualifiers, provide hooks to perform validation, customize the workflow process used for a particular KIM document, and much more.</li><ul>',
     'KIM does not provide a user interface or an XML format for defining custom types.  So the only way to get them into the system is via direct database inserts using SQL.  The specific tables at play here are:',
-    '<ul><li>KRIM_TYP_T – defines the actual KIM type, including it’s namespace, name, and the service name which implements the type.</li>'
-        + '<li>KRIM_TYP_ATTR_DEFN_T – defines data attributes and optionally associates them with a Data Dictionary component.  The attribute definition is not associated directly with a KIM type as they can be reused across multiple types.</li>'
-        + '<li>KRIM_TYP_ATTR_T – associates a specific KIM type with an attribute definition.  A KIM type can have any number of attribute definitions associated with it.</li></ul>',
-    'For this exercise you will be creating a single entry in each of these tables.  A file in the “sql” directory named create-kim-type-category.sql has been created for you.  Let’s review each of the insert statements in this file so that you can familiarize yourself with what this sql is doing:',
+    '<ul><li><code>KRIM_TYP_T</code> – defines the actual KIM type, including it’s namespace, name, and the service name which implements the type.</li>'
+        + '<li><code>KRIM_TYP_ATTR_DEFN_T</code> – defines data attributes and optionally associates them with a Data Dictionary component.  The attribute definition is not associated directly with a KIM type as they can be reused across multiple types.</li>'
+        + '<li><code>KRIM_TYP_ATTR_T</code> – associates a specific KIM type with an attribute definition.  A KIM type can have any number of attribute definitions associated with it.</li></ul>',
+    'For this exercise you will be creating a single entry in each of these tables.  A file in the <b>sql</b> directory named create-kim-type-category.sql has been created for you.  Let’s review each of the insert statements in this file so that you can familiarize yourself with what this sql is doing:',
     '<h3>Creating the KIM Type</h3',
     '<pre>'
         + 'INSERT INTO krim_typ_t (\n'
@@ -60,8 +60,8 @@ var activity = [
         + "'bookCategoryRoleTypeService',\n"
         + "'Y',\n"
         + "uuid());\n</pre>",
-    'In this SQL statement we are create the “Book Category” KIM type in the KRIM_TYP_T table.  This essentially defines the type and gives it a label.  When we create our role, we will specify this as the role type.',
-    'Most importantly, the value of the srvc_nm column contains a service name which must point to a service that implements the KimRoleTypeService interface.  This can be used to customize the behavior of various aspects of the role.  Although, as you will see later, we will simply use the default implementation of the role type service for this exercise.',
+    'In this SQL statement we are create the <b>Book Category</b> KIM type in the <code>KRIM_TYP_T</code> table.  This essentially defines the type and gives it a label.  When we create our role, we will specify this as the role type.',
+    'Most importantly, the value of the <code>srvc_nm</code> column contains a service name which must point to a service that implements the KimRoleTypeService interface.  This can be used to customize the behavior of various aspects of the role.  Although, as you will see later, we will simply use the default implementation of the role type service for this exercise.',
     '<h3>Creating the Attribute Definition</h3>',
     '<pre>'
         + 'INSERT INTO krim_attr_defn_t (\n'
@@ -217,15 +217,15 @@ var activity = [
     '<ol><li>Navigate to the “Administration” tab in the portal and click on the “Role” link.</li>'
         + '<li>Click the “search” button and locate the Warehouse Manager role that we created earlier.  Click the “edit” link.</li>'
         + '<li>Enter a description of your choosing.</li>'
-        + '<li>Find the “Responsibilities” section and click on the magnifying glass icon next to “Add Responsibility ID”.</li>'
-        + '<li>On the resulting screen, click the “search” button and locate the responsibility that we created earlier.  Click the “return value” link.</li>'
-        + '<li>Click the “add” button underneath “Add Responsibility ID”.</li>'
-        + '<li>Select an “Action Type Code” of “APPROVE”.</li>'
-        + '<li>Type “1” into the “Priority Number” field.</li>'
-        + '<li>Select an “Action Policy Code” of “ALL”.</li>'
-        + '<li>Click the “Force Action” checkbox.</li>'
+        + '<li>Find the <b>Responsibilities</b> section and click on the magnifying glass icon next to <b>Add Responsibility ID</b>.</li>'
+        + '<li>On the resulting screen, click the <b>search</b> button and locate the responsibility that we created earlier.  Click the <b>return value</b> link.</li>'
+        + '<li>Click the <b>add</b> button underneath <b>Add Responsibility ID</b>.</li>'
+        + '<li>Select an <b>Action Type Code</b> of <b>APPROVE</b>.</li>'
+        + '<li>Type <b>1</b> into the <b>Priority Number</b> field.</li>'
+        + '<li>Select an <b>Action Policy Code</b> of <b>ALL</b>.</li>'
+        + '<li>Click the <b>Force Action</b> checkbox.</li>'
         + '<li>The result should appear similar to the following:</li>'
-        + '<li>Finally, click the “submit” button at the bottom of the document to update the role and add the responsibility.</li></ol>',
+        + '<li>Finally, click the <b>submit</b> button at the bottom of the document to update the role and add the responsibility.</li></ol>',
     '<h3>Test the Routing</h3>',
     'At this point, we are finally ready to test that routing against our role is working properly.  What will happen when the workflow engine encounters the new Warehouse Processing node is that it will proceed through the following steps:',
     '<ol><li>First, it will use the configured qualifier resolver to resolve the qualifiers that should be passed to KIM.  In our case, it will extract all book categories for all of the books on the book order from the document’s XML content.</li>'
@@ -233,14 +233,14 @@ var activity = [
         + '<li>KIM will determine (based on the given book category qualifiers) which members of the role should receive the action requests.</li>'
         + '<li>KEW gets back this information and the configured responsibility action information (including the type of the request to send, approval policy, etc.) and generates the appropriate action requests.</li></ol>',
     'In order to test that this is working properly, do the following:',
-    '<ol><lI>Navigate to the “Main Menu” in the portal and backdoor as the “user1” principal.</li>'
+    '<ol><lI>Navigate to the “Main Menu” in the portal and backdoor as the <b>user1</b> principal.</li>'
         + '<li>Click on the “Book Order” link.</li>'
-        + '<li>On the resulting screen, add an order entry for a book in the “Photography” category and an order entry for a book in the “Science Fiction” category.</li>'
+        + '<li>On the resulting screen, add an order entry for a book in the <b>Photography</b> category and an order entry for a book in the <b>Science Fiction</b> category.</li>'
         + '<li>Click the submit button.</li>'
         + '<li>As per the way we configured this document type in a previous exercise, the document will first stop at Accounts Payable before it hits Warehouse Processing.  So you must first approve the document out of this route node.  To do this, execute a backdoor login as the “user3” principal.</li>'
-        + '<li>Navigate to the “Action List” and load the document.  Click the “approve” button.</li>'
-        + '<li>At this point, the document should be routing to our warehouse managers.  To verify this, navigate to the “Document Search”.</li>'
-        + '<lI>Click the “search” button and then click on the route log icon to open up the route log.  You should see something like the following:</li>'
+        + '<li>Navigate to the <b>Action List</b> and load the document.  Click the <b>approve</b> button.</li>'
+        + '<li>At this point, the document should be routing to our warehouse managers.  To verify this, navigate to the <b>Document Search</b>.</li>'
+        + '<lI>Click the <b>search</b> button and then click on the route log icon to open up the route log.  You should see something like the following:</li>'
 
-        + '<li>As you can see in the screenshot above, the document is awaiting approval from both the “Photography” and the “Science Fiction” warehouse managers.  Congratulations!  You now know how to leverage roles and responsibilities in KIM in order to perform workflow routing.</li><ol>',
+        + '<li>As you can see in the screenshot above, the document is awaiting approval from both the <b>Photography</b> and the <b>Science Fiction</b> warehouse managers.  Congratulations!  You now know how to leverage roles and responsibilities in KIM in order to perform workflow routing.</li><ol>',
 ];

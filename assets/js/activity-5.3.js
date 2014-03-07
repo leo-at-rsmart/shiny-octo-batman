@@ -74,7 +74,7 @@ var activity = [
         + "‘train.bookstore.bo.Book’,\n"
         + "'Y',\n"
         + "uuid());\n</pre>",
-    'This SQL simply creates an entry in the KRIM_ATTR_DEFN_T table which represents the book’s category attribute.  This table also supports the ability to integrate with the data dictionary via the column called cmpnt_nm.  You can see here that we’ve supplied it with the class name of our “Book” business object.',
+    'This SQL simply creates an entry in the <code>KRIM_ATTR_DEFN_T</code> table which represents the book’s <code>category</code> attribute.  This table also supports the ability to integrate with the data dictionary via the column called <code>cmpnt_nm</code>.  You can see here that we’ve supplied it with the class name of our <b>Book</b> business object.',
     '<h3>Creating the KIM Type to Attribute Link</h3>',
     '<pre>'
         + 'INSERT INTO krim_typ_attr_t (\n'
@@ -100,7 +100,7 @@ var activity = [
         + '<pre class="pre-scrollable">'
         + '&lt;bean id="bookCategoryRoleTypeService"\n'
         + '      class="org.kuali.rice.kns.kim.role.RoleTypeServiceBase" /&gt;\n</pre></li>'
-        + '<li>This creates an instance of the default RoleTypeService implementation in KIM and assigns it a bean id of “bookCategoryRoleTypeService".  Notice how this matches the srvc_nm column that you configured in the KRIM_TYP_T table in an earlier step.  Since we aren’t implementing any custom processing here, using the default type works fine.  If you wanted to customize the role type, you could create a class that extends  RoleTypeServiceBase and overrides the portions that you want to customize.  You would then wire up that class in the spring file instead.</li>'
+        + '<li>This creates an instance of the default RoleTypeService implementation in KIM and assigns it a bean id of <code>bookCategoryRoleTypeService</code>.  Notice how this matches the srvc_nm column that you configured in the KRIM_TYP_T table in an earlier step.  Since we aren’t implementing any custom processing here, using the default type works fine.  If you wanted to customize the role type, you could create a class that extends  RoleTypeServiceBase and overrides the portions that you want to customize.  You would then wire up that class in the spring file instead.</li>'
         + '<li>Next, we need to publish it to the service bus.  This is actually not immediately necessary for our specific setup because your client application and the Rice standalone server are being loaded as part of the same application.  However, once you integrate with a central Rice Standalone Server (in a later exercise), the KIM user interfaces (which are hosted from the server) will need to be able to locate and invoke your role type service in order to determine how to render certain portions of the UI.  This communication will need to done over the service bus between the server and the client application.  To publish the service, add the following at the end of <code>trnapp-BookstoreModuleBeans.xml</code>:'
         + '<pre class="pre-scrollable">'
         + '&lt;bean class="org.kuali.rice.ksb.api.bus.support.CallbackServiceExporter"&gt;\n'
@@ -113,11 +113,11 @@ var activity = [
     '<h3>Create the Warehouse Manager Role</h3>',
     'In this part of the exercise you will create the Warehouse Manager role using the KIM user interface.  To do this, follow these steps:',
     '<ol><li>Launch the web application.</li>'
-        + '<li>Navigate to the “Administration” tab inside the portal.  Log in as the “admin” user if prompted.</li>'
-        + '<li>Click on the “Role” link under the “Identity” section.</li>'
-        + '<li>When the “Role Lookup” page finishes loading, click “create new” in the top right-hand corner.</li>'
-        + '<li>This will bring up the “Kim Type Lookup” screen.  This is where you select the role type for the role you are creating.  We will use the one that you created in the last part of this exercise.  Click the “search” button.</li>'
-        + '<li>The “Book Category” role type should be in this list.  If it’s not then recheck the previous portions of this exercise to ensure you performed them correctly.  Find “Book Category” in the list and click the “return value” link.</li>'
+        + '<li>Navigate to the <b>Administration</b> tab inside the portal.  Log in as the <b>admin</b> user if prompted.</li>'
+        + '<li>Click on the <b>Role</b> link under the <b>Identity</b> section.</li>'
+        + '<li>When the <b>Role Lookup</b> page finishes loading, click <b>create new</b> in the top right-hand corner.</li>'
+        + '<li>This will bring up the <b>Kim Type Lookup</b> screen.  This is where you select the role type for the role you are creating.  We will use the one that you created in the last part of this exercise.  Click the <b>search</b> button.</li>'
+        + '<li>The <b>Book Category</b> role type should be in this list.  If it’s not then recheck the previous portions of this exercise to ensure you performed them correctly.  Find <b>Book Category</b> in the list and click the <b>return value</b> link.</li>'
         + '<li>The resulting screen should be the Role creation screen.  If things have been set up correctly, then under the <b>Assignees</b> section, you should see an <b>Add Member</b> line which includes our <b>Category</b> qualifier:</li>'
         + '<li>On this screen, do the following:</li>'
         + '<li>Enter a <b>Description</b> of your choice.</li>'

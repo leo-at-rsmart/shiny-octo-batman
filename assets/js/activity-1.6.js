@@ -32,7 +32,22 @@
 var activity = [
     '<h2>Create a Rice Application</h2>',
 
+    'There are a couple ways to create a Rice application. This one is focused on using the Maven Archetype to create a rice application from. It is pretty simple to use, but the complex part comes with installing the database. To get your first rice project up and running follow these steps:',
+
     '<h3>1 Add the Rice SVN Repository</h3>',
+
+    'As part of installing the Rice database in subsequent steps, we first need to fetch the database information from SVN.',
+   
+    '<ol><li>Select Window-&gt;Show View&gt;Other</li>'
+        + '<li>Choose SVN Repositories</li>'
+        + '<li>Click the <b>Add a Repository</b> button</li>'
+        + '<li>Add the following url: <b>http://svn.kuali.org/repos/rice/</b></li>'
+        + '<li>Now browse the repository for <code>tags/rice-2.3.3/db/impex/master</code></li>'
+        + '<li>Click your right mouse button to bring up the context menu.</li>'
+        + '<li>Select <b>Checkout</b>. Now the <code>rice-impex-master</code> will be checked out into your workspace.</li>'
+        + '<li>Now open Run Configurations'</ol>',
+    
+    
 
     '<h3>2 Install the Rice Database with Impex</h3>',
 

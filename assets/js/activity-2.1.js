@@ -30,9 +30,11 @@
 //    see http://code.google.com/p/course-builder/wiki/CreateActivities.
 
 var activity = [
+    
+    '<h2>Form Views</h2>',
+    
+    '<h3>Spring MVC</h3>',
 
-  '<table border="2"><tr><td><b>Search Tips:</b><p> <ul><li>When you do certain queries, Google presents information about these topics directly on the search results page.<li>You can distinguish the information in these panels from advertisements because advertisements are labeled as Ads. Also, when these panels appear, they are always the top box on the right-hand side.<li>Topics for which information panels appear include, but are not limited to, animals, famous people, landmarks, countries, movies, books, works of art, sports teams, and chemical elements.</ul> </tr></td></table><br>',
-
-  'Have you ever played the <a href="http://en.wikipedia.org/wiki/Six_degrees_of_separation#Kevin_Bacon_game" target="_blank">"Six Degrees of Separation"</a> game, where you try to get from one celebrity to another via co-stars in movies they have in common? Clicking only in the information panels on the right side of the screen, our search expert got from Mona Lisa to the Golden Gate Bridge in seven clicks. That is, she entered the query [Mona Lisa], clicked on something in the panel on the right side of the screen, then clicked on something else in the resulting screen, and so forth, and finally ended up at a page about the Golden Gate Bridge. How did she do it? Can you do it with fewer clicks? <p>Find your own "six degrees" chain using the panels on the right. Share your story in the <a href="LINK_TO_COURSE_FORUM" target="_blank">forum</a>.',
+    '<script async class="speakerdeck-embed" data-id="f09ce5a090b10131a0563ef48a8c875d" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>',
 
 ];

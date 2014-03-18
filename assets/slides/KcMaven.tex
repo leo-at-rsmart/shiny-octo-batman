@@ -1,0 +1,308 @@
+\documentclass[xcolor=dvipsnames,14pt,professionalfonts]{beamer}
+\usepackage{minted}
+\usepackage{etoolbox}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[no-math]{fontspec} 
+\usetheme{kualidays2013}
+\usefonttheme{professionalfonts}
+\usecolortheme{dolphin}
+
+%\definecolor{foreground}{gray}{0}
+%\definecolor{background}{gray}{1}
+%\definecolor{keyword}{rgb}{0.2,0.2,0.8}
+%\definecolor{warning}{rgb}{0.8,0.2,0.2}
+%\definecolor{shadow}{gray}{0.35}
+%\definecolor{hide}{gray}{0.9}
+%\definecolor{figure}{rgb}{1,0.7,0}
+%\definecolor{title}{rgb}{25,240,250}
+\definecolor{title}{rgb}{0.09,0.84,0.88}
+\definecolor{frametitle}{rgb}{0,0,0}
+\definecolor{normal}{rgb}{0,0,0}
+
+%\usecolortheme[named=keyword]{structure}
+
+\setbeamercolor{title}{fg=title}
+\setbeamercolor{frametitle}{fg=frametitle}
+\setbeamercolor{section in toc}{fg=foreground}
+\setbeamercolor{normal text}{bg=brown!46,fg=normal}
+
+\setbeamerfont{structure}{family=\fontspec{Georgia},series=\bfseries} 
+\setbeamerfont{subtitle}{family=\fontspec{Helvetica},series=\bfseries} 
+\begin{document}
+
+\title{Si Vis Bellum Para Bellum}
+\subtitle{KC with Maven Overlays: Best Practices, Caveats, and Anti-Patterns}
+\author[Leo]{Leo Przybylski}
+
+\usebackgroundtemplate%
+{%
+    \includegraphics[width=\paperwidth,height=\paperheight]{../img/header.png}%
+}
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{../img/title.png}}%
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+}
+
+\begin{frame}{Overview}
+  \begin{itemize}
+  \item Welcome \& Colophon.
+  \item About Presenters.
+  \item Maven Overlays.
+    % * Maven War Overlay and archetype for creating a war overlay from a KC project
+  \item Multi-module vs. Regular Webapp Project.
+    % * Overlays with Multi-Module projects
+  \item Appserver Plugins.
+    % * Tomcat and Jetty maven plugins
+    % * JRebel for hot-code replacement
+  \item Rice DataDictionary Reloading vs. JRebel.
+  \item Tips and Tricks.
+    % * Tips and tricks like environment-specific (Test, Dev, Production) DD
+    % modifications
+  \item Proposal: Contributing a Modification as a Maven Dependency.
+    % * A proposal for building modifications as separate maven projects
+    % that are published to maven central for other institutions to use.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Welcome and Colophon}
+  \begin{itemize}
+    \item Hi!
+    \item ``Si Vis Bellum Para Bellum'' is a play on ``Si Vis Pacem
+      Para Bellum'' and Web Archive (WAR) files. It means ``If you
+      wish for war, prepare for war.'' WAR being a web archive rather than turning your project into a battlefield.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{About Presenters}
+\end{frame}
+
+\begin{frame}{Maven Overlay Basics}
+  \begin{itemize}
+    \item How Overlays work.
+    \item What overlays are not.
+    \item An Overlay RIGHT NOW!
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{How Overlays Work}
+  \begin{itemize}
+    \item Simply put, it allows one project war output to
+      overlay/overlay another.
+    \item The project being overlapped is a dependency. Its source is
+      not required.
+  \end{itemize}
+  \end{frame}
+\begin{frame}{How Overlays Work}
+    The Parent WAR 
+\end{frame}
+
+\begin{frame}{How Overlays Work}
+     Our Custom Content 
+\end{frame}
+
+\begin{frame}{How Overlays Work}
+     New Custom WAR! 
+\end{frame}
+
+\begin{frame}{Why Overlay a WAR?}
+  \begin{itemize}
+    \item Dependency project source code is not required.
+    \item No mixing changes. No merges. No patches.
+    \item Change isolation.
+    \item Upgrading the dependency is easy.
+    \item Own your POM.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{What Overlays are Not}
+  \begin{itemize}
+  \item Project Inheritence.
+  \item A replacement/alternative for multi-module projects.
+  \item A silver-bullet for all webapp projects.
+  \item Change management pattern.
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Advantages of Overlays}
+  \begin{itemize}
+    \item Offers flexibility in your project by allowing granular
+      modifications at the project level.
+    \item Smaller projects for tracking changes with.
+    \item Easier to modularize your project.
+    \item Better code reuse.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{First Overlay}
+  Using KC as an Example to switch out CAS support for the login dummy
+  \begin{enumerate}
+    \item Package KC.
+    \item Install as a prototype.
+    \item Setup prototype jar.
+    \item Create overlay project.
+    \item Add CAS dependency.
+    \item Add dependencies for KC.
+    \item Configure war plugin for overlay.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Package and Install KC as a prototype}
+  \begin{enumerate}
+  \item Do install
+  \begin{minted}[fontsize=\footnotesize]{sh}
+mvn install
+  \end{minted}
+  \item Create a and Install Prototype Jar
+  \begin{minted}[fontsize=\scriptsize]{sh}
+mvn jar:jar
+mvn install:install-file \
+    -DgroupId=org.kuali.kra \
+    -DarchetypeId=kc_project \ 
+    -Dversion=5.1  \
+    -Dpackaging=jar \
+    -Dfile=target/kc_project-5.0.1.jar \
+    -DpomFile=pom.xml
+  \end{minted}
+  ... or ...
+  \begin{minted}[fontsize=\scriptsize]{sh}
+mvn deploy:deploy-file \
+    -DgroupId=org.kuali.kra \
+    -DarchetypeId=kc_project \ 
+    -Dversion=5.1  \
+    -Dpackaging=jar \
+    -Dfile=target/kc_project-5.0.1.jar \
+    -DpomFile=pom.xml
+  \end{minted}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Create an Overlay Project the Old-Fashioned
+    Way}
+  \begin{itemize}
+  \item Configure the maven-war-plugin
+  \end{itemize}
+  \begin{minted}[fontsize=\scriptsize]{xml}
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-war-plugin</artifactId>
+  <version>${maven-war-plugin.version}</version>
+</plugin>
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{Configure the maven-war-plugin}
+  \begin{minted}[fontsize=\scriptsize]{xml}
+<dependencies>
+<!--
+    These are the prototype dependencies. It is used by the overlay to refer back
+    to the classes in the prototype.
+  -->
+  <dependency>
+    <groupId>${kcPrototypeGroupId}</groupId>
+    <artifactId>${kcPrototypeArtifactId}</artifactId>
+    <version>${kcPrototypeVersion}</version>
+    <type>war</type>
+  </dependency>
+  
+  <dependency>
+    <groupId>${kcPrototypeGroupId}</groupId>
+    <artifactId>${kcPrototypeArtifactId}</artifactId>
+    <version>${kcPrototypeVersion}</version>
+    <classifier>classes</classifier>
+    <type>jar</type>
+  </dependency>
+</dependencies>
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{Overlay Archetypes}
+  \begin{itemize}
+  \item Leo has developed an archetype for creating and overlay KC project.
+  \item https://github.com/r351574nc3/kualigan-maven-plugins/tree/master/kc-maven-plugin
+  \item To create an Overlay Project from Archetype
+  \begin{minted}[fontsize=\scriptsize]{sh}
+mvn -Dkc:create-overlay \
+-DgroupId=com.rsmart.kuali.kra \
+-DartifactId=kc -Dversion=5.1
+  \end{minted}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Overlay Patterns}
+  \begin{itemize}
+    \item Overlaying configuration modifications.
+    \item Overlay to activate a module.
+    \item Overlay theming for UX/UI.
+    \item Filtering overlay resources.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Solutions to Multi-module Issues}
+  \begin{itemize}
+    \item Build classes into \texttt{web/target/classes}
+      \begin{itemize}
+        \item Requires a profile to only do this for developers
+        \item Not appropriate for production at all
+      \end{itemize}
+    \item JRebel will watch multiple src folders for changes
+    \item Jetty will also watch multiple src folders
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Configuring JRebel}
+  \begin{minted}[fontsize=\scriptsize]{xml}
+<plugin>
+    <groupId>org.zeroturnaround</groupId>
+    <artifactId>jrebel-maven-plugin</artifactId>
+    <configuration>
+      <alwaysGenerate>true</alwaysGenerate>
+      <addResourcesDirToRebelXml>true</addResourcesDirToRebelXml>
+      <!--
+        root is 2 directories away from jar/war modules
+      -->
+      <relativePath>../../</relativePath>
+      <!--
+        use a system property for specifing root directory (note the double $)
+        start your application with -Drebel.root=c:/projects/
+      -->
+      <rootPath>${rebel.root}</rootPath>
+    </configuration>
+</plugin>
+    \end{minted}
+\end{frame}
+
+\begin{frame}{JRebel and the KC Archetype}
+\begin{itemize}
+  \item The KC Archetype automatically configures your overlay as a multi-module project
+  \item Comes with JRebel configuration already
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Tips and Tricks}
+  \begin{itemize}
+    \item Use JRebel! It's free!
+    \item Take advantage of the default classpath for runtime Data Dictionary overrides.
+    \item Overriding Rice Services.
+    \item Overriding KC Services.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Proposal: Contributing a Modification as a Maven Dependency}
+  \begin{itemize}
+    \item Develop modifications as a separate maven project or module.
+    \item Include the modifications as dependencies in your Maven Overlay project.
+    \item Distribute modifications with documentation to a Maven Repository.
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{The end}
+Thanks
+\end{frame}
+\end{document}

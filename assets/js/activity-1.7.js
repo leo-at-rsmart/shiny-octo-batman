@@ -30,30 +30,7 @@
 //    see http://code.google.com/p/course-builder/wiki/CreateActivities.
 
 var activity = [
-    '<script async class="speakerdeck-embed" data-id="2b4037308fde0131ed3a7a557317c4b7" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>',
+    '<h2>Introducing KRAD</h2>',
 
+    '<script async class="speakerdeck-embed" data-id="a47118908fe00131fb6272fa4d45953a" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>',
 ];
-
-
-// Note that the following code (that is not part of the definition of the
-// 'activity' variable) needs to be surrounded with the commented tags
-// '// <gcb-no-verify>' and '// </gcb-no-verify>', so that the verifier script
-// in tools/verify.py does not treat the code as invalid. For more details,
-// please see https://code.google.com/p/course-builder/wiki/VerifyCode
-
-
-//<gcb-no-verify>
-
-// JavaScript code to check which area of the image the user clicked on
-// and display the appropriate message in the output textarea:
-function check24(incoming) {
-  if (incoming == 1) {
-    document.quiz.output.value = 'You have clicked on the web page title, which is always the first line of text in a result.';
-  } else if (incoming == 2) {
-    document.quiz.output.value = 'You have clicked on the web address, which is always the green text in a result block.';
-  } else {
-    document.quiz.output.value = 'You have found the snippet, which is the black text that shows where your search terms appear on the page.';
-  }
-}
-
-//</gcb-no-verify>

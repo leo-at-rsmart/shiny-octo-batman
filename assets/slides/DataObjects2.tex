@@ -1,0 +1,169 @@
+\documentclass[xcolor=dvipsnames,14pt,professionalfonts]{beamer}
+\usepackage{minted}
+\usepackage{etoolbox}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[no-math]{fontspec} 
+\usetheme{rsmarttraining}
+\usefonttheme{professionalfonts}
+\usecolortheme{dolphin}
+
+%\definecolor{foreground}{gray}{0}
+%\definecolor{background}{gray}{1}
+%\definecolor{keyword}{rgb}{0.2,0.2,0.8}
+%\definecolor{warning}{rgb}{0.8,0.2,0.2}
+%\definecolor{shadow}{gray}{0.35}
+%\definecolor{hide}{gray}{0.9}
+%\definecolor{figure}{rgb}{1,0.7,0}
+%\definecolor{title}{rgb}{25,240,250}
+\definecolor{title}{rgb}{0.09,0.30,0.38}
+\definecolor{frametitle}{rgb}{1,1,1}
+\definecolor{normal}{rgb}{0,0,0}
+
+%\usecolortheme[named=keyword]{structure}
+
+\setbeamercolor{title}{fg=title}
+\setbeamercolor{frametitle}{fg=frametitle}
+\setbeamercolor{section in toc}{fg=foreground}
+\setbeamercolor{normal text}{bg=brown!46,fg=normal}
+
+\setbeamerfont{structure}{family=\fontspec{Georgia},series=\bfseries} 
+\setbeamerfont{subtitle}{family=\fontspec{Helvetica},series=\bfseries} 
+\begin{document}
+
+\title{KRAD Training}
+\subtitle{Exercise: Data Objects}
+\author[Leo]{Leo Przybylski}
+
+\usebackgroundtemplate%
+{%
+    \includegraphics[width=\paperwidth,height=\paperheight]{../img/header.png}%
+}
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{../img/title.png}}%
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+}
+
+\begin{frame}{Goals}
+  \begin{itemize}
+  \item Create a Data Dictionary file for the Book business object
+  \item Configure the bookstore ModuleConfiguration to load both the Author.xml and Book.xml Data Dictionary files.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Instructions}
+  \begin{itemize}
+  \item Checkout “exercise-bo-dd” project
+  \item Load the Author Data Dictionary File
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Load the Author Data Dictionary File}
+  \begin{enumerate}
+  \item Open the trnapp-BookstoreModuleBeans.xml file in Eclipse.
+  \item Add the following properties inside the
+    bookstoreModuleConfiguration bean right after the “namespaceCode”
+    property:
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Load the Author Data Dictionary File}
+    \begin{minted}[fontsize=\scriptsize]{xml}
+ <property name="initializeDataDictionary" value="true"/>
+ <property name="dataDictionaryPackages">
+    <list>
+        <value>classpath:train/bookstore/bo/datadictionary/Author.xml</value>
+    </list>
+ </property>
+    \end{minted}
+\end{frame}
+
+    
+\begin{frame}{Instructions}
+  \begin{itemize}
+    \item Add the exercise-bo-dd project to your Client Application Tomcat server and start it up.
+    \item Verify that the project started successfully.  If not, then there is likely something wrong with your Data Dictionary or ModuleConfiguration setup.
+    \item Create the Book Data Dictionary File
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Create Book.xml}
+    \begin{minted}[fontsize=\scriptsize]{xml}
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+  <!-- Bean definitions go here -->
+
+</beans>
+\end{minted}
+\end{frame}
+
+\begin{frame}{Create Book.xml}
+  \begin{itemize}
+    \item Create a BusinessObjectEntry in Book.xml (use the Author.xml as an example)
+    \item For now, don’t worry about the relationship between Book and Author, we will add that in the next portion of the exercise.
+    \item However, you will still need to add an AttributeDefinition
+      for the authorId, just not the author.
+    \end{itemize}
+  \end{frame}
+  
+\begin{frame}{Create Book.xml}
+  In total, be sure to configure AttributeDefinitions for:
+  \begin{itemize}
+  \item id
+  \item title
+  \item authorId
+  \item category
+  \item isbn
+  \item publisher
+  \item publication date
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Create Book.xml}
+ When you get to defining the AttributeDefinition for the
+ publicationDate, you will need to configure things properly for a
+ Date field with a “date picker” control element:
+ 
+ \begin{minted}[fontsize=\scriptsize]{xml}
+<bean id="Book-publicationDate" parent="Book-publicationDate-parentBean" />
+<bean id="Book-publicationDate-parentBean" abstract="true" 
+    parent="AttributeReference-genericDate"
+    p:summary="Book Publication Date"
+    p:label="Publication Date"
+    p:shortLabel="Pub Date"
+    p:name="publicationDate">
+    <property name="controlField">
+        <bean parent="Uif-DateControl" />
+    </property>
+</bean>
+\end{minted}
+\end{frame}
+
+\begin{frame}{Create Book.xml}
+  \begin{enumerate}
+  \item Add Book.xml to the dataDictionaryPackages in trnapp-BookstoreModuleBeans.xml
+  \item Start the project with Tomcat and verify that it starts up correctly.
+  \item If it does not start up correctly, this likely means there is a problem with your Data Dictionary file.
+  \item Add the Author ReferenceDefinition
+    \end{enumerate}
+  \end{frame}
+
+\begin{frame}[fragile]{Relationships}
+  With the KNS, a \textbb{relationships} property would need to be set
+  on the \textbb{DataDictionaryEntry}. That is no longer necessary
+  with KRAD.
+\end{frame}
+
+
+\begin{frame}{On Your Own}
+If you have extra time, try writing a unit test to test your Data Dictionary files.
+You can call KRADServiceLocator.getDataDictionaryService() to get a reference to the DataDictionaryService.  There are various methods on this service that can be used to query for information from the data dictionary to ensure that your entries are getting loaded correctly.
+\end{frame}
+\end{document}

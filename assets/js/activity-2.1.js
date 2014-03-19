@@ -36,5 +36,8 @@ var activity = [
     '<h3>Spring MVC</h3>',
 
     '<script async class="speakerdeck-embed" data-id="f09ce5a090b10131a0563ef48a8c875d" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>',
+    
+    '<h3>Custom Landing Page</h3',
 
+    '<script async class="speakerdeck-embed" data-id="2c3b70b090c90131a0573ef48a8c875d" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>',
 ];

@@ -1,0 +1,148 @@
+\documentclass[xcolor=dvipsnames,14pt,professionalfonts]{beamer}
+\usepackage{minted}
+\usepackage{etoolbox}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[no-math]{fontspec} 
+\usetheme{rsmarttraining}
+\usefonttheme{professionalfonts}
+\usecolortheme{dolphin}
+
+%\definecolor{foreground}{gray}{0}
+%\definecolor{background}{gray}{1}
+%\definecolor{keyword}{rgb}{0.2,0.2,0.8}
+%\definecolor{warning}{rgb}{0.8,0.2,0.2}
+%\definecolor{shadow}{gray}{0.35}
+%\definecolor{hide}{gray}{0.9}
+%\definecolor{figure}{rgb}{1,0.7,0}
+%\definecolor{title}{rgb}{25,240,250}
+\definecolor{title}{rgb}{0.09,0.30,0.38}
+\definecolor{frametitle}{rgb}{1,1,1}
+\definecolor{normal}{rgb}{0,0,0}
+
+%\usecolortheme[named=keyword]{structure}
+
+\setbeamercolor{title}{fg=title}
+\setbeamercolor{frametitle}{fg=frametitle}
+\setbeamercolor{section in toc}{fg=foreground}
+\setbeamercolor{normal text}{bg=brown!46,fg=normal}
+
+\setbeamerfont{structure}{family=\fontspec{Georgia},series=\bfseries} 
+\setbeamerfont{subtitle}{family=\fontspec{Helvetica},series=\bfseries} 
+\begin{document}
+
+\title{KRAD Training}
+\subtitle{Exercise: Custom Landing Page}
+\author[Leo]{Leo Przybylski}
+
+\usebackgroundtemplate%
+{%
+    \includegraphics[width=\paperwidth,height=\paperheight]{../img/header.png}%
+}
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{../img/title.png}}%
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+}
+
+\begin{frame}{Goals}
+  \begin{itemize}
+  \item Learn about views in KRAD.
+  \item Replace the portal with a landing page.
+  \item Customizing the krad-servlet and adding custom controllers.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Instructions}
+  \begin{itemize}
+  \item Checkout “exercise-bo-dd” project
+  \item Load the Author Data Dictionary File
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{index.jsp}
+  Originally, this \texttt{src/main/webapp/index.jsp} redirects to the struts portal. To change
+  this, create a new file called texttt{src/main/webapp/index.jsp} and
+  use:
+    \begin{minted}[fontsize=\scriptsize]{xml}
+<% response.sendRedirect("kr-krad/bookstore/landing"); %>
+    \end{minted}
+\end{frame}
+
+\begin{frame}{krad-servlet}
+  \begin{itemize}
+  \item All urls to \texttt{/kr-krad/} are mapped here
+  \item URLs mapped to \textbf{krad-servlet} are checked against
+    controllers for a mapping.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{web.xml}
+    \begin{minted}[fontsize=\scriptsize]{xml}
+<servlet>
+  <servlet-name>krad</servlet-name>
+  <servlet-class>
+    org.springframework.web.servlet.DispatcherServlet
+  </servlet-class>
+  <load-on-startup>3</load-on-startup>
+  <init-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+      WEB-INF/krad-servlet.xml,WEB-INF/trnapp-servlet.xml
+  </param-value>    
+  </init-param>
+</servlet>
+    \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{trnapp-servlet.xml}
+    \begin{minted}[fontsize=\scriptsize]{xml}
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+  <context:component-scan base-package="trnapp.bookstore"/>
+  
+</beans>
+    \end{minted}
+\end{frame}
+
+\begin{frame}{Scanning for Controllers}
+  \begin{itemize}
+    \item Now when your application starts, the \textbf{krad-servlet}
+      will load the \textbf{trnapp-servlet.xml}
+    \item \textbf{trnapp-servlet.xml} instructs Spring to scan
+      components in \texttt{trnapp.bookstore}.
+    \item Next we need to add a controller to
+      \texttt{trnapp.bookstore}.
+      \item This has already been done for us.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Adding a link}
+  Next, we need to open the header to add a link.
+\end{frame}
+
+\begin{frame}[fragile]{bookstoreHeader.ftl}
+    \begin{minted}[fontsize=\scriptsize]{xml}
+<ul class="dropdown-menu">
+    <li>
+      <a
+    href="kr/lookup.do?methodToCall=start&
+    businessObjectClassName=trnapp.bookstore.Author&docFormKey=88888888&>Author
+    Lookup
+      </a>
+    </li> 
+</ul>
+    \end{minted}
+\end{frame}
+
+
+\end{document}

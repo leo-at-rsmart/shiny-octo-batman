@@ -31,8 +31,5 @@
 
 var activity = [
 
-  '<table border="2"><tr><td> <b>Search Tips:</b><p> <ul><li>In the left panel of the search results page, you can filter results by different categories.<li>These categories include blogs, discussions, recipes, patents, books, 3D models, scholarly sources, and legal documents.<li>The left panel does not appear on tablet computers (iPads and Android devices). </tr></td></table>',
-
-  'In the video, Dan explored results in different media for the word [cats]. What do you love? Compare the information you find by searching for a topic of your choice and clicking on all the different media options. Share your story in the <a href="LINK_TO_COURSE_FORUM" target="_blank">forum</a>.',
-
+    '',
 ];

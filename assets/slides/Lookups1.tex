@@ -59,17 +59,19 @@
   \begin{enumerate}
     \item To ensure a clean and consistent environment for everyone, we will check out a project from Subversion as a starting point.  This will essentially be a completed copy of the previous exercises.
     \item In order to get the copy of the project that you will need,
-      please check out the exercise-krad-lookup project from the
+      please check out the \textbf{exercise-krad-lookup} project from the
       training Subversion repository.
     \end{enumerate}
   \end{frame}
 
 \begin{frame}{Create the Author Lookup}
   \begin{enumerate}
-    \item This portion of the exercise is easy since this has already been done for you in the exercise-lookup project!
-    \item Open up Author.xml and examine the addition of the Author-lookupDefinition bean at the bottom of the file.
-    \item Scroll to the top of the file and notice the addition of the
-      lookupDefinition on Author-parentBean.
+    \item This portion of the exercise is easy since this has already been done for you in the \textbf{exercise-krad-lookup} project!
+    \item Open up Author.xml and examine the addition of the \texttt{Author-LookupView} bean at the bottom of the file.
+    \item Scroll to the top of the file and notice the missing
+      lookupDefinition on Author-parentBean. This is something that
+      was required for the KNS, but is no longer with KRAD because we
+      modify the view directly now.
     \end{enumerate}
   \end{frame}
 
@@ -119,7 +121,7 @@
 
     \begin{frame}{Create and Test the Book Lookup}
       \begin{enumerate}
-        \item Using the Author Lookup definition from Author.xml as an example, start creating a \texttt{Uif-LookupView} for the Book business object inside of the \texttt{Book.xml} file.
+        \item Using the Author Lookup View from Author.xml as an example, start creating a \texttt{Uif-LookupView} for the Book business object inside of the \texttt{Book.xml} file.
         \item For the lookupFields, specify:
           \begin{itemize}
             \item id
@@ -144,15 +146,14 @@
             \item category
             \item isbn
             \end{itemize}
-          \item Remember to add the lookup definition to your
-            BusinessObjectEntry.
+          \item Remember include the \texttt{dataObjectClass} property.
             \end{enumerate}
           \end{frame}
           
           \begin{frame}{Create and Test the Book Lookup}
             \begin{enumerate}
               \item Add a link to \texttt{BookstoreApplication.xml} for the Book Lookup (use the link already in that file for Author Lookup as an example).
-              \item Write and execute some SQL to add some books to your database.  There is an example file named insert-books.sql in your sql directory.  It has one book in it, add some more of your choosing (they need not be accurate with respect to the authors we’ve entered so far).
+              \item Write and execute some SQL to add some books to your database.  There is an example file named \texttt{insert-books.sql} in your sql directory.  It has one book in it, add some more of your choosing (they need not be accurate with respect to the authors we’ve entered so far).
               \item Start up your application and load your Book
                 lookup, you should see something like the following:
               \end{enumerate}
@@ -194,11 +195,11 @@ Now, we must define the author name attribute in our Book data dictionary file. 
 <bean id="Book-author-name-parentBean" abstract="true" parent="AttributeDefinition">
   <property name="shortLabel" value="Author Name"/>
   <property name="maxLength" value="256"/>
-  <property name="validationPattern">
-    <bean parent="AnyCharacterValidationPattern"/>
+  <property name="validCharactersConstraint">
+    <bean parent="AnyCharacterPatternConstraint" p:allowWhitespace="true"/>
   </property>
-  <property name="control">
-    <bean parent="LookupReadonlyControlDefinition"/>
+  <property name="controlField">
+    <bean parent="Uif-TextControl"/>
   </property>
   <property name="name" value="author.name"/>
   <property name="label" value="Author Name"/>
@@ -208,15 +209,15 @@ Now, we must define the author name attribute in our Book data dictionary file. 
 
 
 \begin{frame}[fragile]{Show Author Name in Result Set}
- Be sure to add the Book-author-name bean to your list of attributes in your Book BusinessObjectEntry.
+ Be sure to add the \texttt{Book-author-name} bean to your list of attributes in your Book \texttt{DataObjectEntry}.
 In the resultFields section of the lookup definition in your Book.xml file, replace the authorId attribute with author.name, as in the following:
     \begin{minted}[fontsize=\scriptsize]{xml}
-<bean parent="FieldDefinition" p:attributeName="author.name"/>
+<bean parent="Uif-InputField" p:propertyName="author.name" />
     \end{minted}
 \end{frame}
 
 \begin{frame}{Create and Test the Book Lookup}
-  Start the application and hit the “Search” button
+  Start the application and hit the \textbf{Search} button
   on the Book lookup.  You should see something similar
   to the following:
   \end{frame}
@@ -246,12 +247,12 @@ In the resultFields section of the lookup definition in your Book.xml file, repl
 
   \begin{frame}{Create a Custom Lookupable Helper}
  \begin{enumerate}
- \item item Create a new package in the \texttt{src/main/java directory named train.bookstore.lookup.}
+ \item item Create a new package in the \texttt{src/main/java directory named trnapp.bookstore.}
  \item Create a new class in this package using the “New -> Class”
    wizard with the name \texttt{BookLookupableHelperServiceImpl}.  
- \item Have it extend from \texttt{org.kuali.rice.kns.lookup.KualiLookupableHelperServiceImpl}.
+ \item Have it extend from \texttt{org.kuali.rice.krad.lookup.LookupableImpl}.
  \item In the resulting class that is created, right-click and select “Source -> Override/Implement Methods…”
- \item Find the \texttt{validateSearchParameters(Map)} method under \texttt{AbstractLookupableHelperServiceimpl} and click the checkbox next to it.
+ \item Find the \texttt{validateSearchParameters(Map)} method under, and click the checkbox next to it.
  \item Click the “OK” button.
    \end{enumerate}
    \end{frame}
@@ -260,11 +261,14 @@ In the resultFields section of the lookup definition in your Book.xml file, repl
  Implement the validateSearchParameters(Map) method as follows:
     \begin{minted}[fontsize=\scriptsize]{java}
 @Override
-public void validateSearchParameters(Map parameterMap) {
+public boolean validateSearchParameters(LookupForm form,
+			Map<String, String> parameterMap) {
 	String category = (String)parameterMap.get("category");
 	if (category != null && !"".equals(category.trim())) {
 		if (category.contains("*")) {
-			GlobalVariables.getMessageMap().putError("category", RiceKeyConstants.ERROR_CUSTOM, "Category does not support wildcards on search.");
+			GlobalVariables.getMessageMap().putError("lookupCriteria[category]", 
+                    RiceKeyConstants.ERROR_CUSTOM, 
+                    "Category does not support wildcards on search.");
 		}
 	}
 	super.validateSearchParameters(parameterMap);
@@ -273,23 +277,11 @@ public void validateSearchParameters(Map parameterMap) {
 \end{frame}
 
 \begin{frame}[fragile]{Create a Custom Lookupable Helper}
-Add the following to trnapp-BookstoreModuleBeans.xml:
-    \begin{minted}[fontsize=\scriptsize]{xmlo}
-<bean id="bookLookupHelperService" class="train.bookstore.lookup.BookLookupableHelperServiceImpl" scope="prototype" />
-
-<bean id="bookLookupable" class="org.kuali.rice.kns.lookup.KualiLookupableImpl" scope="prototype">
-	<property name="lookupableHelperService">
-		<ref bean="bookLookupHelperService" />
-	</property>
-</bean>
-    \end{minted}
+  With KRAD, this is no longer required.
 \end{frame}
 
 \begin{frame}[fragile]{Create a Custom Lookupable Helper}
-Add the following property to the lookup definition in Book.xml.  This tells the lookup framework which spring bean id to load for the lookupable implementation.  Note that this is the same Spring bean id that you configured in the previous step. 
-    \begin{minted}[fontsize=\scriptsize]{xmlo}
-<property name="lookupableID" value="bookLookupable"/>
-    \end{minted}
+  This is also no longer required in KRAD.
 \end{frame}
 
 \end{document}

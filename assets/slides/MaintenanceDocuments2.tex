@@ -70,9 +70,11 @@ repository.
   \begin{enumerate}
   \item Open the \texttt{AuthorMaintenanceDocument.xml} file located in the project at \texttt{src/main/resources/train/bookstore/bo/datadictionary}.
   \item Read through what is currently in this file and take some time to try and understand it.
-  \item Notice that we’ve already created the MaintenanceDocumentEntry for you.  This is a maintenance document with a single section that contains the lastName.
+  \item Notice that we’ve already created the
+    uifMaintenanceDocumentEntry and \texttt{Uif-MaintenanceView} for you.  This is a maintenance document with a single section that contains the lastName.
   \item Add MaintainableFieldDefinitions for firstName and middleName.
-  \item Make firstName “required”.
+  \item Make firstName 
+textbf{required}.
   \item We have already added this data dictionary file for you to the list in \texttt{Module.xml}.
   \end{enumerate}
 \end{frame}
@@ -83,7 +85,7 @@ repository.
   \item Notice the documentTypeName on the maintenance entry is set to AuthorDocumentType.
   \item This means that Kuali Enterprise Workflow needs to have AuthorDocumentType configured in order for this maintenance document to be functional.
   \item This means that Kuali Enterprise Workflow needs to have AuthorDocumentType configured in order for this maintenance document to be functional.
-  \item We have created a simple workflow document type definition for AuthorDocumentType which can be found under workflow/AuthorDocumentType.xml.
+  \item We have created a simple workflow document type definition for AuthorDocumentType which can be found under \texttt{workflow/AuthorDocumentType.xml}.
   \end{enumerate}
 \end{frame}
 
@@ -175,25 +177,16 @@ There are a few steps that you will need to follow here:
       \item publisher
       \item publicationDate
 \end{itemize}
+\item Add a reference to your \texttt{BookMaintenanceDocument.xml} data
+  dictionary file in \texttt{Module.xml} so that it will get loaded on startup.
   \end{enumerate}
 \end{frame}
  
-\begin{frame}[fragile]{trnapp-servlet.xml}
-  \begin{enumerate}
-  \item  Since authorId will have a quickfinder link out to the Author lookup, mark this field as “lookupReadOnly” by specifying it in the following manner:
-    \begin{minted}[fontsize=\scriptsize]{xml}
-<bean parent="MaintainableFieldDefinition" p:name="authorId" p:required="true" p:lookupReadOnly="true"/>
-\end{minted}
-\item Add a reference to your BookMaintenanceDocument.xml data
-  dictionary file in Module.xml so that it will get loaded on startup.
-  \end{enumerate}
-\end{frame}
-
 \begin{frame}{Test the Book Maintenance Document}
   \begin{enumerate}
   \item You should now be able to test your Book maintenance document.
   \item Launch your web application and navigate to the Book lookup screen.
-  \item You should see a “Create New” button link here as well.
+  \item You should see a \textbf{Create New} button link here as well.
   \item If you don’t see this link, be sure you added your new data dictionary file in Module.xml
   \item If that checks out, double-check that you ingested the new BookDocumentType using the “XML Ingester” screen
     \end{enumerate}

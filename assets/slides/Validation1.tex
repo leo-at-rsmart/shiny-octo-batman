@@ -32,7 +32,7 @@
 \begin{document}
 
 \title{KRAD Training}
-\subtitle{Exercise: Validations}
+\subtitle{Exercise: Validations Part 1}
 \author[Leo]{Leo Przybylski}
 
 \usebackgroundtemplate%
@@ -59,9 +59,99 @@
 
 \begin{frame}{Adding Validation to ISBN Numbers}
   \begin{enumerate}
-    \item Checkout the \textbf{exercise-krad-maint-validation}
-      project.
-    \item 
+  \item There is currently no validation on ISBN Number, so they don't
+    even need to be numbers or real.
+  \item Install a validation constraint that uses regex for the ISBN number.
+  \item Checkout the \textbf{exercise-krad-maint-validation}
+    project.
+  \item Open \texttt{Book.xml}
   \end{enumerate}
 \end{frame}
+
+\begin{frame}[fragile]{Adding Validation to ISBN Numbers}
+ Find the following AttributeDefinition for ISBN:
+    \begin{minted}[fontsize=\scriptsize]{java}
+<bean id="Book-isbn" parent="AttributeDefinition"
+        p:name="isbn"
+        p:label="ISBN"
+        p:shortLabel="ISBN"
+        p:maxLength="17">
+    <property name="validCharactersConstraint">
+      <!-- don't allow whitespace in the ISBN -->
+      <bean parent="AnyCharacterPatternConstraint" p:allowWhitespace="false"/>
+    </property>
+    <property name="controlField">
+      <bean parent="Uif-TextControl" p:size="17"/>
+    </property>
+  </bean>
+    \end{minted}
+    
+\end{frame}
+
+\begin{frame}[fragile]{Adding Validation to ISBN Numbers}
+Add the \texttt{ValidCharactersConstraint}
+    \begin{minted}[fontsize=\scriptsize]{xml}
+<bean id="Book-isbn" parent="AttributeDefinition"
+        p:name="isbn"
+        p:label="ISBN"
+        p:shortLabel="ISBN"
+        p:maxLength="17">
+    <property name="validCharactersConstraint">
+		<bean parent="ValidCharactersConstraint" p:value="^97[0-9]\\-[0-9]{10}\$" 
+			p:messageKey="validation.isbn">
+		</bean>
+    </property>
+    <property name="controlField">
+      <bean parent="Uif-TextControl" p:size="17"/>
+    </property>
+</bean>
+    \end{minted}
+    
+\end{frame}
+
+\begin{frame}{ValidCharactersConstraint}
+  \begin{enumerate}
+    \item The base constraint for most character-based validation. All
+      character based-validation at its heart uses Regex, so the
+      \texttt{p:value} is expected a regular expression syntax.
+    \item \texttt{p:messageKey} is required because
+      \texttt{ValidCharactersConstraint} is so generic, it is not
+      bound to a validation message yet.
+    \item This will allows us to do what we want, but now we need to
+      add our custom validation message.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Adding a Custom Validation Message}
+  \begin{enumerate}
+    \item Create a file in
+      \texttt{src/main/resources/trnapp/bookstore/} called
+      \texttt{ApplicationResources.properties}
+    \item Use these contents:
+    \begin{minted}[fontsize=\scriptsize]{sh}
+validation.isbn=Not a valid ISBN number. Must look like 97#-##########
+    \end{minted}
+    \item Add the following to
+      \texttt{src/main/resources/trnapp/BootStrapConfig.xml}:
+    \begin{minted}[fontsize=\scriptsize]{xml}
+<param name="resourceBundleNames">
+trnapp.bookstore.ApplicationResources,
+org.kuali.rice.krad.KRADApplicationResources,
+org.kuali.rice.krad.ApplicationResources
+</param>
+    \end{minted}
+  \end{enumerate}
+    
+\end{frame}
+
+\begin{frame}{ValidCharactersConstraint}
+  \begin{enumerate}
+    \item Now start the Jetty server
+    \item Proceed to creating a new Book.
+    \item Upon tabbing out of the ISBN field, the validation should
+      occur immediately. 
+    \item Try it and watch the validation work.
+  \end{enumerate}
+\end{frame}
+
 \end{document}

@@ -31,5 +31,6 @@
 
 var activity = [
 
+    '<h2>Inquiries</h2>',
     '',
 ];

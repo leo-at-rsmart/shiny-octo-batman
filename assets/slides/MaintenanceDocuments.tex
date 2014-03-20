@@ -49,22 +49,74 @@
 
 \begin{frame}{Overview}
   \begin{itemize}
-  \item Welcome \& Colophon.
-  \item About Presenters.
-  \item Maven Overlays.
-    % * Maven War Overlay and archetype for creating a war overlay from a KC project
-  \item Multi-module vs. Regular Webapp Project.
-    % * Overlays with Multi-Module projects
-  \item Appserver Plugins.
-    % * Tomcat and Jetty maven plugins
-    % * JRebel for hot-code replacement
-  \item Rice DataDictionary Reloading vs. JRebel.
-  \item Tips and Tricks.
-    % * Tips and tricks like environment-specific (Test, Dev, Production) DD
-    % modifications
-  \item Proposal: Contributing a Modification as a Maven Dependency.
-    % * A proposal for building modifications as separate maven projects
-    % that are published to maven central for other institutions to use.
+  \item Maintenance Documents and Transactional Documents
+  \item Differences between KRAD and KNS
+  \item Uif-MaintenanceView
+  \item Uif-MaintenanceGridSection
   \end{itemize}
 \end{frame}
+
+\begin{frame}{Maintenance and Transactional Documents}
+  \begin{itemize}
+    \item Generally speaking, Documents are carriages for business
+      objects through workflow (which is really just a routing system
+      more than BPM engine as the name suggests).
+    \item Maintenance Documents are tightly coupled to modify a given
+      business object externally.
+    \item Transactional Documents are themselves the business object
+      and can be used as a more possible alternative.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Differences between KRAD and KNS}
+  \begin{itemize}
+  \item KNS Maintenance Documents had a static view where the
+    developer had next to no control over.
+  \item KRAD Maintenance Documents are minor bean instances that
+    essentially metadata for something called a
+    \texttt{Uif-MaintenanceView}. Since Views are exposed in KRAD
+    through the DataDictionary, this is the opposite situation as what
+    exists in the KNS. Now the developer has complete control over the
+    view of a Maintenance Document.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Differences between KRAD and KNS}
+  \begin{itemize}
+  \item In KRAD, now there are 3 bean definitions that require knowing
+    what the \texttt{dataObjectClass} is: DataObjectEntry,
+    uifMaintenanceDocumentEntry, and the Uif-MaintenanceView.
+  \item in KNS, the MaintenanceDocumentEntry had special beans that
+    needed to be used.
+  \item in KRAD, since Uif-MaintenanceView is just a view, and
+    elements from the UIF can be added the the Uif-MaintenanceView.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Uif-MaintenanceView}
+  \begin{itemize}
+    \item View intended for maintenance documents
+    \item Includes items for workflow actions (buttons along the
+      bottom), and the Document Overview
+    \item When adding items, be sure to use:
+      \begin{minted}[fontsize=\scriptsize]{xml}
+<list merge=''true''> ... </list>
+      \end{minted}
+    \item Requires \texttt{dataObjectClassName} to be set. This will
+      bind the form attached to the view to the
+      \texttt{uifMaintenanceDocumentEntry} instance mapped to the same \texttt{dataObjectClass}
+      
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Uif-MaintenanceGridSection}
+  \begin{itemize}
+  \item Special Grid section that uses the
+    \texttt{oldMaintainableObject} if there is one. This is what makes
+    it possible to show changes side-by-side
+  \item It's possible to create a maintenance document without this,
+    but you lose the ability to see what fields changed.
+    \end{itemize}
+\end{frame}
+
 \end{document}

@@ -30,9 +30,13 @@
 //    see http://code.google.com/p/course-builder/wiki/CreateActivities.
 
 var activity = [
-    '<h2>Exercise: Lookups</h2>',
+    '<h2>Introduction to Maintenance Documents</h2',
+    
+    '<script async class="speakerdeck-embed" data-id="2b4037308fde0131ed3a7a557317c4b7" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>',
 
-    '<script async class="speakerdeck-embed" data-id="0604fbf0917c0131dbce721b1895ee96" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>',
+    '<h2>Exercise: Maintenance Documents</h2>',
+
+    '<script async class="speakerdeck-embed" data-id="2b9ed7c0919401319fc0623dfa5ee5e7" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>',
 
 ];
 

@@ -31,7 +31,8 @@
 
 var activity = [
 
-    '<h2>Complex Transactional Documents</h2>',
-    
-    '',
+    '<h2>Introduction to KIM</h2>',
+    '<h3>Entity Structure</h3>',
+    '<img src="/assets/Diagrams/KIM-Big-Entities1.png" /><br/>',
+    '<img src="/assets/Diagrams/KIM-Big-Entities.png" /><br/>'
 ];

@@ -34,5 +34,7 @@ var activity = [
     '<h2>Validations</h2>',
     
     '<script async class="speakerdeck-embed" data-id="4b252e70922b0131c35c765d0eee1a14" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>',
+    
+    '<script async class="speakerdeck-embed" data-id="1f988ea0930501318ff53a6edd049e92" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>',
 
 ];

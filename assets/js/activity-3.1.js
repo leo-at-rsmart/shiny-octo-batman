@@ -33,5 +33,5 @@ var activity = [
 
     '<h2>Custom Maintainables</h2>',
 
-    '',
+    '<script async class="speakerdeck-embed" data-id="0e63f240925901312a463e6f65fbe210" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>',
 ];

@@ -1,0 +1,124 @@
+\documentclass[xcolor=dvipsnames,14pt,professionalfonts]{beamer}
+\usepackage{minted}
+\usepackage{etoolbox}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[no-math]{fontspec} 
+\usetheme{rsmarttraining}
+\usefonttheme{professionalfonts}
+\usecolortheme{dolphin}
+
+%\definecolor{foreground}{gray}{0}
+%\definecolor{background}{gray}{1}
+%\definecolor{keyword}{rgb}{0.2,0.2,0.8}
+%\definecolor{warning}{rgb}{0.8,0.2,0.2}
+%\definecolor{shadow}{gray}{0.35}
+%\definecolor{hide}{gray}{0.9}
+%\definecolor{figure}{rgb}{1,0.7,0}
+%\definecolor{title}{rgb}{25,240,250}
+\definecolor{title}{rgb}{0.09,0.30,0.38}
+\definecolor{frametitle}{rgb}{1,1,1}
+\definecolor{normal}{rgb}{0,0,0}
+
+%\usecolortheme[named=keyword]{structure}
+
+\setbeamercolor{title}{fg=title}
+\setbeamercolor{frametitle}{fg=frametitle}
+\setbeamercolor{section in toc}{fg=foreground}
+\setbeamercolor{normal text}{bg=brown!46,fg=normal}
+
+\setbeamerfont{structure}{family=\fontspec{Georgia},series=\bfseries} 
+\setbeamerfont{subtitle}{family=\fontspec{Helvetica},series=\bfseries} 
+\begin{document}
+
+\title{KRAD Training}
+\subtitle{Exercise: Validations Part 2}
+\author[Leo]{Leo Przybylski}
+
+\usebackgroundtemplate%
+{%
+    \includegraphics[width=\paperwidth,height=\paperheight]{../img/header.png}%
+}
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{../img/title.png}}%
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+}
+
+\begin{frame}{Goals}
+  \begin{itemize}
+    \item Make the publisher dependent upon publisherDate.
+    \item Learn to use PrerequisiteConstraint.
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Add PrerequisiteConstraint}
+  \begin{enumerate}
+    \item Open \texttt{BookMaintenanceDocument.xml}
+    \item Alter the \texttt{Uif-InputField} for \texttt{publisher} to
+      have the following constraint:
+    \begin{minted}[fontsize=\scriptsize]{xml}
+<property name="dependencyConstraints">
+	<list>
+		<bean parent="PrerequisiteConstraint" 
+            p:propertyName="publicationDate"/>
+	</list>
+</property>
+    \end{minted}
+  \end{enumerate}
+    
+\end{frame}
+
+\begin{frame}{Adding PrerequisiteConstraint}
+  \begin{enumerate}
+    \item Now start the Jetty server
+    \item Proceed to creating a new Book.
+    \item Tab through publisher and publicationDate.
+    \item You will notice that they are not required.
+    \item Type a value into publisher.
+    \item Now you will notice that publicationDate is required.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{About PrerequisiteConstraint}
+  \begin{enumerate}
+    \item The change we made means that publisher is dependent upon publisherDate.
+    \item When publisher date has a value, publisherDate becomes required.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Adding progressiveRender}
+  \begin{enumerate}
+    \item Now that publicationDate is required when publisher is filled,
+      what about when publicationDate is filled?
+    \item To prevent publicationDate from being filled without
+      publisher, we will only show publicationDate after publisher is
+      filled.
+    \item Use progressiveRender to do this.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Adding progressiveRender}
+  \begin{enumerate}
+    \item Open \texttt{BookMaintenanceDocument.xml}
+    \item progressiveRender requires a Spring EL input.
+    \item Modify the publisherDate Uif-InputField to include
+      progressiveRender that checks for a value in publisher.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Add PrerequisiteConstraint}
+Add the following to \texttt{BookMaintenanceDocument}
+    \begin{minted}[fontsize=\scriptsize]{java}
+<bean parent="Uif-InputField" 
+    p:propertyName="publicationDate"  p:render="false"
+	p:progressiveRender="@{document.newMaintainableObject.dataObject.publisher
+      != null 
+      and document.newMaintainableObject.dataObject.publisher ne ''}"/>
+    \end{minted}
+\end{frame}
+
+\end{document}

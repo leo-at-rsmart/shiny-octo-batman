@@ -1,0 +1,57 @@
+\documentclass[xcolor=dvipsnames,14pt,professionalfonts]{beamer}
+\usepackage{minted}
+\usepackage{etoolbox}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[no-math]{fontspec} 
+\usetheme{rsmarttraining}
+\usefonttheme{professionalfonts}
+\usecolortheme{dolphin}
+
+%\definecolor{foreground}{gray}{0}
+%\definecolor{background}{gray}{1}
+%\definecolor{keyword}{rgb}{0.2,0.2,0.8}
+%\definecolor{warning}{rgb}{0.8,0.2,0.2}
+%\definecolor{shadow}{gray}{0.35}
+%\definecolor{hide}{gray}{0.9}
+%\definecolor{figure}{rgb}{1,0.7,0}
+%\definecolor{title}{rgb}{25,240,250}
+\definecolor{title}{rgb}{0.09,0.30,0.38}
+\definecolor{frametitle}{rgb}{1,1,1}
+\definecolor{normal}{rgb}{0,0,0}
+
+%\usecolortheme[named=keyword]{structure}
+
+\setbeamercolor{title}{fg=title}
+\setbeamercolor{frametitle}{fg=frametitle}
+\setbeamercolor{section in toc}{fg=foreground}
+\setbeamercolor{normal text}{bg=brown!46,fg=normal}
+
+\setbeamerfont{structure}{family=\fontspec{Georgia},series=\bfseries} 
+\setbeamerfont{subtitle}{family=\fontspec{Helvetica},series=\bfseries} 
+\begin{document}
+
+\title{KRAD Training}
+\subtitle{Exercise: Javascript and AJAX}
+\author[Leo]{Leo Przybylski}
+
+\usebackgroundtemplate%
+{%
+    \includegraphics[width=\paperwidth,height=\paperheight]{../img/header.png}%
+}
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{../img/title.png}}%
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+}
+
+\begin{frame}{Goals}
+  \begin{itemize}
+    \item Learn about Framemaker templating.
+    \item Create a component that uses template options.
+   
+  \end{itemize}
+\end{frame}
+\\end{document}

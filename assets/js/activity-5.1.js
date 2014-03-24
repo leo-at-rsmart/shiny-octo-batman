@@ -30,8 +30,12 @@
 //    see http://code.google.com/p/course-builder/wiki/CreateActivities.
 
 var activity = [
-    '<h2>Custom Components</h2>',
+    '<h2>KRAD Components</h2>',
 
-    '',
+    '<script async class="speakerdeck-embed" data-id="7168d370953801313c82768fd0aa6b5a" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>',
+
+    '<h2>Creating a Custom Component</h2>',
+    
+    '<script async class="speakerdeck-embed" data-id="4d287120954d0131b9f40a04f6ba4df7" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>',
 ];
 

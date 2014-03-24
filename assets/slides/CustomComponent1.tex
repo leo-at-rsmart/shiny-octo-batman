@@ -51,7 +51,154 @@
   \begin{itemize}
     \item Learn about Framemaker templating.
     \item Create a component that uses template options.
-   
+    \item Understand how to update/modify existing components.
   \end{itemize}
 \end{frame}
-\\end{document}
+
+\begin{frame}{Instructions}
+  \begin{enumerate}
+    \item checkout \textbf{exercise-krad-custom-component}
+    \item Create a \texttt{FreeMarkerCoverFlowAdapter} in the
+      \texttt{trnapp.bookstore} package
+    \item It will look like the following slide
+  \end{enumerate}
+\end{frame}
+
+ \begin{frame}[fragile]{FreeMarkerCoverFlowAdapter}
+   \begin{minted}[fontsize=\scriptsize]{java}
+public class FreeMarkerCoverFlowAdapter 
+         implements InlineTemplateAdaptor, 
+                            Serializable {
+    @Override
+    public void accept(Environment env) 
+            throws TemplateException, IOException {
+        final CollectionGroup group = 
+                FreeMarkerInlineRenderUtils
+                        .resolve(env, "group", CollectionGroup.class);
+
+        final Macro fmMacro = 
+                (Macro) env.getMainNamespace().get("coverFlow");
+        final Map<String, Object> args = 
+                new java.util.HashMap<String, Object>();
+        args.put("group", group);
+        InlineTemplateUtils.invokeMacro(env, fmMacro, args, null); 
+   }
+}
+    \end{minted}
+\end{frame}
+
+\begin{frame}{Instructions}
+  \begin{enumerate}
+    \item A bootstrapping class is now required to
+      register the adapter with Spring
+    \item Create a new class \texttt{FreeMarkerInlineRenderBootstrap}
+      in the \texttt{trnapp.bookstore} package.
+    \item Add the code from the following slide
+  \end{enumerate}
+\end{frame}
+
+ \begin{frame}[fragile]{FreeMarkerInlineRenderBootstrap}
+   \begin{minted}[fontsize=\scriptsize]{java}
+public class FreeMarkerInlineRenderBootstrap 
+        implements InitializingBean {
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        InlineTemplateElement.registerAdaptor("coverFlow", 
+                new FreeMarkerCoverFlowAdapter());
+    }
+}
+    \end{minted}
+\end{frame}
+
+\begin{frame}{Instructions}
+  \begin{enumerate}
+    \item Now the \texttt{FreeMarkerInlineRenderBootstrap} needs to be
+      added to the Spring configuration in order to register the
+      adapter on startup.
+    \item Add the following to the 
+      \texttt{src/main/resources/trnapp/bookstore/Module.xml}
+  \end{enumerate}
+\end{frame}
+
+ \begin{frame}[fragile]{Module.xml}
+   \begin{minted}[fontsize=\scriptsize]{xml}
+<bean class="trnapp.bookstore.FreeMarkerInlineRenderBootstrap" />
+    \end{minted}
+\end{frame}
+
+\begin{frame}{Instructions}
+  \begin{enumerate}
+    \item Now we need to modify the \textbf{resultsGroup} of the
+      \texttt{Book-LookupView} to point to a different template.
+    \item Open the
+      \texttt{src/main/resources/trnapp/bookstore/Book.xml}
+    \item Add the following to the \texttt{Book-LookupView}. This will
+      modify the layout manager to use a coverflow layout when
+      displaying lookup results.
+  \end{enumerate}
+\end{frame}
+
+ \begin{frame}[fragile]{Book.xml}
+   \begin{minted}[fontsize=\scriptsize]{xml}
+<bean id="Book-LookupView" parent="Uif-LookupView">
+...
+...
+	<property name="resultsGroup">
+    	<bean parent="Uif-LookupResultsCollectionSection">
+    		<property name="layoutManager">
+    			<bean parent="Uif-TableCollectionLayout" 
+    				p:template="/WEB-INF/ftl/coverflow.ftl" 
+    				p:templateName="coverFlow" />
+    		</property>
+    	</bean>
+    </property>
+...
+...
+</bean>
+    \end{minted}
+\end{frame}
+
+ \begin{frame}[fragile]{coverflow.ftl}
+   This is some background about coverflow.ftl. Since it has been
+   provided, we don't need to actually do anything here.
+  \begin{enumerate}
+    \item This is the file that is going to handle the layout of
+      collection items resulting from the Book lookup.
+    \item The following is the definition of the template. In
+      Freemarker, it's called a \textbf{macro}
+   \begin{minted}[fontsize=\scriptsize]{xml}
+     <#macro coverFlow items manager container>
+   \end{minted}
+ \end{enumerate}
+\end{frame}
+
+ \begin{frame}[fragile]{coverflow.ftl}
+  \begin{enumerate}
+   \item The \texttt{items} list is iterated to display the values.
+   \begin{minted}[fontsize=\scriptsize]{xml}
+<#list items as item>
+  <#if item_index == 0>
+    <li data-target="#lookup-results-coverflow" 
+        data-slide-to="${item_index + 1}" class="active"></li>
+  <#else>
+    <li data-target="#lookup-results-coverflow" 
+        data-slide-to="${item_index + 1}"></li>
+  </#if>
+</#list>
+   \end{minted} 
+   \item \texttt{item\_index} is the current index within the
+     loop. This can be used to determine if we're on the first or last
+     item. In this case, the first item is always active.
+ \end{enumerate}
+\end{frame}
+
+\begin{frame}{That's it}
+  \begin{enumerate}
+    \item Explore ways to improve on this. Display values from the
+      items like author and title.
+    \item Find a way to add url's to the results to return a value or
+      display an inquiry.
+  \end{enumerate}
+\end{frame}
+
+\end{document}

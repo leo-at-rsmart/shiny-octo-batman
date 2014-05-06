@@ -56,14 +56,14 @@
 
 \begin{frame}{Instructions}
   \begin{itemize}
-  \item Checkout “exercise-bo-dd” project
+  \item Checkout “exercise-krad-dd” project
   \item Load the Author Data Dictionary File
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Load the Author Data Dictionary File}
   \begin{enumerate}
-  \item Open the trnapp-BookstoreModuleBeans.xml file in Eclipse.
+  \item Open the \textbf{Module.xml} file in Eclipse.
   \item Add the following properties inside the
     bookstoreModuleConfiguration bean right after the “namespaceCode”
     property:
@@ -84,7 +84,9 @@
     
 \begin{frame}{Instructions}
   \begin{itemize}
-    \item Add the exercise-bo-dd project to your Client Application Tomcat server and start it up.
+    \item Add the exercise-krad-dd project to your Jetty Run
+      Configuration.
+      \item Start Jetty
     \item Verify that the project started successfully.  If not, then there is likely something wrong with your Data Dictionary or ModuleConfiguration setup.
     \item Create the Book Data Dictionary File
   \end{itemize}
@@ -106,9 +108,9 @@
 
 \begin{frame}{Create Book.xml}
   \begin{itemize}
-    \item Create a BusinessObjectEntry in Book.xml (use the Author.xml as an example)
+    \item Create a \textbf{BusinessObjectEntry} in \textbf{Book.xml} (use the \textbf{Author.xml} as an example)
     \item For now, don’t worry about the relationship between Book and Author, we will add that in the next portion of the exercise.
-    \item However, you will still need to add an AttributeDefinition
+    \item However, you will still need to add an \textbf{AttributeDefinition}
       for the authorId, just not the author.
     \end{itemize}
   \end{frame}
@@ -152,10 +154,10 @@
 
 \begin{frame}{Create Book.xml}
   \begin{enumerate}
-  \item Add Book.xml to the dataDictionaryPackages in trnapp-BookstoreModuleBeans.xml
+  \item Add \textbf{Book.xml} to the \textbf{dataDictionaryPackages} in \textbf{Module.xml}
   \item Start the project with Tomcat and verify that it starts up correctly.
   \item If it does not start up correctly, this likely means there is a problem with your Data Dictionary file.
-  \item Add the Author ReferenceDefinition
+  \item Add the Author \textbf{ReferenceDefinition}
     \end{enumerate}
   \end{frame}
 

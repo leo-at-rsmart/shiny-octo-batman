@@ -1,9 +1,9 @@
 id,type,unit_id,title,release_date,now_available
 1,A,Pre,Pre-course assessment,,True
-2,U,1,"Introduction, Environment Setup and Configuration",03/07/2014,True
-3,U,2,"Data Objects and Maintenance Documents",03/08/2014,True
-4,U,3,Maintenance Documents and Validations,03/09/2014,True
-5,A,Mid,Mid-course Assessment,03/09/2014,False
-6,U,4,Transactional Documents and Business Rules,03/10/2014,True
-7,U,5,Custom Components,03/10/2014,True
+2,U,1,"Introduction, Environment Setup and Configuration",05/05/2014,True
+3,U,2,"Data Objects and Maintenance Documents",05/06/2014,True
+4,U,3,Maintenance Documents and Validations,05/07/2014,False
+5,A,Mid,Mid-course Assessment,05/07/2014,False
+6,U,4,Transactional Documents and Business Rules,05/08/2014,False
+7,U,5,Custom Components,05/09/2014,False
 8,A,Fin,Final-course Assessment,,False

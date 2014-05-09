@@ -64,18 +64,14 @@
   \item Install a validation constraint that uses regex for the ISBN number.
   \item Checkout the \textbf{exercise-krad-maint-validation}
     project.
-  \item Open \texttt{Book.xml}
+  \item Open \texttt{BookMaintenanceDocument.xml}
   \end{enumerate}
 \end{frame}
 
 \begin{frame}[fragile]{Adding Validation to ISBN Numbers}
- Find the following AttributeDefinition for ISBN:
+ Find the following InputField for ISBN:
     \begin{minted}[fontsize=\scriptsize]{xml}
-<bean id="Book-isbn" parent="AttributeDefinition"
-        p:name="isbn"
-        p:label="ISBN"
-        p:shortLabel="ISBN"
-        p:maxLength="17">
+<bean parent="Uif-InputField" p:propertyName=''isbn''>
     <property name="validCharactersConstraint">
       <!-- don't allow whitespace in the ISBN -->
       <bean parent="AnyCharacterPatternConstraint" p:allowWhitespace="false"/>

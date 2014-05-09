@@ -192,7 +192,8 @@ Now, we must define the author name attribute in our Book data dictionary file. 
     \begin{minted}[fontsize=\scriptsize]{xml}
 <bean id="Book-author-name" parent="Book-author-name-parentBean"/>
 
-<bean id="Book-author-name-parentBean" abstract="true" parent="AttributeDefinition">
+<bean id="Book-author-name-parentBean" abstract="true" 
+           parent="AttributeDefinition">
   <property name="shortLabel" value="Author Name"/>
   <property name="maxLength" value="256"/>
   <property name="validCharactersConstraint">
@@ -231,11 +232,13 @@ In the resultFields section of the lookup definition in your Book.xml file, repl
     The KNS provides the ability to customize a Lookup using something
     called a “Lookupable Helper”.  To implement one of these, you
     create a class that extends from
-    org.kuali.rice.kns.lookup.KualiLookupableHelperServiceImpl.  There
+    \texttt{org.kuali.rice.kns.lookup.KualiLookupableHelperServiceImpl}.  There
     are numerous operations and hook points available on this class
-    and the LookupableHelperService interface in general.  Please see
+    and the \texttt{LookupableHelperService} interface in general.  Please see
     the javadocs for full details.           
+\end{frame}
 
+  \begin{frame}{Create a Custom Lookupable Helper}
     For this part of the exercise we are going to create a Lookupable
     helper which performs some validation for us in order to disallow
     the use of wildcards on the Category.  This is a bit of a
@@ -278,10 +281,6 @@ public boolean validateSearchParameters(LookupForm form,
 
 \begin{frame}[fragile]{Create a Custom Lookupable Helper}
   With KRAD, this is no longer required.
-\end{frame}
-
-\begin{frame}[fragile]{Create a Custom Lookupable Helper}
-  This is also no longer required in KRAD.
 \end{frame}
 
 \end{document}

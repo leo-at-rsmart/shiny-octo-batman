@@ -32,7 +32,7 @@
 \begin{document}
 
 \title{KRAD Training}
-\subtitle{Exercise: Maintenance Documents}
+\subtitle{Exercise: Maintenance Documents Part 1}
 \author[Leo]{Leo Przybylski}
 
 \usebackgroundtemplate%
@@ -72,31 +72,41 @@ repository.
   \item Read through what is currently in this file and take some time to try and understand it.
   \item Notice that we’ve already created the
     uifMaintenanceDocumentEntry and \texttt{Uif-MaintenanceView} for you.  This is a maintenance document with a single section that contains the lastName.
-  \item Add MaintainableFieldDefinitions for firstName and middleName.
-  \item Make firstName 
-textbf{required}.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Create Author Maintenance Document}
+  \begin{enumerate}
+  \item Add \texttt{Uif-InputField} elements for firstName and middleName.
+  \item Make firstName textbf{required}.
   \item We have already added this data dictionary file for you to the list in \texttt{Module.xml}.
-  \end{enumerate}
-\end{frame}
-
-\begin{frame}{Create Author Maintenance Document}
-  \begin{enumerate}
   \item Finally, in order to create new instances of the maintenance document, we need to set up a workflow Document Type.
-  \item Notice the documentTypeName on the maintenance entry is set to AuthorDocumentType.
-  \item This means that Kuali Enterprise Workflow needs to have AuthorDocumentType configured in order for this maintenance document to be functional.
-  \item This means that Kuali Enterprise Workflow needs to have AuthorDocumentType configured in order for this maintenance document to be functional.
-  \item We have created a simple workflow document type definition for AuthorDocumentType which can be found under \texttt{workflow/AuthorDocumentType.xml}.
   \end{enumerate}
 \end{frame}
 
 \begin{frame}{Create Author Maintenance Document}
   \begin{enumerate}
+  \item Notice the documentTypeName on the maintenance entry is set to \textbf{AuthorDocumentType}.
+  \item This means that Kuali Enterprise Workflow needs to have \textbf{AuthorDocumentType} configured in order for this maintenance document to be functional.
+  \item This means that Kuali Enterprise Workflow needs to have \textbf{AuthorDocumentType} configured in order for this maintenance document to be functional.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Create Author Maintenance Document}
+  \begin{enumerate}
+  \item We have created a simple workflow document type definition for \textbf{AuthorDocumentType} which can be found under \texttt{workflow/AuthorDocumentType.xml}.
   \item This document type currently defines no workflow route path.
     It also uses RiceDocument as its parent to allow us to inherit
     Kuali Identity Management permissions from the parent (as well as
     other things).  We’ll get to both of those pieces in more detail in a later exercise.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Create Author Maintenance Document}
+  \begin{enumerate}
   \item Next, we need to “ingest” this document type into Kuali Enterprise Workflow.  This installs the document type and its associated workflow process definition into the Rice database.  Start the web application and navigate to the main portal page.
-  \item Once on the main portal page, click on the “Administration” tab and log in as “admin”.
+  \item Once on the main portal page, click on the “Administration”
+    tab and log in as “admin”.
   \end{enumerate}
 \end{frame}
 
@@ -123,23 +133,28 @@ textbf{required}.
   \item Next, try to edit the Author that you just created.
   \item To do this, execute a search on the Author lookup screen.
   \item You should now see an “edit” and a “copy” button next to each row in the result set.  Click “edit” on the Author you just created.
-  \item Notice how the resulting maintenance screen brings up a side-by-side view of the original Author attributes and allows you to change them on the right-hand side:
   \end{enumerate}
 \end{frame}
 
 \begin{frame}{Test the Author Maintenance Document}
   \begin{enumerate}
+  \item Notice how the resulting maintenance screen brings up a side-by-side view of the original Author attributes and allows you to change them on the right-hand side:
   \item Try making a change (such as modifying one of the names, or adding a middle name).
   \item Submit the maintenance document.
   \item Navigate back to your Author lookup and execute another search.  You should see the updates to the Author that you changed now.
-  \item Find your Author Maintenance Transactions in Document Search
-    \item We mentioned previously that you were not going to be configuring any Workflow for this part of the exercise.  However, the submission of the various Author maintenance documents that you have already done have been routing through Kuali Enterprise Workflow.
   \end{enumerate}
 \end{frame}
 
 \begin{frame}{Test the Author Maintenance Document}
   \begin{enumerate}
-  \item The AuthorDocumentType has not been set up with any routing nodes or routing rules, so the document never stops during the routing process.  This is the reason why the change appears to happen (almost) instantly to us.
+  \item Find your Author Maintenance Transactions in Document Search
+  \item We mentioned previously that you were not going to be configuring any Workflow for this part of the exercise.  However, the submission of the various Author maintenance documents that you have already done have been routing through Kuali Enterprise Workflow.
+    \item The AuthorDocumentType has not been set up with any routing nodes or routing rules, so the document never stops during the routing process.  This is the reason why the change appears to happen (almost) instantly to us.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Test the Author Maintenance Document}
+  \begin{enumerate}
   \item To see the workflow documents that have been created during your testing, follow these steps:
   \item Navigate to the “Main Menu” in your portal.
   \item Click on the “doc search” button near the top.

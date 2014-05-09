@@ -33,6 +33,6 @@ var activity = [
 
     '<h2>Progressive Disclosures</h2>',
     
-    '',
+    '<script async class="speakerdeck-embed" data-id="1f988ea0930501318ff53a6edd049e92" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>',
 
 ];

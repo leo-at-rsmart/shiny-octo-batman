@@ -20,5 +20,6 @@ unit_id,unit_title,lesson_id,lesson_title,lesson_activity,lesson_activity_name,l
 4,Transactional Documents and Business Rules,1,Introduction to Transactional Documents,yes,Lesson 4.1 Activity,,,<ul><li></li></ul>
 4,Transactional Documents and Business Rules,2,Complex Trasactional Documents,yes,Lesson 4.2 Activity,,,<ul><li></li></ul>
 4,Transactional Documents and Business Rules,3,Business Rules,yes,Lesson 4.3 Activity,,,<ul><li></li></ul>
+4,Transactional Documents and Business Rules,4,AJAX Calls and Rest Services,yes,Lesson 4.4 Activity,,,<ul><li>Learn about creating ReST services.</li><li>Exposing rest services on the service bus.</li><li>Access the service via javascript.</li></ul>
 5,Custom Components,1,Creating a Custom Component,yes,Lesson 5.1 Activity,,,<ul><li>About Components</li><li>The Component Stack</li><li>Some background on custom components</li></ul>
 

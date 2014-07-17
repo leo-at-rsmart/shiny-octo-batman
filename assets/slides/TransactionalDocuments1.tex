@@ -159,31 +159,88 @@ We will add some more columns to this table later.  But for now, this should suf
 \end{frame}
 
 \begin{frame}{Create a Transactional Document Data Dictionary File}
-We have already created the skeleton for this data dictionary file for you.  Open the BookOrderDocument.xml file in the src/main/resources/train/bookstore/document/datadictionary directory.
+We have already created the skeleton for this data dictionary file for you.  Open the \textbf{BookOrderDocument.xml} file in the \textbf{src/main/resources/train/bookstore/document/datadictionary} directory.
 Uncomment the body of this XML file so that both bean elements are uncommented.
 \begin{enumerate} 
-Notice how the TransactionalDocumentEntry associates the Document class that we created earlier with our workflow Document Type (which we will create in a later step).
-Now open src/main/resources/trnapp-BookstoreModuleBeans.xml and add an entry to dataDictionaryPackages for your new data dictionary file.
-Create JSP Page
-Unlike maintenance documents, you have to create the JSP pages for transactional documents.  There are a set of standard tag libraries that can be used for this.  An initial BookOrder.jsp has been provided for you which includes the basic layout (without any custom fields yet).  We will add more fields a little bit later.
-For now, let’s examine the JSP page:
-Open the BookOrder.jsp page from the following location: src/main/webapp/WEB-INF/jsp
-The <kul:documentPage> tag is the outermost tag for our documents.  It renders elements like the standard document header as well as the html form element for us.
-The <kul:documentOverview> tag renders the top-most tab that shows up in all documents that allows the user to enter “description” and “explanation”.
-<kul:notes> renders the “Notes and Attachments” tab on the document.
-<kul:adHocRecipients> renders the tab that allows you to send adhoc workflow requests for the document
-<kul:routeLog> renders that tab that contains an IFRAME showing the KEW Route Log for this document
-<kul:documentControls> renders any relevant action buttons for the document (including save, approve, cancel, etc.)
-Create a Link to the Book Order in the Portal
-Open your bookstoreApplication.tag file located at src/main/webapp/WEB-INF/tags/rice-portal/channel/main
-Add the following link to the top of the list:
+\item Notice how the \textbf{TransactionalDocumentEntry} associates the Document class that we created earlier with our workflow Document Type (which we will create in a later step).
+\item Now open
+  \textbf{src/main/resources/trnapp-BookstoreModuleBeans.xml} and add
+  an entry to \textbf{dataDictionaryPackages} for your new data
+  dictionary file.
+\end{enumerate}
 
-<portal:portalLink 
-  displayTitle="true"
-  title="Book Order"
-url="${ConfigProperties.application.url}/bookOrder.do?methodToCall=docHandler&command=initiate&docTypeName=BookOrderDocumentType" />
 
-Notice how the url sends a methodToCall of “docHandler” which is a standard dispatch method that all KNS document actions support.
+\begin{frame}{Create a Transactional Document View}
+  \begin{enumerate}
+  \item In contrast to Transactional Documents of old, a JSP file and
+    Struts Form/Action classes/mappings are no longer necessary. By
+    configuring a view with the User Interface Framework (UIF) we can
+    accomplish it all within a single configuration.
+  \item Once again, open \textbf{src/main/resources/train/bookstore/document/datadictionary/BookOrderDocument.xml}
+    \end{enumerate}
+  \end{frame}
+
+\begin{frame}{Create a Transactional Document View}
+  \begin{enumerate}
+    \item Observe the following configuration.
+    \begin{minted}[fontsize=\scriptsize]{xml}
+<bean id="BookOrder-View" parent="Uif-TransactionalDocumentView">
+  <property name="headerText" value="Book Order"/>
+  <property name="formClass" value="trnapp.bookstore.BookOrderForm"/>
+  <property name="documentClass" value="trnapp.bookstore.BookOrderDocument"/>
+  <property name="items">
+    <list>
+      <ref bean="BookOrder-MainPage"/>
+    </list>
+  </property>
+</bean>
+
+<bean id="BookOrder-MainPage" parent="Uif-DocumentPage">
+</bean>
+\end{minted}
+  \end{enumerate}
+  \end{frame}
+
+\begin{frame}{Create a Transactional Document View}
+  \begin{enumerate}
+  \item Much like the Maintenance Document, the Transactional Document
+    UI is configured through its view. Now we have complete
+    flexibility over it without the configuration.
+  \item Transactional documents automatically map to the view using:
+    \begin{minted}[fontsize=\scriptsize]{xml}
+  <property name="formClass" value="trnapp.bookstore.BookOrderForm"/>
+  <property name="documentClass" value="trnapp.bookstore.BookOrderDocument"/>
+  \end{minted}
+\item Since the Document Entry is mapped to a
+  \textbf{documentTypeName}, the related \textbf{documentClass} can be
+  used to query the view.
+  \item Also observe that the only item in our view is a
+    \textbf{Uif-DocumentPage}. This represents the structure that we
+    will add elements to in further exercises.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Create a Transactional Document View}
+  \begin{enumerate}
+  \item From the previous slide, you may have noticed the
+    \textbf{formClass} property. This points to the Java class
+    representation of what will eventually be our HTML form. KRAD
+    provides an API for Transactional Document forms, but we still
+    need to create one.
+  \item In the \textbf{trnapp.bookstore} package, create a class
+    called \textbf{BookOrderForm}
+  \item Be sure to inherit from the
+    \textbf{org.kuali.rice.krad.web.form.TransactionalDocumentFormBase} like below:
+    \begin{minted}[fontsize=\scriptsize]{xml}
+import org.kuali.rice.krad.web.form.TransactionalDocumentFormBase;
+
+public class BookOrderForm extends TransactionalDocumentFormBase {
+  \end{minted}
+  \end{enumerate}
+\end{frame}
+
+
+  Notice how the url sends a methodToCall of “docHandler” which is a standard dispatch method that all KNS document actions support.
 Create the BookOrderDocumentType
 Like Maintenance Documents, Transactional Documents are also routed through the workflow engine and require a Document Type definition to be defined in the data dictionary.
 To create the BookOrderDocumentType, do the following:

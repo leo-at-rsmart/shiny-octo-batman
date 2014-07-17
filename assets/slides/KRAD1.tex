@@ -1,0 +1,97 @@
+\documentclass[xcolor=dvipsnames,14pt,professionalfonts]{beamer}
+\usepackage{minted}
+\usepackage{etoolbox}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[no-math]{fontspec} 
+\usetheme{rsmarttraining}
+\usefonttheme{professionalfonts}
+\usecolortheme{dolphin}
+
+%\definecolor{foreground}{gray}{0}
+%\definecolor{background}{gray}{1}
+%\definecolor{keyword}{rgb}{0.2,0.2,0.8}
+%\definecolor{warning}{rgb}{0.8,0.2,0.2}
+%\definecolor{shadow}{gray}{0.35}
+%\definecolor{hide}{gray}{0.9}
+%\definecolor{figure}{rgb}{1,0.7,0}
+%\definecolor{title}{rgb}{25,240,250}
+\definecolor{title}{rgb}{0.09,0.30,0.38}
+\definecolor{frametitle}{rgb}{1,1,1}
+\definecolor{normal}{rgb}{0,0,0}
+
+%\usecolortheme[named=keyword]{structure}
+
+\setbeamercolor{title}{fg=title}
+\setbeamercolor{frametitle}{fg=frametitle}
+\setbeamercolor{section in toc}{fg=foreground}
+\setbeamercolor{normal text}{bg=brown!46,fg=normal}
+
+\setbeamerfont{structure}{family=\fontspec{Georgia},series=\bfseries} 
+\setbeamerfont{subtitle}{family=\fontspec{Helvetica},series=\bfseries} 
+\begin{document}
+
+\title{KRAD Training}
+\subtitle{Introduction to KRAD}
+\author[Leo]{Leo Przybylski}
+
+\usebackgroundtemplate%
+{%
+    \includegraphics[width=\paperwidth,height=\paperheight]{../img/header.png}%
+}
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{../img/title.png}}%
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+}
+
+\begin{frame}{Overview}
+  \begin{itemize}
+    \item What is KRAD?
+    \item What KRAD is NOT
+    \item KRAD vs. KNS
+    \item The KRAD Stack
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{What is KRAD?}
+  \begin{itemize}
+    \item A framework for developing screens and applications quickly
+      for Kuali software.
+    \item Built with implementations in mind.
+    \item An evolving architecture instead of a dead or dying one.
+    \item Based on new technologies (JQuery, AngularJS, Twitter
+      Bootstrap, Freemarker, Spring MVC, etc\ldots)
+    \item Intended for developers and coders to build applications
+      without a graphic designer/web developer.
+    \item Intended to solve problems created by the legacy stack (KNS)
+      like excessive configuration.
+    \item A new software development paradigm that uses XML heavily.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{What KRAD is NOT}
+  \begin{itemize}
+    \item KRAD is NOT Rice or Rice 2.x
+    \item An extension of Rice
+    \item Independent of Rice
+    \item An application that runs on its own
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{KRAD vs. KNS}
+  \begin{itemize}
+    \item KNS is the legacy system that is part of Rice 1.x. 
+    \item KNS came from KFS
+    \item KNS uses struts 1.x, Spring, OJB, and JSP/JSTL
+    \item KRAD doesn't require writing any HTML
+    \item KRAD uses Spring MVC instead of Struts which requires far
+      less configuration and java classes.
+    \item KRAD uses a custom view resolver that allows the use of
+      Tiles and Freemarker templates to render HTML from beans stored
+      in Spring.
+  \end{itemize}
+\end{frame}
+\end{document}

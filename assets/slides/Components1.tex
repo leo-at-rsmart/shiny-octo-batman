@@ -1,0 +1,134 @@
+\documentclass[xcolor=dvipsnames,14pt,professionalfonts]{beamer}
+\usepackage{minted}
+\usepackage{etoolbox}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[no-math]{fontspec} 
+\usetheme{rsmarttraining}
+\usefonttheme{professionalfonts}
+\usecolortheme{dolphin}
+
+%\definecolor{foreground}{gray}{0}
+%\definecolor{background}{gray}{1}
+%\definecolor{keyword}{rgb}{0.2,0.2,0.8}
+%\definecolor{warning}{rgb}{0.8,0.2,0.2}
+%\definecolor{shadow}{gray}{0.35}
+%\definecolor{hide}{gray}{0.9}
+%\definecolor{figure}{rgb}{1,0.7,0}
+%\definecolor{title}{rgb}{25,240,250}
+\definecolor{title}{rgb}{0.09,0.30,0.38}
+\definecolor{frametitle}{rgb}{1,1,1}
+\definecolor{normal}{rgb}{0,0,0}
+
+%\usecolortheme[named=keyword]{structure}
+
+\setbeamercolor{title}{fg=title}
+\setbeamercolor{frametitle}{fg=frametitle}
+\setbeamercolor{section in toc}{fg=foreground}
+\setbeamercolor{normal text}{bg=brown!46,fg=normal}
+
+\setbeamerfont{structure}{family=\fontspec{Georgia},series=\bfseries} 
+\setbeamerfont{subtitle}{family=\fontspec{Helvetica},series=\bfseries} 
+\begin{document}
+
+\title{KRAD Training}
+\subtitle{Components: Part 1}
+\author[Leo]{Leo Przybylski}
+
+\usebackgroundtemplate%
+{%
+    \includegraphics[width=\paperwidth,height=\paperheight]{../img/header.png}%
+}
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{../img/title.png}}%
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+}
+
+\begin{frame}{Overview}
+  \begin{itemize}
+  \item What is a Component?
+  \item What Components are Composed of
+  \item Freemarker Templates
+  \item Rice customizations of Freemarker
+  \item Cases for Custom Components
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{What is a Component?}
+  \begin{itemize}
+    \item Components are any UI element rendered with the UIF.
+    \item Examples are:
+      \begin{itemize}
+        \item Elements
+        \item Fields
+        \item Containers
+        \item Layout Managers
+        \item Views
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{What is a Component?}
+\end{frame}
+
+\begin{frame}{Components are Composed of}
+  \begin{itemize}
+        \item Component Class
+        \item Freemarker Template
+        \item DataDictionary definition
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Freemarker Templates}
+  \begin{itemize}
+    \item Generally, not necessary to modify or create
+    \item Templates used for components
+    \item Can take input from the Component Class
+    \item Additional input is also available through template.options.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Rice Freemarker Customizations}
+  \begin{itemize}
+  \item Rice made customizations to Freemarker in a forked version of
+    it.
+  \item Among these customizations is the ability to make inline calls
+    to templates.
+  \item Inline templates must be registered with the
+    \texttt{InlineTemplateElement.registerAdaptor}
+    method. This is done on Spring initialization with
+    \texttt{FreeMarkerInlineRenderBootstrap}
+  \item Adding your own is as simple as adding a similar class to your
+    module.
+  \item \texttt{InlineTemplateElement.registerAdaptor} registers a
+    class that implements the \texttt{InlineTemplateAdaptor} interface
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Rice Freemarker Customizations}
+  \begin{itemize}
+    \item \texttt{InlineTemplateAdaptor} is responsible for actually
+      rendering your Inline template.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Cases for Custom Components}
+  \begin{itemize}
+    \item If you need a component that doesn't exist in KRAD, you may
+      need to create a custom one. Some examples are:
+      \begin{itemize}
+        \item Spinner
+        \item Coverflow
+      \end{itemize}
+    \item If an existing component isn't giving the features or
+      flexibility needed. One example of this is layout
+      managers. Collections only have two which are TableLayout and
+      StackedLayout. If you need a different layout, you need to make
+      your own.
+  \end{itemize}
+\end{frame}
+
+\end{document}

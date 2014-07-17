@@ -1,0 +1,94 @@
+\documentclass[xcolor=dvipsnames,14pt,professionalfonts]{beamer}
+\usepackage{minted}
+\usepackage{etoolbox}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[no-math]{fontspec} 
+\usetheme{rsmarttraining}
+\usefonttheme{professionalfonts}
+\usecolortheme{dolphin}
+
+%\definecolor{foreground}{gray}{0}
+%\definecolor{background}{gray}{1}
+%\definecolor{keyword}{rgb}{0.2,0.2,0.8}
+%\definecolor{warning}{rgb}{0.8,0.2,0.2}
+%\definecolor{shadow}{gray}{0.35}
+%\definecolor{hide}{gray}{0.9}
+%\definecolor{figure}{rgb}{1,0.7,0}
+%\definecolor{title}{rgb}{25,240,250}
+\definecolor{title}{rgb}{0.09,0.30,0.38}
+\definecolor{frametitle}{rgb}{1,1,1}
+\definecolor{normal}{rgb}{0,0,0}
+
+%\usecolortheme[named=keyword]{structure}
+
+\setbeamercolor{title}{fg=title}
+\setbeamercolor{frametitle}{fg=frametitle}
+\setbeamercolor{section in toc}{fg=foreground}
+\setbeamercolor{normal text}{bg=brown!46,fg=normal}
+
+\setbeamerfont{structure}{family=\fontspec{Georgia},series=\bfseries} 
+\setbeamerfont{subtitle}{family=\fontspec{Helvetica},series=\bfseries} 
+\begin{document}
+
+\title{KRAD Training}
+\subtitle{Spring MVC}
+\author[Leo]{Leo Przybylski}
+
+\usebackgroundtemplate%
+{%
+    \includegraphics[width=\paperwidth,height=\paperheight]{../img/header.png}%
+}
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{../img/title.png}}%
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+}
+
+\begin{frame}{Overview}
+  \begin{itemize}
+  \item Spring's Model-View-Controller Framework
+  \item Views use a Custom View Resolver
+  \item Model is represented in Forms.
+  \item Controllers are services that are scanned using Spring's
+    annotation scanner.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Views}
+  \begin{itemize}
+    \item KRAD's custom view resolver allows defining views
+      dynamically in the DataDictionary
+    \item Core views are stored with core elements and components in
+      the UIF repository.
+    \item The UIF is primarily defined in
+      \texttt{\scriptsize{krad-web-framework/src/main/resources/org/kuali/rice/krad/uif/}}
+    \item Document Views are stored in
+      \texttt{UifDocumentDefinitions.xml}
+    \item Maintenance Views are stored in
+      \texttt{UifMaintenanceDefinitions.xml}
+    \item \texttt{Uif-FormView} is in \texttt{UifViewPageDefinitions.xml}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Forms}
+  \begin{itemize}
+    \item Forms aren't like Struts Forms
+    \item No required API
+    \item Forms are just POJO's.  They can be any class.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Controllers}
+  \begin{itemize}
+    \item Not configured in XML
+    \item Configuration is in the form of annotations embedded in the
+      Java class
+    \item Spring loads Controllers by package/annotation scanner.
+    \item Controller annotation scanner is configured via the
+      \texttt{web.xml} file
+  \end{itemize}
+\end{frame}
+\end{document}

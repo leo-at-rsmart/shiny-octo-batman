@@ -1,0 +1,404 @@
+\ProvidesPackage{beamerinnerthemekualidays2013}
+
+
+\mode<presentation>
+
+% Some images:
+
+\pgfdeclareimage[width=14pt,height=12pt]{beamericonbook}{beamericonbook}
+\pgfdeclareimage[width=14pt,height=12pt]{beamericonbookshaded}{beamericonbook.20}
+\pgfaliasimage{beamericonbook.!20opaque}{beamericonbookshaded}
+\pgfaliasimage{beamericonbook.!15opaque}{beamericonbookshaded}
+\pgfaliasimage{beamericonbook.!10opaque}{beamericonbookshaded}
+\pgfaliasimage{beamericonbook.!5opaque}{beamericonbookshaded}
+\pgfaliasimage{beamericonbook.!2opaque}{beamericonbookshaded}
+\pgfdeclareimage[width=11pt,height=14pt]{beamericonarticle}{beamericonarticle}
+\pgfdeclareimage[width=11pt,height=14pt]{beamericonarticleshaded}{beamericonarticle.20}
+\pgfaliasimage{beamericonarticle.!20opaque}{beamericonarticleshaded}
+\pgfaliasimage{beamericonarticle.!15opaque}{beamericonarticleshaded}
+\pgfaliasimage{beamericonarticle.!10opaque}{beamericonarticleshaded}
+\pgfaliasimage{beamericonarticle.!5opaque}{beamericonarticleshaded}
+\pgfaliasimage{beamericonarticle.!2opaque}{beamericonarticleshaded}
+\pgfdeclareimage[width=14pt,height=14pt]{beamericononline}{beamericononline}
+\pgfdeclareimage[width=14pt,height=14pt]{beamericononlineshaded}{beamericononline.20}
+\pgfaliasimage{beamericonbook.!20opaque}{beamericononlineshaded}
+\pgfaliasimage{beamericonbook.!15opaque}{beamericononlineshaded}
+\pgfaliasimage{beamericonbook.!10opaque}{beamericononlineshaded}
+\pgfaliasimage{beamericonbook.!5opaque}{beamericononlineshaded}
+\pgfaliasimage{beamericonbook.!2opaque}{beamericononlineshaded}
+
+% Title page: kualidays2013
+\defbeamertemplate*{title page}{kualidays2013}[1][]
+{
+
+  \vbox{}
+  \vfill
+  \begin{centering}
+    \begin{beamercolorbox}[sep=2pt,left,#1]{title}
+      \usebeamerfont{title}\fontsize{32pt}{28.0}\selectfont\inserttitle\par%
+      \ifx\insertsubtitle\@empty%
+      \else%
+        \vskip0.05em%
+        {\usebeamerfont{subtitle}\fontsize{18pt}{20.0}\selectfont\textcolor{white}{\insertsubtitle}\par}%
+      \fi%     
+    \end{beamercolorbox}%
+    \vskip0.05em\par
+    \begin{beamercolorbox}[sep=5pt,left,#1]{author}
+      \usebeamerfont{author}\selectfont\textcolor{white}{\insertauthor}
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[sep=5pt,left,#1]{institute}
+      \usebeamerfont{institute}\selectfont\textcolor{white}{\insertinstitute}
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[sep=2pt,left,#1]{date}
+      \usebeamerfont{date}\selectfont\textcolor{white}{\insertdate}
+    \end{beamercolorbox}\vskip0.5em
+    {\usebeamercolor[fg]{titlegraphic}\inserttitlegraphic\par}
+  \end{centering}
+  \vfill
+}
+
+
+% Part page: kualidays2013
+
+\defbeamertemplate*{part page}{kualidays2013}[1][]
+{
+  \begin{centering}
+    {\usebeamerfont{part name}\usebeamercolor[fg]{part name}\partname~\insertromanpartnumber}
+    \vskip1em\par
+    \begin{beamercolorbox}[sep=16pt,center,#1]{part title}
+      \usebeamerfont{part title}\insertpart\par
+    \end{beamercolorbox}
+  \end{centering}
+}
+
+
+% Section page: kualidays2013
+
+\defbeamertemplate*{section page}{kualidays2013}[1][]
+{
+  \begin{centering}
+    {\usebeamerfont{section name}\usebeamercolor[fg]{section name}\sectionname~\insertsectionnumber}
+    \vskip1em\par
+    \begin{beamercolorbox}[sep=12pt,center,#1]{part title}
+      \usebeamerfont{section title}\insertsection\par
+    \end{beamercolorbox}
+  \end{centering}
+}
+
+% Subection page: kualidays2013
+
+\defbeamertemplate*{subsection page}{kualidays2013}[1][]
+{
+  \begin{centering}
+    {\usebeamerfont{subsection name}\usebeamercolor[fg]{subsection name}\subsectionname~\insertsubsectionnumber}
+    \vskip1em\par
+    \begin{beamercolorbox}[sep=8pt,center,#1]{part title}
+      \usebeamerfont{subsection title}\insertsubsection\par
+    \end{beamercolorbox}
+  \end{centering}
+}
+
+
+
+
+%
+% Table of contents
+%
+
+%\defbeamertemplateparent{sections/subsections in toc}{section in toc,subsection in toc,subsubsection in toc}
+%{}
+
+%\defbeamertemplateparent{sections/subsections in toc shaded}{section in toc shaded,subsection in toc shaded,subsubsection in toc shade%d}[1][20]
+%{[#1]}
+
+
+
+
+% (sub-)section in toc: kualidays2013
+
+\defbeamertemplate*{section in toc}{kualidays2013}
+{\inserttocsection\par}
+
+\defbeamertemplate*{subsection in toc}{kualidays2013}
+{\leavevmode\leftskip=1.5em\inserttocsubsection\par}
+
+\defbeamertemplate*{subsubsection in toc}{kualidays2013}
+{\leavevmode\normalsize\usebeamerfont{subsection in toc}\leftskip=3em%
+  \usebeamerfont{subsubsection in toc}\inserttocsubsubsection\par}
+
+
+% (sub-)section in toc shaded, kualidays2013
+
+\defbeamertemplate*{section in toc shaded}{kualidays2013}[1][20]
+{\begin{colormixin}{#1!parent.bg}\usebeamertemplate{section in toc}\end{colormixin}\unskip}
+
+\defbeamertemplate*{subsection in toc shaded}{kualidays2013}[1][20]
+{\begin{colormixin}{#1!parent.bg}\usebeamertemplate{subsection in toc}\end{colormixin}\unskip}
+
+\defbeamertemplate*{subsubsection in toc shaded}{kualidays2013}[1][20]
+{\begin{colormixin}{#1!parent.bg}\usebeamertemplate{subsubsection in toc}\end{colormixin}\unskip}
+
+
+
+
+
+% Itemize items, kualidays2013
+
+\defbeamertemplate*{itemize item}{kualidays2013}{\scriptsize\raise1.25pt\hbox{\donotcoloroutermaths$\bullet$}}
+\defbeamertemplate*{itemize subitem}{kualidays2013}{\tiny\raise1.5pt\hbox{\donotcoloroutermaths$\bullet$}}
+\defbeamertemplate*{itemize subsubitem}{kualidays2013}{\tiny\raise1.5pt\hbox{\donotcoloroutermaths$\bullet$}}
+
+
+\defbeamertemplate*{enumerate item}{kualidays2013}{\insertenumlabel.}
+\defbeamertemplate*{enumerate subitem}{kualidays2013}{\insertenumlabel.\insertsubenumlabel}
+\defbeamertemplate*{enumerate subsubitem}{kualidays2013}{\insertenumlabel.\insertsubenumlabel.\insertsubsubenumlabel}
+\defbeamertemplate*{enumerate mini template}{kualidays2013}{\insertenumlabel}
+
+
+% Description item width
+
+\defbeamertemplate*{description item}{kualidays2013}{\insertdescriptionitem}
+
+
+
+% Itemize/Enumerate body
+
+\defbeamertemplate*{itemize/enumerate body begin}{kualidays2013}{}
+\defbeamertemplate*{itemize/enumerate body end}{kualidays2013}{}
+
+\defbeamertemplate*{itemize/enumerate subbody begin}{kualidays2013}{}
+\defbeamertemplate*{itemize/enumerate subbody end}{kualidays2013}{}
+
+\defbeamertemplate*{itemize/enumerate subsubbody begin}{kualidays2013}{}
+\defbeamertemplate*{itemize/enumerate subsubbody end}{kualidays2013}{}
+
+
+
+% Alerted text
+
+\defbeamertemplate*{alerted text begin}{kualidays2013}{\setbeamercolor{local structure}{parent=alerted text}}
+
+
+
+% Structured text
+
+% empyt kualidays2013s
+
+
+% Bibliography items
+
+\defbeamertemplate*{bibliography item}{kualidays2013}
+{\lower3.5pt\hbox{\hskip2pt\pgfuseimage{beamericonarticle}\hskip1pt}}
+
+\defbeamertemplate*{bibliography entry article}{kualidays2013}{}
+\defbeamertemplate*{bibliography entry title}{kualidays2013}{\par}
+\defbeamertemplate*{bibliography entry location}{kualidays2013}{\par}
+\defbeamertemplate*{bibliography entry note}{kualidays2013}{\par}
+
+
+% Buttons
+
+\newdimen\beamer@dima%
+\newdimen\beamer@dimb%
+
+\defbeamertemplate*{button}{kualidays2013}
+{%
+  \setbox\beamer@tempbox=\hbox{{\insertbuttontext}}%
+  \ht\beamer@tempbox=6pt%
+  \dp\beamer@tempbox=0pt%
+  \setbox\beamer@tempbox=\vbox{\box\beamer@tempbox\vskip2pt}%
+  \beamer@tempdim=\wd\beamer@tempbox%
+  \beamer@dima=\beamer@tempdim\advance\beamer@dima by2.2pt
+  \beamer@dimb=\beamer@tempdim\advance\beamer@dimb by4pt
+  \begin{pgfpicture}{-4pt}{0pt}{\the\beamer@tempdim}{8pt}
+    \color{bg}
+    \pgfsetlinewidth{0.8pt}
+    \pgfpathqmoveto{0pt}{0pt}
+    \pgfpathqcurveto{-2.2pt}{0pt}{-4pt}{1.8pt}{-4pt}{4pt}
+    \pgfpathqcurveto{-4pt}{6.2pt}{-2.2pt}{8pt}{0pt}{8pt}
+    \pgfpathlineto{\pgfpoint{\the\beamer@tempdim}{8pt}}
+    \pgfpathcurveto%
+    {\pgfpoint{\the\beamer@dima}{8pt}}%
+    {\pgfpoint{\the\beamer@dimb}{6.2pt}}%
+    {\pgfpoint{\the\beamer@dimb}{4pt}}
+    \pgfpathcurveto%
+    {\pgfpoint{\the\beamer@dimb}{1.8pt}}%
+    {\pgfpoint{\the\beamer@dima}{0pt}}%
+    {\pgfpoint{\the\beamer@tempdim}{0pt}}
+    \pgfpathclose
+    \pgfusepathqfill
+    \colorlet{bg}{parent.bg}
+    \usebeamercolor[fg]{button border}
+    \pgfpathqmoveto{0pt}{0pt}
+    \pgfpathqcurveto{-2.2pt}{0pt}{-4pt}{1.8pt}{-4pt}{4pt}
+    \pgfpathqcurveto{-4pt}{6.2pt}{-2.2pt}{8pt}{0pt}{8pt}
+    \pgfpathlineto{\pgfpoint{\the\beamer@tempdim}{8pt}}
+    \pgfpathcurveto%
+    {\pgfpoint{\the\beamer@dima}{8pt}}%
+    {\pgfpoint{\the\beamer@dimb}{6.2pt}}%
+    {\pgfpoint{\the\beamer@dimb}{4pt}}
+    \pgfpathcurveto%
+    {\pgfpoint{\the\beamer@dimb}{1.8pt}}%
+    {\pgfpoint{\the\beamer@dima}{0pt}}%
+    {\pgfpoint{\the\beamer@tempdim}{0pt}}
+    \pgfpathclose
+    \pgfusepathqstroke
+  \end{pgfpicture}%
+  \hskip-\beamer@tempdim%
+  \box\beamer@tempbox%
+  \kern4pt%
+}
+
+
+% Abstract
+
+\defbeamertemplate*{abstract title}{kualidays2013}
+{%
+  \begin{center}%
+    \abstractname
+  \end{center}%
+}
+
+\defbeamertemplate*{abstract begin}{kualidays2013}
+{\beamercolorbox[vmode]{abstract}\leftskip2em\rightskip2em plus 1fill\usebeamerfont*{abstract}}
+
+\defbeamertemplate*{abstract end}{kualidays2013}
+{\medskip\endbeamercolorbox}
+
+
+% Verse
+
+\defbeamertemplate*{verse begin}{kualidays2013}
+{\beamercolorbox[vmode]{verse}}
+
+\defbeamertemplate*{verse end}{kualidays2013}
+{\endbeamercolorbox}
+
+
+% Quotation
+
+\defbeamertemplate*{quotation begin}{kualidays2013}
+{\beamercolorbox[vmode]{quotation}}
+
+\defbeamertemplate*{quotation end}{kualidays2013}
+{\endbeamercolorbox}
+
+
+% Quote
+
+\defbeamertemplate*{quote begin}{kualidays2013}
+{\beamercolorbox[vmode]{quote}}
+
+\defbeamertemplate*{quote end}{kualidays2013}
+{\endbeamercolorbox}
+
+
+% Footnotes
+
+\defbeamertemplate*{footnote}{kualidays2013}
+{
+  \parindent 1em\noindent%
+  \raggedright
+  \hbox to 1.8em{\hfil\insertfootnotemark}\insertfootnotetext\par%
+}
+
+
+% Captions
+
+\defbeamertemplate*{caption}{kualidays2013}
+{%
+  \raggedright
+  {%
+    \usebeamercolor[fg]{caption name}%
+    \usebeamerfont*{caption name}%
+    \insertcaptionname
+    \usebeamertemplate{caption label separator}%
+  }%
+  \insertcaption\par
+}
+\defbeamertemplate*{caption label separator}{kualidays2013}{ : }
+
+\defbeamertemplate*{block begin}{kualidays2013}
+{
+  \par\vskip\medskipamount%
+  \begin{beamercolorbox}[colsep*=.75ex]{block title}
+    \usebeamerfont*{block title}\insertblocktitle%
+  \end{beamercolorbox}%
+  {\parskip0pt\par}%
+  \ifbeamercolorempty[bg]{block title}
+  {}
+  {\ifbeamercolorempty[bg]{block body}{}{\nointerlineskip\vskip-0.5pt}}%
+  \usebeamerfont{block body}%
+  \begin{beamercolorbox}[colsep*=.75ex,vmode]{block body}%
+    \ifbeamercolorempty[bg]{block body}{\vskip-.25ex}{\vskip-.75ex}\vbox{}%
+}
+\defbeamertemplate*{block end}{kualidays2013}  
+{\end{beamercolorbox}\vskip\smallskipamount}
+
+\defbeamertemplate*{block alerted begin}{kualidays2013}
+{
+  \par\vskip\medskipamount%
+  \begin{beamercolorbox}[colsep*=.75ex]{block title alerted}
+    \usebeamerfont*{block title alerted}\insertblocktitle%
+  \end{beamercolorbox}%
+  {\parskip0pt\par}%
+  \ifbeamercolorempty[bg]{block title alerted}
+  {}
+  {\ifbeamercolorempty[bg]{block body alerted}{}{\nointerlineskip\vskip-0.5pt}}%
+  \usebeamerfont{block body alerted}%
+  \begin{beamercolorbox}[colsep*=.75ex,vmode]{block body alerted}%
+    \ifbeamercolorempty[bg]{block body alerted}{\vskip-.25ex}{\vskip-.75ex}\vbox{}%
+}
+
+\defbeamertemplate*{block alerted end}{kualidays2013}
+{\end{beamercolorbox}\vskip\smallskipamount}
+
+
+\defbeamertemplate*{block example begin}{kualidays2013}
+{
+  \par\vskip\medskipamount%
+  \begin{beamercolorbox}[colsep*=.75ex]{block title example}
+    \usebeamerfont*{block title example}\insertblocktitle%
+  \end{beamercolorbox}%
+  {\parskip0pt\par}%
+  \ifbeamercolorempty[bg]{block title example}
+  {}
+  {\ifbeamercolorempty[bg]{block body example}{}{\nointerlineskip\vskip-0.5pt}}%
+  \usebeamerfont{block body example}%
+  \begin{beamercolorbox}[colsep*=.75ex,vmode]{block body example}%
+    \ifbeamercolorempty[bg]{block body example}{\vskip-.25ex}{\vskip-.75ex}\vbox{}%
+}
+\defbeamertemplate*{block example end}{kualidays2013}
+{\end{beamercolorbox}\vskip\smallskipamount}
+
+
+
+
+\defbeamertemplate*{theorem begin}{kualidays2013}
+{%
+  \begin{\inserttheoremblockenv}
+  {%
+    \inserttheoremname
+    \ifx\inserttheoremaddition\@empty\else\ (\inserttheoremaddition)\fi%
+  }%
+}
+
+\defbeamertemplate*{theorem end}{kualidays2013}
+{\end{\inserttheoremblockenv}}
+
+
+% Proofs
+\defbeamertemplate*{proof begin}{kualidays2013}
+{\begin{block}{\insertproofname}}
+
+\defbeamertemplate*{proof end}{kualidays2013}
+{\end{block}}
+
+\defbeamertemplate*{qed symbol}{kualidays2013}
+{\openbox}
+
+
+
+
+\mode
+<all>

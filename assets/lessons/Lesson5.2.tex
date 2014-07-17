@@ -1,0 +1,56 @@
+\documentclass[12pt,notitlepage]{article}
+\author{Leo Przybylski}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{minted}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=ForestGreen,
+    filecolor=ForestGreen,
+    linkcolor=ForestGreen,
+    urlcolor=ForestGreen
+}
+\hypersetup{linktocpage}
+%%\definecolor{ubergray}{RGB}{245,245,245}
+
+\title{\includegraphics[width=0.75\textwidth]{../img/rsmart_base.png}\\\includegraphics[width=0.70\textwidth]{../img/kuali_base.png}\\KFS
+  Training: Lesson 5.2 LDAP Configuration}
+\pagestyle{fancy}
+\fancyhead{} % Clear all header fields 
+\fancyhead[OL]{\sectionmark}
+\fancyhead[OR]{\includegraphics[height=26pt]{../img/rsmart_base.png}}% 
+\fancyhead[ER]{\sectionmark}
+\fancyhead[EL]{\includegraphics[height=26pt]{../img/rsmart_base.png}}% 
+\definecolor{ubergray}{RGB}{245,245,245}
+\hypersetup{colorlinks}
+\lstset{basicstyle=\scriptsize,
+  backgroundcolor=\color{ubergray},
+  breaklines=true,
+  frame=single,
+  includerangemarker=false}
+\begin{document}
+\maketitle
+\tableofcontents
+\addcontentsline{toc}{section}{Switching on LDAP in Rice}
+{\setlength{\baselineskip}%
+  {0.0\baselineskip}
+  \section*{\flushright Switching on LDAP in Rice}
+  \hrulefill \par}
+
+\addcontentsline{toc}{section}{KIMLdapSpringBeans.xml}
+{\setlength{\baselineskip}%
+  {0.0\baselineskip}
+  \section*{\flushright KIMLdapSpringBeans.xml}
+  \hrulefill \par}
+
+\addcontentsline{toc}{section}{Overriding Mappings}
+{\setlength{\baselineskip}%
+  {0.0\baselineskip}
+  \section*{\flushright Overriding Mappings}
+  \hrulefill \par}
+
+\end{document}

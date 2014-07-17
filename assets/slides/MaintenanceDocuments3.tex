@@ -1,0 +1,109 @@
+\documentclass[xcolor=dvipsnames,14pt,professionalfonts]{beamer}
+\usepackage{minted}
+\usepackage{etoolbox}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[no-math]{fontspec} 
+\usetheme{rsmarttraining}
+\usefonttheme{professionalfonts}
+\usecolortheme{dolphin}
+
+%\definecolor{foreground}{gray}{0}
+%\definecolor{background}{gray}{1}
+%\definecolor{keyword}{rgb}{0.2,0.2,0.8}
+%\definecolor{warning}{rgb}{0.8,0.2,0.2}
+%\definecolor{shadow}{gray}{0.35}
+%\definecolor{hide}{gray}{0.9}
+%\definecolor{figure}{rgb}{1,0.7,0}
+%\definecolor{title}{rgb}{25,240,250}
+\definecolor{title}{rgb}{0.09,0.30,0.38}
+\definecolor{frametitle}{rgb}{1,1,1}
+\definecolor{normal}{rgb}{0,0,0}
+
+%\usecolortheme[named=keyword]{structure}
+
+\setbeamercolor{title}{fg=title}
+\setbeamercolor{frametitle}{fg=frametitle}
+\setbeamercolor{section in toc}{fg=foreground}
+\setbeamercolor{normal text}{bg=brown!46,fg=normal}
+
+\setbeamerfont{structure}{family=\fontspec{Georgia},series=\bfseries} 
+\setbeamerfont{subtitle}{family=\fontspec{Helvetica},series=\bfseries} 
+\begin{document}
+
+\title{KRAD Training}
+\subtitle{Exercise: Maintenance Documents Part 2}
+\author[Leo]{Leo Przybylski}
+
+\usebackgroundtemplate%
+{%
+    \includegraphics[width=\paperwidth,height=\paperheight]{../img/header.png}%
+}
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{../img/title.png}}%
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+}
+
+\begin{frame}{Goals}
+  \begin{itemize}
+ \item Learn how defining a custom Maintainable for your maintenance documents can provide you with various hook points to implement more complex features.
+ \item Implement a Maintainable for the Book maintenance document.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Checkout “exercise-krad-custom-maintainable” project}
+  \begin{itemize}
+    \item To ensure a clean and consistent environment for everyone, we will check out a project from Subversion as a starting point.  This will essentially be a completed copy of the previous exercises.
+    \item In order to get the copy of the project that you will need,
+      please check out the \textbf{exercise-custom-maintainable} project from
+      the training Subversion repository.
+      \end{itemize}
+    \end{frame}
+    
+    \begin{frame}{Create and Configure the Maintainable}
+      \begin{itemize}
+      \item We will add some functionality to the Book maintenance document using a custom Maintainable class.  The lookup framework has the capability built into it to allow you to “copy” a business object (as opposed to “edit” an existing one).  This is a nice feature, but imagine if we wanted to make some improvements to the way this is handled by default for the Book maintenance document.
+      \item A custom Maintainable can help us out here!  Using one of
+        these we will implement it such that when a “copy” is
+        performed on a Book, the ISBN is not carried over during the
+        copy.  From a functional perspective, this makes sense because
+        two books will never have the same ISBN.
+      \end{itemize}     
+    \end{frame}
+
+    \begin{frame}{Create and Configure the Maintainable}
+ To do this, follow these steps:
+      \begin{itemize}
+      \item Create a new package under src/main/java called \texttt{trnapp.bookstore.}
+      \item Inside of this package, create a new class named
+        BookMaintainable.  Have it extend from
+        \texttt{org.kuali.rice.krad.maintenance.MaintainableImpl}.
+      \end{itemize}     
+    \end{frame}
+ 
+ \begin{frame}[fragile]{Create and Configure Maintainable}
+ In this new class implement the processAfterCopy method as follows:
+ \begin{minted}[fontsize=\scriptsize]{java}
+@Override
+public void processAfterCopy(MaintenanceDocument document, Map<String, String[]> parameters) {
+    super.processAfterCopy(document, parameters);
+    Book book = ((Book)document.getNewMaintainableObject().getBusinessObject());
+    book.setIsbn(null);
+}
+    \end{minted}
+\end{frame}
+
+    \begin{frame}{Create and Configure the Maintainable}
+     \begin{itemize}
+       \item Now, reconfigure your Book MaintenanceDocumentEntry in your BookMaintenanceDocument.xml file so that it references your new BookMaintainable class.
+       \item Launch the web application and navigate to the Book lookup.
+       \item Execute a search and find a Book with an ISBN on it.
+         \item Click the “Copy” link on the far left-hand side.
+         \item You should see something like the following (note how the ISBN was not copied to the new Book on the form):
+      \end{itemize}     
+    \end{frame}
+           
+\end{document}

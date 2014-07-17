@@ -197,6 +197,8 @@ def load_csv_course(app_context):
     unit_file = os.path.join(app_context.get_data_home(), 'unit.csv')
     lesson_file = os.path.join(app_context.get_data_home(), 'lesson.csv')
 
+    logging.info('loading ' + unit_file)
+
     # Check files exist.
     if (not app_context.fs.isfile(unit_file) or
         not app_context.fs.isfile(lesson_file)):
@@ -214,6 +216,7 @@ def load_csv_course(app_context):
     verifier.verify_unit_fields(units)
     verifier.verify_lesson_fields(lessons)
     verifier.verify_unit_lesson_relationships(units, lessons)
+    logging.info(verifier)
     assert verifier.errors == 0
     assert verifier.warnings == 0
 
